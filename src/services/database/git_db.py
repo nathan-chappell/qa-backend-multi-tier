@@ -1,6 +1,7 @@
 """
 CRUD frontend to git repository
 """
+import asyncio
 from asyncio import Lock, StreamReader
 from asyncio.subprocess import PIPE
 import re
@@ -12,11 +13,14 @@ import logging
 from uuid import uuid4
 import functools
 
-from . import Paragraph, Database, DatabaseError
+from .abstract_database import DocId, Paragraph, Database
+from .database_error import DatabaseError
+from .database_error import DatabaseCreateError, DatabaseUpdateError
+from .database_error import DatabaseDeleteError, DatabaseReadError
 
 log = logging.getLogger('database')
 
-class GitError(DatabaseError):
+class GitError(RuntimeError):
     cmd_args: Iterable[str]
     message: str
 
@@ -34,10 +38,6 @@ class GitError(DatabaseError):
         cmd = self.cmd_args
         msg = self.message
         return f'<{cls}:(cmd_args={cmd},message={msg})>'
-
-    @property
-    def response(self) -> Response:
-        return Response(status=500, reason=repr(self))
 
 class GitAddError(GitError): pass
 class GitResetError(GitError): pass
@@ -95,56 +95,42 @@ async def git_pull(git_dir: str):
     await _git_dispatch(git_dir, ('pull','origin','master'), GitError)
     log.info(f'git SUCCESS: [init]')
 
-
-AsyncMethod = Callable[..., Coroutine[Any,Any,Response]]
-
-def check_initialized(f: AsyncMethod) -> AsyncMethod:
-    @functools.wraps(f)
-    async def wrapped(self, *args, **kwargs):
-        await self.initialize()
-        return await f(self, *args, **kwargs)
-    return wrapped
+AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
 
 def acquire_lock(f: AsyncMethod) -> AsyncMethod:
     @functools.wraps(f)
     async def wrapped(self, *args, **kwargs):
-        lock = self.lock
-        if lock is not None:
-            await lock.acquire()
+        await lock.acquire()
         result = await f(self, *args, **kwargs)
-        if lock is not None:
-            lock.release()
+        lock.release()
         return result
     return wrapped
 
-class GitDb(Database):
-    source_dir: str
-    lock: Optional[Lock] = None
-    initialized: bool
+class GitDatabase(Database):
+    git_dir: str
+    lock: Lock
 
-    def __init__(self, source_dir: str, lock: Optional[Lock] = None):
-        self.source_dir = source_dir
+    def __init__(self, git_dir: str, lock: Lock):
+        self.git_dir = git_dir
         self.lock = lock
-        self.initialized = False
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.initialize())
 
     @acquire_lock
     async def initialize(self, *args):
-        if self.initialized: return
-        path = Path(self.source_dir)
+        path = Path(self.git_dir)
         if not path.exists():
             try:
-                path.mkdir()
+                path.mkdir(parents=True, exists_ok=True)
             except Exception as e:
-                log.error(f'error creating directory {self.source_dir}: {e}')
+                log.error(f'error creating directory {self.git_dir}: {e}')
                 raise
-        async with named_locks[self.source_dir]:
-            await git_init(self.source_dir, *args)
-        self.initialized = True
+        await git_init(self.git_dir, *args)
 
-    @check_initialized
+    @acquire_lock
     async def create(
             self, 
-            paragraphs: Paragraph
+            paragraph: Paragraph
         ) -> None:
         """Add paragraph to git_dir, and reindex"""
         async with self.lock:
@@ -152,19 +138,19 @@ class GitDb(Database):
             path = Path(self.git_dir) / paragraph.doc_id
             if path.exists():
                 msg = f'doc_id: {paragraph.doc_id} already exists'
-                raise DatabaseCreateError(msg)
+                raise DatabaseCreateError(msg) # type: ignore
             # write file
             with open(path,'w') as file:
-                print(doc, file=file)
+                print(paragraph.text, file=file)
             # commit to git
             try:
-                await git_add(git_dir, path.name)
-                await git_commit(git_dir, f'created: {path.name}')
+                await git_add(self.git_dir, path.name)
+                await git_commit(self.git_dir, f'created: {path.name}')
             except Exception as e:
-                raise DatabaseCreateError(str(e))
+                raise DatabaseCreateError(str(e)) # type: ignore
                 path.unlink()
 
-    @check_initialized
+    @acquire_lock
     async def read(
             self,
             doc_id: DocId
@@ -177,7 +163,7 @@ class GitDb(Database):
                 paragraphs.append(Paragraph(path.name,file.read()))
         return paragraphs
 
-    @check_initialized
+    @acquire_lock
     async def update(
             self,
             paragraph: Paragraph
@@ -186,34 +172,32 @@ class GitDb(Database):
         path = Path(self.git_dir) / paragraph.doc_id
         if not path.exists():
             msg = f"doc_id: {paragraph.doc_id} doesn't exist"
-            raise DatabaseUpdateError(msg)
+            raise DatabaseUpdateError(msg) # type: ignore
         with open(path) as file:
             file.write(paragraph.text)
         try:
             await git_add(self.git_dir, paragraph.doc_id)
-            await git_commit(self.git_dir)
+            await git_commit(self.git_dir, f'update: {paragraph.doc_id}')
         except Exception as e:
-            raise DatabaseCreateError(str(e))
+            raise DatabaseCreateError(str(e)) # type: ignore
 
-    @check_initialized
+    @acquire_lock
     async def delete(
             self,
             doc_id: DocId
         ) -> None:
         """Delete paragraph from git_dir"""
-        path = Path(self.git_dir) / paragraph.doc_id
+        path = Path(self.git_dir) / doc_id
         if not path.exists():
-            msg = f"doc_id: {paragraph.doc_id} doesn't exist"
-            raise DatabaseDeleteError(msg)
-        if isinstance(path, Response):
-            return path
+            msg = f"doc_id: {doc_id} doesn't exist"
+            raise DatabaseDeleteError(msg) # type: ignore
         try:
-            await git_rm(git_dir, docId)
-            await git_commit(git_dir, f'removed: {docId}')
+            await git_rm(self.git_dir, doc_id)
+            await git_commit(self.git_dir, f'removed: {doc_id}')
         except Exception as e:
-            msg = f'delete: error removing {docId}'
-            raise DatabaseDeleteError(str(e))
+            msg = f'delete: error removing {doc_id}'
+            raise DatabaseDeleteError(str(e)) # type: ignore
 
-    @check_initialized
-    async def pull(self, *args) -> Response:
-        return await git_pull(self.source_dir, *args)
+    @acquire_lock
+    async def pull(self, *args) -> None:
+        return await git_pull(self.git_dir, *args)

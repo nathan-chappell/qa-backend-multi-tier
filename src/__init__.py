@@ -9,6 +9,8 @@ Uses
 """
 
 import logging
+import re
+from typing import List
 
 class LoggingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:

@@ -9,14 +9,16 @@ Services:
     * transformers qa service
 """
 
+import json
+
 DocId = str
 
 #
 # metaclass for objects to be "automatically serialized"
 #
-class JsonRepresentation:
+class JsonRepresentation(type):
     """Use json.dumps to __repr__ annotated variables."""
-    def __new__(self, cls, bases, namespace) -> type:
+    def __new__(self, cls, bases, namespace):
         def json_repr(self) -> str:
             data = {
                 k: getattr(self,k).__repr__()
@@ -37,7 +39,8 @@ class QaAnswer(metaclass=JsonRepresentation):
         self.answer = answer
 
     def __repr__(self) -> str:
-        return json.dumps({'score': {self.score:5.3f}, 'answer': self.answer})
+        data = {'score': f'{self.score:5.3f}', 'answer': self.answer}
+        return json.dumps(data)
 
 class Paragraph(metaclass=JsonRepresentation):
     __slots__ = ['doc_id','text']

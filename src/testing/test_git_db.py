@@ -1,6 +1,6 @@
 # testing/test_git_db.py
 
-from qa_server.services import
+from qa_server.services.database import 
 
 async def test():
     import json
