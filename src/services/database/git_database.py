@@ -4,14 +4,12 @@ CRUD frontend to git repository
 import asyncio
 from asyncio import Lock, StreamReader
 from asyncio.subprocess import PIPE
-from typing import Optional, Coroutine, Callable
-from typing import Tuple, Iterable, List, Any
+from typing import Optional, Tuple, Iterable, List
 from pathlib import Path
 import logging
-import functools
 import subprocess
 
-from .abstract_database import DocId, Paragraph, Database
+from .abstract_database import DocId, Paragraph, Database, acquire_lock
 from .database_error import DatabaseError
 from .database_error import DatabaseCreateError, DatabaseUpdateError
 from .database_error import DatabaseDeleteError, DatabaseReadError
@@ -72,8 +70,11 @@ async def git_rm(git_dir: str, docId: DocId):
     await _git_dispatch(git_dir, ('rm',docId), GitRmError, reset=True)
     log.info(f'git SUCCESS: [rm] {docId}')
 
-async def git_reset(git_dir: str):
-    await _git_dispatch(git_dir, ('reset','--hard'), GitResetError, reset=False)
+async def git_reset(git_dir: str, commit: str = ''):
+    args: tuple = ('reset','--hard')
+    if commit != '':
+        args = args + (commit,)
+    await _git_dispatch(git_dir, args, GitResetError, reset=False)
     log.info(f'git SUCCESS: [reset]')
 
 async def git_commit(git_dir: str, message: str, reset=True):
@@ -89,17 +90,6 @@ async def git_init(git_dir: str):
 async def git_pull(git_dir: str):
     await _git_dispatch(git_dir, ('pull','origin','master'), GitError)
     log.info(f'git SUCCESS: [init]')
-
-AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
-
-def acquire_lock(f: AsyncMethod) -> AsyncMethod:
-    @functools.wraps(f)
-    async def wrapped(self, *args, **kwargs):
-        await self.lock.acquire()
-        result = await f(self, *args, **kwargs)
-        self.lock.release()
-        return result
-    return wrapped
 
 class GitDatabase(Database):
     git_dir: str
@@ -149,8 +139,10 @@ class GitDatabase(Database):
             await git_add(self.git_dir, path.name)
             await git_commit(self.git_dir, f'created: {path.name}')
         except Exception as e:
-            raise DatabaseCreateError(str(e)) # type: ignore
+            # if add fails, the file gets removed
+            # if commit fails, the repo gets reset
             path.unlink()
+            raise DatabaseCreateError(str(e)) # type: ignore
 
     @acquire_lock
     async def read(
@@ -203,4 +195,8 @@ class GitDatabase(Database):
 
     @acquire_lock
     async def pull(self, *args) -> None:
-        return await git_pull(self.git_dir, *args)
+        await git_pull(self.git_dir, *args)
+
+    @acquire_lock
+    async def reset(self, commit: str = '') -> None:
+        await git_reset(self.git_dir, commit)

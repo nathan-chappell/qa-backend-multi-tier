@@ -24,7 +24,7 @@ from . import QueryDatabase
 
 es = Elasticsearch()
 
-class EsDatabaseError(RuntimeError):
+class ElasticsearchDatabaseError(RuntimeError):
     message: str
 
     def __init__(self, message: str = ''):
@@ -59,7 +59,7 @@ class ElasticsearchDatabase(QueryDatabase):
         for k in ['index','creation']:
             if self.init_data.get(k,None) is None:
                 msg = f'{k} required to be in init_file: {self.init_file}'
-                raise EsDatabaseError(msg)
+                raise ElasticsearchDatabaseError(msg)
 
     @property
     def index(self) -> str:
@@ -109,12 +109,12 @@ class ElasticsearchDatabase(QueryDatabase):
             es.delete(self.index, doc_id)
         except NotFoundError as e:
             msg = f"doc_id: {doc_id} doesn't exist"
-            raise DatabaseUpdateError(msg) # type: ignore
+            raise DatabaseDeleteError(msg) # type: ignore
 
     async def query(
             self,
             query_string: str,
-            size: int
+            size: int = 5
         ) -> Iterable[Paragraph]:
         try:
             body = {'query': {'match_all': {'text': query_string}},

@@ -1,0 +1,18 @@
+# used for creating test index for elasticsearch
+index: test-index
+creation:
+    settings:
+        analysis:
+            analyzer:
+                my_analyzer:
+                    type: custom
+                    tokenizer: standard
+                    filters:
+                        - ascii_folding
+                        - lowercase
+                        - porter_stem
+    mappings:
+        properties:
+            text:
+                type: text
+                analyzer: my_analyzer

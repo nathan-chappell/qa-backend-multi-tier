@@ -4,9 +4,21 @@ Abstract database requires basic CRUD functionality:
 """
 
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import Iterable, Callable, Coroutine, Any
+import functools
 
 from .. import Paragraph, DocId
+
+AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
+
+def acquire_lock(f: AsyncMethod) -> AsyncMethod:
+    @functools.wraps(f)
+    async def wrapped(self, *args, **kwargs):
+        await self.lock.acquire()
+        result = await f(self, *args, **kwargs)
+        self.lock.release()
+        return result
+    return wrapped
 
 class Database(ABC):
     @abstractmethod
