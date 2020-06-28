@@ -22,14 +22,11 @@ class GitError(RuntimeError):
     cmd_args: Iterable[str]
     message: str
 
-    def __init__(
-            self, cmd_args: Tuple, message: str = '', *, log_error=True
-        ):
+    def __init__(self, cmd_args: Tuple, message: str = ''):
         super().__init__()
         self.cmd_args = cmd_args
         self.message = message
-        if log_error:
-            log.error(str(self))
+        log.error(str(self))
 
     def __repr__(self) -> str:
         cls = self.__class__.__name__

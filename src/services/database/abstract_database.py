@@ -12,7 +12,7 @@ class Database(ABC):
     @abstractmethod
     async def create(
             self, 
-            paragraphs: Paragraph
+            paragraph: Paragraph
         ) -> None:
         ...
 
@@ -27,7 +27,6 @@ class Database(ABC):
     @abstractmethod
     async def update(
             self,
-            doc_id: DocId,
             paragraph: Paragraph
         ) -> None:
         ...
@@ -35,7 +34,7 @@ class Database(ABC):
     @abstractmethod
     async def delete(
             self,
-            doc_ids: DocId
+            doc_id: DocId
         ) -> None:
         ...
 
@@ -43,6 +42,7 @@ class QueryDatabase(Database):
     @abstractmethod
     async def query(
             self,
-            query_string: str
+            query_string: str,
+            size: int
         ) -> Iterable[Paragraph]:
         ...
