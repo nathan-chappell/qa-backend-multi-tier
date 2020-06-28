@@ -1,0 +1,8 @@
+mypy
+aiohttp
+elasticsearch
+torch
+transformers
+Markdown
+pyyaml
+
