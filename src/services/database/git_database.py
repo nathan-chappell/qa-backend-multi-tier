@@ -4,14 +4,12 @@ CRUD frontend to git repository
 import asyncio
 from asyncio import Lock, StreamReader
 from asyncio.subprocess import PIPE
-import re
-from typing import Optional, Coroutine, DefaultDict, Dict, Callable
-from typing import cast, Tuple, Iterable, Union, List, Any
+from typing import Optional, Coroutine, Callable
+from typing import Tuple, Iterable, List, Any
 from pathlib import Path
-from collections import defaultdict
 import logging
-from uuid import uuid4
 import functools
+import subprocess
 
 from .abstract_database import DocId, Paragraph, Database
 from .database_error import DatabaseError
@@ -100,9 +98,9 @@ AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
 def acquire_lock(f: AsyncMethod) -> AsyncMethod:
     @functools.wraps(f)
     async def wrapped(self, *args, **kwargs):
-        await lock.acquire()
+        await self.lock.acquire()
         result = await f(self, *args, **kwargs)
-        lock.release()
+        self.lock.release()
         return result
     return wrapped
 
@@ -110,22 +108,30 @@ class GitDatabase(Database):
     git_dir: str
     lock: Lock
 
-    def __init__(self, git_dir: str, lock: Lock):
+    def __init__(self, git_dir: str, lock: Optional[Lock] = None):
         self.git_dir = git_dir
-        self.lock = lock
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.initialize())
+        if isinstance(lock,Lock):
+            self.lock = lock
+        else:
+            self.lock = Lock()
+        #loop = asyncio.get_event_loop()
+        #asyncio.ensure_future(self.initialize())
+        self.initialize()
 
-    @acquire_lock
-    async def initialize(self, *args):
+    # this needs to be done synchronously, so we do it "by hand"
+    def initialize(self, *args):
         path = Path(self.git_dir)
         if not path.exists():
             try:
-                path.mkdir(parents=True, exists_ok=True)
+                path.mkdir(parents=True, exist_ok=True)
             except Exception as e:
                 log.error(f'error creating directory {self.git_dir}: {e}')
                 raise
-        await git_init(self.git_dir, *args)
+        args = ('git','-C',str(path),'init')
+        proc = subprocess.run(args,stderr=subprocess.PIPE)
+        if proc.returncode != 0:
+            err = proc.stderr.read()
+            raise GitError(args,err)
 
     @acquire_lock
     async def create(
@@ -133,22 +139,21 @@ class GitDatabase(Database):
             paragraph: Paragraph
         ) -> None:
         """Add paragraph to git_dir, and reindex"""
-        async with self.lock:
-            # check for existing document
-            path = Path(self.git_dir) / paragraph.doc_id
-            if path.exists():
-                msg = f'doc_id: {paragraph.doc_id} already exists'
-                raise DatabaseCreateError(msg) # type: ignore
-            # write file
-            with open(path,'w') as file:
-                print(paragraph.text, file=file)
-            # commit to git
-            try:
-                await git_add(self.git_dir, path.name)
-                await git_commit(self.git_dir, f'created: {path.name}')
-            except Exception as e:
-                raise DatabaseCreateError(str(e)) # type: ignore
-                path.unlink()
+        # check for existing document
+        path = Path(self.git_dir) / paragraph.doc_id
+        if path.exists():
+            msg = f'doc_id: {paragraph.doc_id} already exists'
+            raise DatabaseCreateError(msg) # type: ignore
+        # write file
+        with open(path,'w') as file:
+            print(paragraph.text, file=file)
+        # commit to git
+        try:
+            await git_add(self.git_dir, path.name)
+            await git_commit(self.git_dir, f'created: {path.name}')
+        except Exception as e:
+            raise DatabaseCreateError(str(e)) # type: ignore
+            path.unlink()
 
     @acquire_lock
     async def read(
@@ -157,6 +162,7 @@ class GitDatabase(Database):
         ) -> Iterable[Paragraph]:
         """Retrieve doc_ids (including wildcards)"""
         paths = list(Path(self.git_dir).glob(doc_id))
+        paths = list(filter(Path.is_file,paths))
         paragraphs: List[Paragraph] = []
         for path in paths:
             with open(path) as file:
@@ -173,7 +179,7 @@ class GitDatabase(Database):
         if not path.exists():
             msg = f"doc_id: {paragraph.doc_id} doesn't exist"
             raise DatabaseUpdateError(msg) # type: ignore
-        with open(path) as file:
+        with open(path, 'w') as file:
             file.write(paragraph.text)
         try:
             await git_add(self.git_dir, paragraph.doc_id)
