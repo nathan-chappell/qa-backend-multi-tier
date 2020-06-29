@@ -4,10 +4,12 @@ Adapter for a transformers_micro endpoint
 """
 
 import logging
+from typing import List
+from json.decoder import JSONDecodeError
 
 import aiohttp.web as web
 from aiohttp.web import Request, Response
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ContentTypeError
 
 from .abstract_qa import QA, QAAnswer, QAQueryError
 from . import complete_sentence
@@ -31,7 +33,7 @@ class MicroAdapter(QA):
     def url(self) -> str:
         return f'http://{self.host}:{self.port}{self.path}'
 
-    async def query(self, question: str, **kwargs) -> QAAnswer:
+    async def query(self, question: str, **kwargs) -> List[QAAnswer]:
         context = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
@@ -42,18 +44,18 @@ class MicroAdapter(QA):
                 msg = f'got {status} from {self.url}: {response.reason}'
                 raise QAQueryError(msg)
             try:
-                resp_json = await response.json
+                resp_json = await response.json()
                 question = resp_json['question']
                 answer = resp_json['answer']
                 score = float(resp_json['score'])
-                return QAAnswer(question, answer, score)
+                return [QAAnswer(question, answer, score)]
             except JSONDecodeError as e:
-                text = await response.text
+                text = await response.text()
                 msg = f'error decoding json: {self.url}: {text}'
                 raise QAQueryError(msg)
             except KeyError as e:
                 raise QAQueryError(str(e))
-            except aiohttp.ContentTypeError as e:
+            except ContentTypeError as e:
                 raise QAQueryError(str(e))
 
     async def close(self):

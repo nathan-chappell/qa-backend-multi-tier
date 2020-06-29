@@ -10,7 +10,7 @@ log = logging.getLogger('server')
 
 def exception_to_dict(exception: Exception, log_error=False) -> Dict[str,Any]:
     """Convert an exception into a dict for JSON response."""
-    if log_err:
+    if log_error:
         log.error(f'converting exception: {str(exception)}')
         if os.environ.get('PRINT_TB'):
             print_tb(sys.exc_info()[2])

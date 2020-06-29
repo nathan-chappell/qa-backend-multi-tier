@@ -49,7 +49,7 @@ async def answer_question(request: Request) -> Response:
         raise TypeError()
     question = body['question']
     context = body['context']
-    answer = transformer_qa.query(question, context)
+    answer = await transformer_qa.query(question, context=context)
     return web.json_response(text=repr(answer))
 
 def run():
