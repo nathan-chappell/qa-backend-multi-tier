@@ -1,22 +1,44 @@
 # test_regex_qa.py
 
+import unittest
+import asyncio
 from pathlib import Path
+import logging
 
 import fix_path
-#from services.qa import RegexQA, QAQueryError, QAAnswer
-from services.qa.regex_qa import RegexQA
+from qa_backend.services.qa.regex_qa import RegexQA
 
-def test():
-    regex_path = Path('regex_test_data/regex_qa.yml')
-    regex_qas = RegexQA.from_file(regex_path)
-    questions = [
-        'do you think that jelena is happy?',
-        'is Jasenka satisfied at mono?',
-        'is Nathan mad at the world?',
-    ]
-    for question in questions:
-        for regex_qa in regex_qas:
-            print(regex_qa.query(question))
+log = logging.getLogger('qa')
+loop = asyncio.get_event_loop()
 
-test()
-print('done')
+class RegexQA_TestQuery(unittest.TestCase):
+    def setUp(self):
+        regex_path = Path('regex_test_data/regex_qa.yml')
+        self.happy, self.not_mad = RegexQA.from_file(regex_path)
+
+    def test_happy_good(self):
+        question = 'do you think that jelena is happy?'
+        answer = loop.run_until_complete(self.happy.query(question))[0]
+        self.assertNotEqual(answer.answer, '')
+        log.info(f'[question]: {question}')
+        log.info(f'[ answer ]: {answer.answer}')
+        question = '  is JasENka  sATiSfied   at mono'
+        answer = loop.run_until_complete(self.happy.query(question))[0]
+        self.assertNotEqual(answer.answer, '')
+        log.info(f'[question]: {question}')
+        log.info(f'[ answer ]: {answer.answer}')
+
+    def test_happy_bad(self):
+        question = 'is it a pipe?'
+        answer = loop.run_until_complete(self.happy.query(question))[0]
+        self.assertEqual(answer.answer, '')
+
+    def test_notmad_good(self):
+        question = 'Is Nathan Mad at the World?'
+        answer = loop.run_until_complete(self.not_mad.query(question))[0]
+        self.assertNotEqual(answer.answer, '')
+        log.info(f'[question]: {question}')
+        log.info(f'[ answer ]: {answer.answer}')
+
+if __name__ == '__main__':
+    unittest.main()

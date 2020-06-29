@@ -52,7 +52,7 @@ async def answer_question(request: Request) -> Response:
     answer = await transformer_qa.query(question, context=context)
     return web.json_response(text=repr(answer))
 
-def run():
+def run(host: str='0.0.0.0', port: int = 8081):
     app = web.Application(middlewares=[handle_errors])
     app.add_routes(routes)
     web.run_app(app, host='0.0.0.0', port=8081)

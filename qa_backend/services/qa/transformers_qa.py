@@ -12,12 +12,13 @@ def create_default_pipeline() -> QuestionAnsweringPipeline:
     model_name = 'twmkn9/distilbert-base-uncased-squad2'
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     gpu_model = AutoModelForQuestionAnswering.from_pretrained(model_name)
-    gpu_model.cuda()
+    #gpu_model.cuda()
     gpu_model.eval()
     return QuestionAnsweringPipeline(
                 model=gpu_model, 
                 tokenizer=tokenizer,
-                device=0
+                #device=0
+                device=-1
             )
 
 class TransformersQA(QA):
