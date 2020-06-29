@@ -1,13 +1,11 @@
 # testing/test_git_db.py
 
 import asyncio
-import sys
 import subprocess
 from pathlib import Path
 from uuid import uuid4
 
-sys.path.append(str(Path() / '../src'))
-
+import fix_path
 from services import Paragraph
 from services.database import GitDatabase
 from services.database import GitDatabase
