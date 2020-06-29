@@ -138,7 +138,7 @@ class GitDatabase(Database):
         try:
             await git_add(self.git_dir, path.name)
             await git_commit(self.git_dir, f'created: {path.name}')
-        except Exception as e:
+        except GitError as e:
             # if add fails, the file gets removed
             # if commit fails, the repo gets reset
             path.unlink()
@@ -173,8 +173,8 @@ class GitDatabase(Database):
         try:
             await git_add(self.git_dir, paragraph.doc_id)
             await git_commit(self.git_dir, f'update: {paragraph.doc_id}')
-        except Exception as e:
-            raise DatabaseCreateError(str(e)) # type: ignore
+        except GitError as e:
+            raise DatabaseUpdateError(str(e)) # type: ignore
 
     @acquire_lock
     async def delete(

@@ -4,41 +4,157 @@ import asyncio
 import subprocess
 from pathlib import Path
 from uuid import uuid4
+import unittest
 
 import fix_path
-from services import Paragraph
-from services.database import GitDatabase
-from services.database import GitDatabase
+from qa_backend.services import Paragraph
+from qa_backend.services.database import *
 
-def dump_dir(directory):
-    print(f'Dumping: {directory}')
-    subprocess.run(f'cat {directory}/*',shell=True,check=True)
-    print('Dumping git log')
-    subprocess.run(f'git -C {directory} log --oneline',shell=True,check=True)
-    print('done')
+loop = asyncio.get_event_loop()
 
-async def test():
+def get_git_dir():
     git_dir = str(uuid4())
     if Path(git_dir).exists():
         raise RuntimeError(f'about to step on {git_dir}')
-    git_database = GitDatabase(git_dir)
-    try:
-        doc_id = 'test.txt'
-        paragraph = Paragraph(doc_id,"this is a test")
-        await git_database.create(paragraph)
-        paragraph.text = "this is not a test"
-        await git_database.update(paragraph)
-        await git_database.create(Paragraph(
-            'foo.txt',
-            'foo bar basdf'
-        ))
-        paragraphs = await git_database.read('*')
-        for paragraph_ in paragraphs:
-            print(paragraph_)
-        await git_database.delete(doc_id)
-        dump_dir(git_dir)
-    finally:
-        subprocess.run(['rm','-rf',git_dir],check=True)
+    return git_dir
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(test())
+def remove_dir(name: str):
+    subprocess.run(['rm', '-rf', name])
+
+class GitDatabase_TestInit(unittest.TestCase):
+    def setUp(self):
+        self.git_dir = get_git_dir()
+
+    def tearDown(self):
+        remove_dir(self.git_dir)
+
+    def test_init(self):
+        try:
+            git_database = GitDatabase(self.git_dir)
+        except GitError as e:
+            self.fail(msg=str(e))
+
+class GitDatabase_TestCreate(unittest.TestCase):
+    def setUp(self):
+        self.git_dir = get_git_dir()
+        self.git_database = GitDatabase(self.git_dir)
+        self.paragraphs = [
+            Paragraph('foo.txt','foo: this is a test'),
+            Paragraph('bar.txt','bar: this is also a test')
+        ]
+
+    def tearDown(self):
+        remove_dir(self.git_dir)
+
+    def test_create(self):
+        try:
+            for paragraph in self.paragraphs:
+                with self.subTest(doc_id=paragraph.doc_id):
+                    loop.run_until_complete(
+                        self.git_database.create(paragraph)
+                    )
+        except DatabaseCreateError as e:
+            self.fail(msg=str(e))
+
+    def test_create_duplicate(self):
+        paragraph = self.paragraphs[0]
+        with self.assertRaises(DatabaseCreateError):
+            loop.run_until_complete(
+                self.git_database.create(paragraph)
+            )
+            loop.run_until_complete(
+                self.git_database.create(paragraph)
+            )
+
+class GitDatabase_TestRead(unittest.TestCase):
+    def setUp(self):
+        self.git_dir = get_git_dir()
+        self.git_database = GitDatabase(self.git_dir)
+        self.paragraphs = [
+            Paragraph('foo.txt','foo: this is a test'),
+            Paragraph('bar.txt','bar: this is also a test')
+        ]
+        for paragraph in self.paragraphs:
+            loop.run_until_complete(
+                self.git_database.create(paragraph)
+            )
+
+    def tearDown(self):
+        remove_dir(self.git_dir)
+
+    def test_read(self):
+        coro = self.git_database.read(self.paragraphs[0].doc_id)
+        paragraphs = loop.run_until_complete(coro)
+        self.assertEqual(1,len(paragraphs))
+        self.assertEqual(paragraphs[0].doc_id, self.paragraphs[0].doc_id)
+        # strip whitespace (\n added from print())
+        self.assertEqual(
+            paragraphs[0].text.strip(),
+            self.paragraphs[0].text.strip()
+        )
+
+    def test_read_no_exist(self):
+        coro = self.git_database.read('doesnt_exist')
+        paragraphs = loop.run_until_complete(coro)
+        self.assertEqual(paragraphs, [])
+
+    def test_read_wildcards(self):
+        coro = self.git_database.read('*.txt')
+        paragraphs = loop.run_until_complete(coro)
+        self.assertEqual(2,len(paragraphs))
+
+class GitDatabase_TestUpdate(unittest.TestCase):
+    def setUp(self):
+        self.git_dir = get_git_dir()
+        self.git_database = GitDatabase(self.git_dir)
+        self.paragraph_0 = Paragraph('foo.txt','foo_0')
+        self.paragraph_1 = Paragraph('foo.txt','foo_1')
+        self.paragraph_no_exist = Paragraph('bar.txt','...')
+        loop.run_until_complete(
+            self.git_database.create(self.paragraph_0)
+        )
+
+    def tearDown(self):
+        remove_dir(self.git_dir)
+
+    def test_update(self):
+        loop.run_until_complete(
+            self.git_database.update(self.paragraph_1)
+        )
+        path = Path(self.git_dir) / self.paragraph_1.doc_id
+        with open(path) as file:
+            text = file.read()
+        self.assertEqual(text.strip(), self.paragraph_1.text.strip())
+
+    def test_update_no_exist(self):
+        with self.assertRaises(DatabaseUpdateError):
+            coro = self.git_database.update(self.paragraph_no_exist)
+            loop.run_until_complete(coro)
+
+class GitDatabase_TestDelete(unittest.TestCase):
+    def setUp(self):
+        self.git_dir = get_git_dir()
+        self.git_database = GitDatabase(self.git_dir)
+        self.paragraph_0 = Paragraph('foo.txt','foo_0')
+        self.paragraph_no_exist = Paragraph('bar.txt','...')
+        loop.run_until_complete(
+            self.git_database.create(self.paragraph_0)
+        )
+
+    def tearDown(self):
+        remove_dir(self.git_dir)
+
+    def test_delete(self):
+        loop.run_until_complete(
+            self.git_database.delete(self.paragraph_0.doc_id)
+        )
+        path = Path(self.git_dir) / self.paragraph_0.doc_id
+        self.assertFalse(path.exists())
+
+    def test_delete_no_exist(self):
+        with self.assertRaises(DatabaseDeleteError):
+            coro = self.git_database.delete(self.paragraph_no_exist.doc_id)
+            loop.run_until_complete(coro)
+
+if __name__ == '__main__':
+    unittest.main()
