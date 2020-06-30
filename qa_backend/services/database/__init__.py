@@ -25,3 +25,7 @@ from .es_database import ElasticsearchDatabaseError
 
 from .git_es_database import GitEsDatabase
 
+from .git_webhook_database import GitWebhookDatabase
+
+from .git_webhook_es_database import GitWebhookEsDatabase
+

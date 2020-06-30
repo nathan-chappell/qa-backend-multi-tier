@@ -7,7 +7,7 @@
 """
 
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, List, TextIO, Optional
 from traceback import print_tb
 import sys
 import os
@@ -127,17 +127,42 @@ async def attach_uuid_middleware(
 class QAServer:
     database: QueryDatabase
     qas: List[QA]
+    app: web.Application
+    qa_log: Optional[TextIO] = None
+    no_answers: List[str]
 
     def __init__(
             self, database: QueryDatabase, qas: List[QA],
-            host='0.0.0.0', port=8080
+            host='0.0.0.0', port=8080,
+            qa_log_filename: Optional[str] = None,
         ):
         self.database = database
         self.qas = qas
-        self.qa_log = open('qa_log.multi_json','a')
+        if isinstance(qa_log_filename, str):
+            self.qa_log = open(qa_log_filename, 'a')
+        self.no_answers = [
+            "I'm sorry, I couldn't find an answer to your question.",
+            "I was unable to answer your query.",
+            "Unfortunately I don't know how to answer that question.",
+        ]
+
+        middlewares = [
+            exception_middleware,
+            attach_uuid_middleware,
+        ]
+        self.app = web.Application(middlewares=middlewares)
+        self.app.add_routes([
+            #web.get('/', self.serve_readme),
+            #web.get('/github.css', self.serve_github_css),
+            web.post('/question', self.answer_question),
+            web.get('/index', self.crud_read),
+            web.post('/index', self.crud_create_update),
+            web.delete('/index', self.crud_delete),
+        ])
 
     def __del__(self):
-        self.qa_log.close()
+        if isinstance(self.qa_log, TextIO):
+            self.qa_log.close()
 
     @property
     def readme(self) -> str:
@@ -164,15 +189,12 @@ class QAServer:
         return css
 
     def log_qa(self, qa_answers: List[QAAnswer]):
-        json.dump(qa_answers, self.qa_log)
-        self.qa_log.flush()
+        if isinstance(self.log_qa, TextIO):
+            json.dump(qa_answers, self.qa_log)
+            self.qa_log.flush()
 
     def no_answer_reply(self) -> str:
-        return random.choice([
-            "I'm sorry, I couldn't find an answer to your question.",
-            "I was unable to answer your query.",
-            "Unfortunately I don't know how to answer that question."
-        ])
+        return random.choice(self.no_answers)
 
     async def serve_readme(self, request: Request) -> Response:
         return Response(
@@ -260,17 +282,4 @@ class QAServer:
         return Response()
 
     def run(self):
-        middlewares = [
-            exception_middleware,
-            attach_uuid_middleware,
-        ]
-        app = web.Application(middlewares=middlewares)
-        app.add_routes([
-            web.get('/', self.serve_readme),
-            web.get('/github.css', self.serve_github_css),
-            web.post('/question', self.answer_question),
-            web.get('/index', self.crud_read),
-            web.post('/index', self.crud_create_update),
-            web.delete('/index', self.crud_delete),
-        ])
         web.run_app(app, host=self.host, port=self.port)

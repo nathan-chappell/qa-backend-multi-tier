@@ -4,8 +4,10 @@ import unittest
 import asyncio
 from pathlib import Path
 import logging
+import sys
+sys.path.append('..')
 
-import common
+import testing
 from qa_backend.services.qa.regex_qa import RegexQA
 
 log = logging.getLogger('qa')

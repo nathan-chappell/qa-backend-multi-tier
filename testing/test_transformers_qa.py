@@ -4,8 +4,10 @@ from pathlib import Path
 import unittest
 import logging
 import asyncio
+import sys
+sys.path.append('..')
 
-import common
+import testing
 from qa_backend.services import QAAnswer
 from qa_backend.services.qa import TransformersQA, QAQueryError
 

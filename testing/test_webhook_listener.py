@@ -12,10 +12,12 @@ import atexit
 import sys
 import time
 import json
+import sys
+sys.path.append('..')
 
 import aiohttp
 from aiohttp import ClientSession
-import common
+import testing
 
 from qa_backend.server.webhook_listener import WebhookListener
 

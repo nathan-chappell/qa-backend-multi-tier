@@ -76,3 +76,4 @@ class Paragraph(JsonRepresentation):
         self.doc_id = doc_id
         self.text = text
 
+

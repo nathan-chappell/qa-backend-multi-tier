@@ -10,11 +10,16 @@ import unittest
 import os
 import atexit
 import sys
+sys.path.append('..')
 
 import aiohttp
 from aiohttp import ClientSession
-import common
-from qa_backend.server.transformers_micro import run
+import testing
+from qa_backend.server import TransformersMicro
+
+def run():
+    transformers_micro = TransformersMicro()
+    transformers_micro.run()
 
 class TransformersMicro_TestQuery(unittest.TestCase):
     def setUp(self):

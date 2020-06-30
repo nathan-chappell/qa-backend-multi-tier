@@ -15,6 +15,9 @@ def complete_sentence(context: str, start: int, end: int) -> str:
     return context[_start:_end].strip() + '.'
 
 from .. import QAAnswer
-from .abstract_qa import QA, QAQueryError
+from .abstract_qa import QA
+from .abstract_qa import QAQueryError
 from .transformers_qa import TransformersQA
 from .regex_qa import RegexQA
+from .micro_adapter_qa import MicroAdapter
+

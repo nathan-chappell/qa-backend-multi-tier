@@ -5,8 +5,10 @@ import subprocess
 from pathlib import Path
 from uuid import uuid4
 import unittest
+import sys
+sys.path.append('..')
 
-from common import set_up_git_db, tear_down_git_db
+from testing import set_up_git_db, tear_down_git_db
 from qa_backend.services import Paragraph
 from qa_backend.services.database import *
 

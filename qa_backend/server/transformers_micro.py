@@ -5,7 +5,7 @@ Making pytorch work async in python is probably more trouble than it's worth,
 so this is a good compromise
 """
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from traceback import print_tb
 import sys
 import os
@@ -20,9 +20,6 @@ from qa_backend.services import init_logs
 from . import exception_to_dict
 
 log = logging.getLogger('server')
-
-transformer_qa = TransformersQA()
-routes = web.RouteTableDef()
 
 def api_error(log_error) -> Response:
     msg = "format: {question: str, context: str}"
@@ -46,17 +43,34 @@ async def handle_errors(request: Request, handler: _Handler) -> web.StreamRespon
             print_tb(sys.exc_info()[2]) 
         return web.json_response(exception_to_dict(e), status=500)
 
-@routes.post('/question')
-async def answer_question(request: Request) -> Response:
-    body = await request.json()
-    if set(body.keys()) != set(['question','context']):
-        raise TypeError()
-    question = body['question']
-    context = body['context']
-    answer = await transformer_qa.query(question, context=context)
-    return web.json_response(text=repr(answer))
+class TransformersMicro:
+    host: str
+    port: int
+    transformer_qa: TransformersQA
 
-def run(host: str='0.0.0.0', port: int = 8081):
-    app = web.Application(middlewares=[handle_errors])
-    app.add_routes(routes)
-    web.run_app(app, host='0.0.0.0', port=8081)
+    def __init__(
+            self, host: str = '0.0.0.0', port: int = 8081,
+            transformer_qa: Optional[TransformersQA] = None
+        ):
+        self.host = host
+        self.port = port
+        if isinstance(transformer_qa, TransformersQA):
+            self.transformer_qa = transformer_qa
+        else:
+            self.transformer_qa = TransformersQA()
+
+    async def answer_question(self, request: Request) -> Response:
+        body = await request.json()
+        if set(body.keys()) != set(['question','context']):
+            raise TypeError()
+        question = body['question']
+        context = body['context']
+        answer = await self.transformer_qa.query(question, context=context)
+        return web.json_response(text=repr(answer))
+
+    def run(self):
+        app = web.Application(middlewares=[handle_errors])
+        app.add_routes([
+            web.post('/question', self.answer_question),
+        ])
+        web.run_app(app, host=self.host, port=self.port)

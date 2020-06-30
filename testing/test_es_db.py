@@ -3,11 +3,14 @@
 import asyncio
 import unittest
 from pathlib import Path
+import sys
+sys.path.append('..')
 
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch # type: ignore
 import yaml
 
-from common import set_up_es_db, tear_down_es_db
+
+from testing import set_up_es_db, tear_down_es_db
 from qa_backend.services import Paragraph
 from qa_backend.services.database import *
 

@@ -23,7 +23,6 @@ def create_default_pipeline() -> QuestionAnsweringPipeline:
 
 class TransformersQA(QA):
     pipeline: QuestionAnsweringPipeline
-    #default_pipeline: QuestionAnsweringPipeline = create_default_pipeline()
 
     def __init__(self, pipeline: Optional[QuestionAnsweringPipeline] = None):
         self._requires_context = True
