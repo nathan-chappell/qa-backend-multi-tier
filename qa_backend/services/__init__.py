@@ -46,24 +46,15 @@ init_logs()
 #
 # metaclass for objects to be "automatically serialized"
 #
-class JsonRepresentation(type):
+class JsonRepresentation:
     """Use json.dumps to __repr__ annotated variables."""
-    def __new__(self, cls, bases, namespace):
-        def to_dict(self) -> Dict[str,Any]:
-            data = {
-                k: getattr(self,k)
-                for k in namespace['__annotations__']
-            }
-            return data
-        def json_repr(self) -> str:
-            return json.dumps(self.to_dict())
-        if '__repr__' not in namespace:
-            namespace['__repr__'] = json_repr
-        if 'to_dict' not in namespace:
-            namespace['to_dict'] = to_dict
-        return type(cls, bases, namespace)
+    def to_dict(self) -> Dict[str,Any]:
+        return {k: getattr(self,k) for k in self.__slots__}
 
-class QAAnswer(metaclass=JsonRepresentation):
+    def __repr__(self) -> str:
+        return json.dumps(self.to_dict())
+
+class QAAnswer(JsonRepresentation):
     __slots__ = ['score','question','answer']
     question: str
     answer: str
@@ -74,7 +65,7 @@ class QAAnswer(metaclass=JsonRepresentation):
         self.answer = answer
         self.score = score
 
-class Paragraph(metaclass=JsonRepresentation):
+class Paragraph(JsonRepresentation):
     __slots__ = ['doc_id','text']
     doc_id: str
     text: str

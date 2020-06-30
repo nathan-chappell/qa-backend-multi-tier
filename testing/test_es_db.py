@@ -7,25 +7,19 @@ from pathlib import Path
 from elasticsearch import Elasticsearch
 import yaml
 
-import fix_path
+from common import set_up_es_db, tear_down_es_db
 from qa_backend.services import Paragraph
 from qa_backend.services.database import *
 
 es = Elasticsearch()
 loop = asyncio.get_event_loop()
 
-def get_init_file() -> str:
-    return './es_test_data/config.yml'
-
 class ElasticsearchDatabase_TestInit(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
+        set_up_es_db(self)
 
     def tearDown(self):
-        es.indices.delete(self.index)
+        tear_down_es_db(self)
 
     def test_init(self):
         es_database = ElasticsearchDatabase(self.init_file)
@@ -33,10 +27,7 @@ class ElasticsearchDatabase_TestInit(unittest.TestCase):
 
 class ElasticsearchDatabase_TestCreate(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
+        set_up_es_db(self)
         self.es_database = ElasticsearchDatabase(self.init_file)
         self.paragraphs = [
             Paragraph('foo.txt','foo: this is a test'),
@@ -44,7 +35,7 @@ class ElasticsearchDatabase_TestCreate(unittest.TestCase):
         ]
 
     def tearDown(self):
-        es.indices.delete(self.index)
+        tear_down_es_db(self)
 
     def test_create(self):
         try:
@@ -68,10 +59,7 @@ class ElasticsearchDatabase_TestCreate(unittest.TestCase):
 
 class ElasticsearchDatabase_TestRead(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
+        set_up_es_db(self)
         self.es_database = ElasticsearchDatabase(self.init_file)
         self.paragraphs = [
             Paragraph('foo.txt','foo: this is a test'),
@@ -83,7 +71,7 @@ class ElasticsearchDatabase_TestRead(unittest.TestCase):
             )
 
     def tearDown(self):
-        es.indices.delete(self.index)
+        tear_down_es_db(self)
 
     def test_read(self):
         coro = self.es_database.read(self.paragraphs[0].doc_id)
@@ -110,10 +98,7 @@ class ElasticsearchDatabase_TestRead(unittest.TestCase):
 
 class ElasticsearchDatabase_TestUpdate(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
+        set_up_es_db(self)
         self.es_database = ElasticsearchDatabase(self.init_file)
         self.paragraph_0 = Paragraph('foo.txt','foo_0')
         self.paragraph_1 = Paragraph('foo.txt','foo_1')
@@ -123,7 +108,7 @@ class ElasticsearchDatabase_TestUpdate(unittest.TestCase):
         )
 
     def tearDown(self):
-        es.indices.delete(self.index)
+        tear_down_es_db(self)
 
     def test_update(self):
         loop.run_until_complete(
@@ -139,10 +124,7 @@ class ElasticsearchDatabase_TestUpdate(unittest.TestCase):
 
 class ElasticsearchDatabase_TestDelete(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
+        set_up_es_db(self)
         self.es_database = ElasticsearchDatabase(self.init_file)
         self.paragraph_0 = Paragraph('foo.txt','foo_0')
         self.paragraph_no_exist = Paragraph('bar.txt','...')
@@ -151,7 +133,7 @@ class ElasticsearchDatabase_TestDelete(unittest.TestCase):
         )
 
     def tearDown(self):
-        es.indices.delete(self.index)
+        tear_down_es_db(self)
 
     def test_delete(self):
         loop.run_until_complete(

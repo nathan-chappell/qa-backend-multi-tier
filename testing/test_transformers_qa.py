@@ -5,7 +5,7 @@ import unittest
 import logging
 import asyncio
 
-import fix_path
+import common
 from qa_backend.services import QAAnswer
 from qa_backend.services.qa import TransformersQA, QAQueryError
 

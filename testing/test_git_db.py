@@ -6,27 +6,18 @@ from pathlib import Path
 from uuid import uuid4
 import unittest
 
-import fix_path
+from common import set_up_git_db, tear_down_git_db
 from qa_backend.services import Paragraph
 from qa_backend.services.database import *
 
 loop = asyncio.get_event_loop()
 
-def get_git_dir():
-    git_dir = str(uuid4())
-    if Path(git_dir).exists():
-        raise RuntimeError(f'about to step on {git_dir}')
-    return git_dir
-
-def remove_dir(name: str):
-    subprocess.run(['rm', '-rf', name])
-
 class GitDatabase_TestInit(unittest.TestCase):
     def setUp(self):
-        self.git_dir = get_git_dir()
+        set_up_git_db(self)
 
     def tearDown(self):
-        remove_dir(self.git_dir)
+        tear_down_git_db(self)
 
     def test_init(self):
         try:
@@ -36,7 +27,7 @@ class GitDatabase_TestInit(unittest.TestCase):
 
 class GitDatabase_TestCreate(unittest.TestCase):
     def setUp(self):
-        self.git_dir = get_git_dir()
+        set_up_git_db(self)
         self.git_database = GitDatabase(self.git_dir)
         self.paragraphs = [
             Paragraph('foo.txt','foo: this is a test'),
@@ -44,7 +35,7 @@ class GitDatabase_TestCreate(unittest.TestCase):
         ]
 
     def tearDown(self):
-        remove_dir(self.git_dir)
+        tear_down_git_db(self)
 
     def test_create(self):
         try:
@@ -68,7 +59,7 @@ class GitDatabase_TestCreate(unittest.TestCase):
 
 class GitDatabase_TestRead(unittest.TestCase):
     def setUp(self):
-        self.git_dir = get_git_dir()
+        set_up_git_db(self)
         self.git_database = GitDatabase(self.git_dir)
         self.paragraphs = [
             Paragraph('foo.txt','foo: this is a test'),
@@ -80,7 +71,7 @@ class GitDatabase_TestRead(unittest.TestCase):
             )
 
     def tearDown(self):
-        remove_dir(self.git_dir)
+        tear_down_git_db(self)
 
     def test_read(self):
         coro = self.git_database.read(self.paragraphs[0].doc_id)
@@ -105,7 +96,7 @@ class GitDatabase_TestRead(unittest.TestCase):
 
 class GitDatabase_TestUpdate(unittest.TestCase):
     def setUp(self):
-        self.git_dir = get_git_dir()
+        set_up_git_db(self)
         self.git_database = GitDatabase(self.git_dir)
         self.paragraph_0 = Paragraph('foo.txt','foo_0')
         self.paragraph_1 = Paragraph('foo.txt','foo_1')
@@ -115,7 +106,7 @@ class GitDatabase_TestUpdate(unittest.TestCase):
         )
 
     def tearDown(self):
-        remove_dir(self.git_dir)
+        tear_down_git_db(self)
 
     def test_update(self):
         loop.run_until_complete(
@@ -133,7 +124,7 @@ class GitDatabase_TestUpdate(unittest.TestCase):
 
 class GitDatabase_TestDelete(unittest.TestCase):
     def setUp(self):
-        self.git_dir = get_git_dir()
+        set_up_git_db(self)
         self.git_database = GitDatabase(self.git_dir)
         self.paragraph_0 = Paragraph('foo.txt','foo_0')
         self.paragraph_no_exist = Paragraph('bar.txt','...')
@@ -142,7 +133,7 @@ class GitDatabase_TestDelete(unittest.TestCase):
         )
 
     def tearDown(self):
-        remove_dir(self.git_dir)
+        tear_down_git_db(self)
 
     def test_delete(self):
         loop.run_until_complete(

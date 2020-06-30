@@ -5,7 +5,7 @@ import asyncio
 from pathlib import Path
 import logging
 
-import fix_path
+import common
 from qa_backend.services.qa.regex_qa import RegexQA
 
 log = logging.getLogger('qa')
@@ -17,16 +17,16 @@ class RegexQA_TestQuery(unittest.TestCase):
         self.happy, self.not_mad = RegexQA.from_file(regex_path)
 
     def test_happy_good(self):
-        question = 'do you think that jelena is happy?'
-        answer = loop.run_until_complete(self.happy.query(question))[0]
-        self.assertNotEqual(answer.answer, '')
-        log.info(f'[question]: {question}')
-        log.info(f'[ answer ]: {answer.answer}')
-        question = '  is JasENka  sATiSfied   at mono'
-        answer = loop.run_until_complete(self.happy.query(question))[0]
-        self.assertNotEqual(answer.answer, '')
-        log.info(f'[question]: {question}')
-        log.info(f'[ answer ]: {answer.answer}')
+        questions = [
+            'do you think that jelena is happy?',
+            '  is JasENka  sATiSfied   at mono',
+        ]
+        for question in questions:
+            with (self.subTest(question=question)):
+                answer = loop.run_until_complete(self.happy.query(question))[0]
+                log.info(f'[question]: {question}')
+                log.info(f'[ answer ]: {answer.answer}')
+                self.assertNotEqual(answer.answer, '')
 
     def test_happy_bad(self):
         question = 'is it a pipe?'

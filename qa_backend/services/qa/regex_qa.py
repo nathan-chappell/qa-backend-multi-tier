@@ -26,7 +26,7 @@ class RegexQA(QA):
         if 'context' in kwargs.keys():
             msg = 'currently not handling context'
             raise QAQueryError(msg)
-        match = self.regex.match(question)
+        match = self.regex.match(question.strip())
         if isinstance(match, Match):
             r_response = random.choice(self.responses)
             response: str = match.expand(r_response)

@@ -88,11 +88,6 @@ class GitEsDatabase(QueryDatabase):
             raise
 
     @acquire_lock
-    async def pull(self) -> None:
-        await self.git_database.pull(path)
-        await self.es_database.pull(path)
-
-    @acquire_lock
     async def query(
             self,
             query_string: str,

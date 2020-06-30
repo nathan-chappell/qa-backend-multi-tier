@@ -9,38 +9,19 @@ import subprocess
 from elasticsearch import Elasticsearch
 import yaml
 
-import fix_path
+from common import set_up_git_es_db, tear_down_git_es_db
 from qa_backend.services import Paragraph
 from qa_backend.services.database import *
 
 es = Elasticsearch()
 loop = asyncio.get_event_loop()
 
-def get_init_file() -> str:
-    return './es_test_data/config.yml'
-
-def get_git_dir():
-    git_dir = str(uuid4())
-    if Path(git_dir).exists():
-        raise RuntimeError(f'about to step on {git_dir}')
-    return git_dir
-
-def remove_dir(name: str):
-    subprocess.run(['rm', '-rf', name])
-
 class GitEsDatabase_TestInit(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
-        self.git_dir = get_git_dir()
-        self.es_database = ElasticsearchDatabase(self.init_file)
-        self.git_database = GitDatabase(self.git_dir)
+        set_up_git_es_db(self)
 
     def tearDown(self):
-        es.indices.delete(self.index)
-        remove_dir(self.git_dir)
+        tear_down_git_es_db(self)
 
     def test_init(self):
         self.git_es_database = GitEsDatabase(
@@ -50,13 +31,7 @@ class GitEsDatabase_TestInit(unittest.TestCase):
 
 class GitEsDatabase_TestCreate(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
-        self.git_dir = get_git_dir()
-        self.git_database = GitDatabase(self.git_dir)
-        self.es_database = ElasticsearchDatabase(self.init_file)
+        set_up_git_es_db(self)
         self.git_es_database = GitEsDatabase(
                                     self.git_database,
                                     self.es_database
@@ -67,8 +42,7 @@ class GitEsDatabase_TestCreate(unittest.TestCase):
         ]
 
     def tearDown(self):
-        es.indices.delete(self.index)
-        remove_dir(self.git_dir)
+        tear_down_git_es_db(self)
 
     def test_create(self):
         try:
@@ -92,13 +66,7 @@ class GitEsDatabase_TestCreate(unittest.TestCase):
 
 class GitEsDatabase_TestRead(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
-        self.git_dir = get_git_dir()
-        self.git_database = GitDatabase(self.git_dir)
-        self.es_database = ElasticsearchDatabase(self.init_file)
+        set_up_git_es_db(self)
         self.git_es_database = GitEsDatabase(
                                     self.git_database,
                                     self.es_database
@@ -113,8 +81,7 @@ class GitEsDatabase_TestRead(unittest.TestCase):
             )
 
     def tearDown(self):
-        es.indices.delete(self.index)
-        remove_dir(self.git_dir)
+        tear_down_git_es_db(self)
 
     def test_read(self):
         coro = self.git_es_database.read(self.paragraphs[0].doc_id)
@@ -139,13 +106,7 @@ class GitEsDatabase_TestRead(unittest.TestCase):
 
 class GitEsDatabase_TestUpdate(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
-        self.git_dir = get_git_dir()
-        self.git_database = GitDatabase(self.git_dir)
-        self.es_database = ElasticsearchDatabase(self.init_file)
+        set_up_git_es_db(self)
         self.git_es_database = GitEsDatabase(
                                     self.git_database,
                                     self.es_database
@@ -158,8 +119,7 @@ class GitEsDatabase_TestUpdate(unittest.TestCase):
         )
 
     def tearDown(self):
-        es.indices.delete(self.index)
-        remove_dir(self.git_dir)
+        tear_down_git_es_db(self)
 
     def test_update(self):
         loop.run_until_complete(
@@ -175,13 +135,7 @@ class GitEsDatabase_TestUpdate(unittest.TestCase):
 
 class GitEsDatabase_TestDelete(unittest.TestCase):
     def setUp(self):
-        self.init_file = get_init_file()
-        with open(self.init_file) as file:
-            self.init_data = yaml.full_load(file)
-        self.index = self.init_data['index']
-        self.git_dir = get_git_dir()
-        self.git_database = GitDatabase(self.git_dir)
-        self.es_database = ElasticsearchDatabase(self.init_file)
+        set_up_git_es_db(self)
         self.git_es_database = GitEsDatabase(
                                     self.git_database,
                                     self.es_database
@@ -194,8 +148,7 @@ class GitEsDatabase_TestDelete(unittest.TestCase):
         )
 
     def tearDown(self):
-        es.indices.delete(self.index)
-        remove_dir(self.git_dir)
+        tear_down_git_es_db(self)
 
     def test_delete(self):
         loop.run_until_complete(
