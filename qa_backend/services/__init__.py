@@ -12,7 +12,7 @@ Services:
 import json
 import logging
 import re
-from typing import List
+from typing import List, Dict, Any
 
 DocId = str
 
@@ -49,14 +49,18 @@ init_logs()
 class JsonRepresentation(type):
     """Use json.dumps to __repr__ annotated variables."""
     def __new__(self, cls, bases, namespace):
-        def json_repr(self) -> str:
+        def to_dict(self) -> Dict[str,Any]:
             data = {
-                k: getattr(self,k).__repr__()
+                k: getattr(self,k)
                 for k in namespace['__annotations__']
             }
-            return json.dumps(data)
+            return data
+        def json_repr(self) -> str:
+            return json.dumps(self.to_dict())
         if '__repr__' not in namespace:
             namespace['__repr__'] = json_repr
+        if 'to_dict' not in namespace:
+            namespace['to_dict'] = to_dict
         return type(cls, bases, namespace)
 
 class QAAnswer(metaclass=JsonRepresentation):

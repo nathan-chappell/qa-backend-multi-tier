@@ -1,10 +1,16 @@
 # test_transformers_qa.py
 
 from pathlib import Path
+import unittest
+import logging
+import asyncio
 
 import fix_path
-from services import QAAnswer
-from services.qa import TransformersQA, QAQueryError
+from qa_backend.services import QAAnswer
+from qa_backend.services.qa import TransformersQA, QAQueryError
+
+loop = asyncio.get_event_loop()
+log = logging.getLogger('qa')
 
 context = """
 Each Hypertext Transfer Protocol (HTTP) message is either a request or a
@@ -20,21 +26,37 @@ resource (Section 2), regardless of its type, nature , or implementation, via
 the manipulation and transfer of representations ( Section 3).
 """
 
-questions = [
-    'what is http?',
-    'what does a server do?',
-    'what is the purpose of this document?',
-    'what is a hot dog?',
-]
+class TransformersQA_Test(unittest.TestCase):
+    trasformers_qa: TransformersQA
 
-def test():
-    trasformers_qa = TransformersQA()
-    for question in questions:
-        print(trasformers_qa.query(question, context))
-    try:
-        trasformers_qa.query('this is an error test')
-    except QAQueryError as e:
-        pass
+    # this is expensive, do it once for the whole class
+    @classmethod
+    def setUpClass(cls):
+        cls.trasformers_qa = TransformersQA()
 
-test()
-print('done')
+    def setUp(self):
+        self.answerable_questions = [
+            'what is http?',
+            'what does a server do?',
+            'what is the purpose of this document?',
+        ]
+        self.impossible_questions = [
+            'what is a hot dog?',
+        ]
+
+    def test_answerable_questions(self):
+        for question in self.answerable_questions:
+            coro = self.trasformers_qa.query(question, context=context)
+            answers = loop.run_until_complete(coro)
+            self.assertNotEqual(answers[0].answer, '')
+            log.info(answers)
+
+    def test_impossible_questions(self):
+        for question in self.impossible_questions:
+            coro = self.trasformers_qa.query(question, context=context)
+            answers = loop.run_until_complete(coro)
+            self.assertEqual(answers[0].answer, '')
+            log.info(answers)
+
+if __name__ == '__main__':
+    unittest.main()

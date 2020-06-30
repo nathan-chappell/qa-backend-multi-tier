@@ -200,3 +200,11 @@ class GitDatabase(Database):
     @acquire_lock
     async def reset(self, commit: str = '') -> None:
         await git_reset(self.git_dir, commit)
+
+    @acquire_lock
+    async def flash(
+            self,
+            path: str
+        ) -> None:
+        await self.pull()
+

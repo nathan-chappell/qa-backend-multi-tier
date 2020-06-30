@@ -50,6 +50,13 @@ class Database(ABC):
         ) -> None:
         ...
 
+    @abstractmethod
+    async def flash(
+            self,
+            path: str
+        ) -> None:
+        ...
+
 class QueryDatabase(Database):
     @abstractmethod
     async def query(

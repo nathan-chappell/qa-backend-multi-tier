@@ -37,6 +37,10 @@ async def handle_errors(request: Request, handler: _Handler) -> web.StreamRespon
         if os.environ.get('PRINT_TB'):
             print_tb(sys.exc_info()[2]) 
         return api_error(f'{request.remote} - {e}')
+    except web.HTTPClientError as e:
+        if os.environ.get('PRINT_TB'):
+            print_tb(sys.exc_info()[2]) 
+        return web.json_response(exception_to_dict(e), status=400)
     except Exception as e:
         if os.environ.get('PRINT_TB'):
             print_tb(sys.exc_info()[2]) 
