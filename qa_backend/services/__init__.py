@@ -71,6 +71,8 @@ class Paragraph(JsonRepresentation):
     text: str
 
     def __init__(self, doc_id: str, text: str):
+        if not doc_id.endswith('.txt'):
+            raise ValueError("Paragraph.doc_id must have .txt as suffix")
         self.doc_id = doc_id
         self.text = text
 

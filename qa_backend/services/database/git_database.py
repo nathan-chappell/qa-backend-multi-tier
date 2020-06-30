@@ -151,11 +151,13 @@ class GitDatabase(Database):
         ) -> Iterable[Paragraph]:
         """Retrieve doc_ids (including wildcards)"""
         paths = list(Path(self.git_dir).glob(doc_id))
-        paths = list(filter(Path.is_file,paths))
+        # only return .txt files
+        paths = list(filter(lambda p: p.name.endswith('.txt'), paths))
+        paths = list(filter(Path.is_file, paths))
         paragraphs: List[Paragraph] = []
         for path in paths:
             with open(path) as file:
-                paragraphs.append(Paragraph(path.name,file.read()))
+                paragraphs.append(Paragraph(path.name, file.read()))
         return paragraphs
 
     @acquire_lock
@@ -200,4 +202,3 @@ class GitDatabase(Database):
     @acquire_lock
     async def reset(self, commit: str = '') -> None:
         await git_reset(self.git_dir, commit)
-
