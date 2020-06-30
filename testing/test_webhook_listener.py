@@ -10,6 +10,8 @@ import unittest
 import os
 import atexit
 import sys
+import time
+import json
 
 import aiohttp
 from aiohttp import ClientSession
@@ -17,30 +19,59 @@ import common
 
 from qa_backend.server.webhook_listener import WebhookListener
 
+log = logging.getLogger('server')
+
 url = 'http://localhost:8083/webhook'
+class ExpectedHandler(Exception): ...
+class UnExpectedHandler(Exception): ...
+
+def expected_handler(signum,frame):
+    log.info('EXPECTED HANDLER')
+    raise ExpectedHandler()
+
+def unexpected_handler(signum,frame):
+    log.info('UNEXPECTED HANDLER')
+    raise UnExpectedHandler()
 
 def run(ppid):
     webhook_filters = [
         lambda d: d.get('prop1') != 'attr1_',
     ]
     webhook_listener = WebhookListener(
-            ppid, signal.BREAK, webhook_filters=webhook_filters
+            ppid, signal.SIGUSR1, webhook_filters=webhook_filters
         )
     webhook_listener.run()
 
-class TransformersMicro_TestQuery(unittest.TestCase):
+class WebhookListener_TestActivation(unittest.TestCase):
     def setUp(self):
         self.url = url
 
     def test_activate(self):
+        log.info('test_activate')
+        signal.signal(signal.SIGUSR1, expected_handler)
         async def activate_webhook():
-            body = {'prop1': 'attr1', 'prop2': 'attr2'}
-            #await asyncio.sleep(2)
+            body = {'prop1': 'attr1'}
+            async with session.post(self.url,json=body) as response:
+                log.info(response)
+                status = response.status
+            return status
+        with self.assertRaises(ExpectedHandler):
+            status = loop.run_until_complete(activate_webhook())
+            time.sleep(5)
+
+    def test_filter(self):
+        log.info('test_filter')
+        signal.signal(signal.SIGUSR1, unexpected_handler)
+        async def activate_webhook():
+            body = {'prop1': 'attr1_'}
             async with session.post(self.url,json=body) as response:
                 status = response.status
             return status
-        status loop.run_until_complete(get_answer())
-        self.assertEqual(status, 200)
+        try:
+            status = loop.run_until_complete(activate_webhook())
+            time.sleep(5)
+        except UnExpectedHandler:
+            self.fail('unexpected_handler raise')
 
 async def wait_for_server(seconds: int = 10) -> bool:
     count = 0
@@ -55,7 +86,7 @@ async def wait_for_server(seconds: int = 10) -> bool:
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == '-r':
-        run()
+        run(os.getpid())
         exit(0)
 
     multiprocessing.set_start_method('spawn')
@@ -64,12 +95,13 @@ if __name__ == '__main__':
 
     session = ClientSession()
     # start server
-    server_process = Process(target=run)
+    server_process = Process(target=run,args=(os.getpid(),))
     server_process.start()
-    print(f'SERVER PROCESS: {server_process.pid}')
+    log.info(f'SERVER PROCESS: {server_process.pid}')
+    log.info(f'MY PROCESS: {os.getpid()}')
 
     def cleanup():
-        print('cleanup')
+        log.info('cleanup')
         loop.run_until_complete(session.close())
         os.kill(server_process.pid, signal.SIGTERM)
 
@@ -78,15 +110,5 @@ if __name__ == '__main__':
     startup_successfull = loop.run_until_complete(wait_for_server())
     if not startup_successfull:
         raise RuntimeError("couldn't connect to server")
-
-    context = """ Successful unit testing requires writing tests that would
-    only fail in case of an actual error or requirement change. There are a
-    few rules that help avoid writing fragile unit tests. These are tests that
-    would fail due to an internal change in the software that does not affect
-    the user.  Since the same developer that wrote the code and knows how the
-    solution was implemented usually writes unit tests, it is difficult not to
-    test the inner workings of how a feature was implemented. The problem is
-    that implementation tends to change and the test will fail even if the
-    result is the same.  """
 
     unittest.main()

@@ -13,7 +13,7 @@ import sys
 
 import aiohttp
 from aiohttp import ClientSession
-import fix_path
+import common
 from qa_backend.server.transformers_micro import run
 
 class TransformersMicro_TestQuery(unittest.TestCase):
