@@ -8,28 +8,54 @@ from transformers import QuestionAnsweringPipeline # type: ignore
 from .abstract_qa import QA, QAAnswer, QAQueryError
 from . import complete_sentence
 
-def create_default_pipeline() -> QuestionAnsweringPipeline:
-    model_name = 'twmkn9/distilbert-base-uncased-squad2'
+def create_pipeline(
+        model_name: str,
+        use_gpu: bool = False,
+        device: Optional[int] = None,
+    ) -> QuestionAnsweringPipeline:
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    gpu_model = AutoModelForQuestionAnswering.from_pretrained(model_name)
-    #gpu_model.cuda()
-    gpu_model.eval()
+    model = AutoModelForQuestionAnswering.from_pretrained(model_name)
+    _device = -1
+    if use_gpu:
+        model.cuda()
+        if isinstance(device,None):
+            _device = 0
+    model.eval()
     return QuestionAnsweringPipeline(
-                model=gpu_model, 
+                model=model, 
                 tokenizer=tokenizer,
-                #device=0
-                device=-1
+                device=_device,
             )
 
 class TransformersQA(QA):
+    model_name: str = 'twmkn9/distilbert-base-uncased-squad2'
     pipeline: QuestionAnsweringPipeline
 
-    def __init__(self, pipeline: Optional[QuestionAnsweringPipeline] = None):
+    def __init__(
+            self,
+            pipeline: Optional[QuestionAnsweringPipeline] = None,
+            model_name: Optional[str] = None,
+            use_gpu = False,
+            device = -1,
+        ):
         self._requires_context = True
+        if pipeline is not None and model_name is not None:
+            msg = 'Only one of pipeline and model_name should be specified'
+            raise ValueError(msg)
         if isinstance(pipeline, QuestionAnsweringPipeline):
             self.pipeline = pipeline
+            return
+        elif isinstance(model_name, str):
+            self.model_name = model_name
         else:
-            self.pipeline = create_default_pipeline()
+            msg = 'either model_name must be a str, '
+            msg += 'or pipeline must be a QuestionAnsweringPipeline'
+            raise ValueError(msg)
+        self.pipeline = create_pipeline(
+                            self.model_name,
+                            use_gpu,
+                            device
+                        )
         
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
         context: str = kwargs.get('context','')

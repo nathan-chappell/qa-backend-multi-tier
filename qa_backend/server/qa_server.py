@@ -113,17 +113,6 @@ async def attach_uuid_middleware(
 # API
 #
 
-#async def handle_webhook(request: Request) -> Response:
-#    body = await request.json()
-#    log.info('handling webhook')
-#    #pprint(body)
-#    if body.get('event_name',None) == 'push':
-#        await git_client.pull()
-#        log.info('pull complete')
-#        await index_all(INDEX_NAME)
-#        log.info('index all complete')
-#    return Response(status=200)
-
 class QAServer:
     database: QueryDatabase
     qas: List[QA]
@@ -163,30 +152,6 @@ class QAServer:
     def __del__(self):
         if isinstance(self.qa_log, TextIO):
             self.qa_log.close()
-
-    @property
-    def readme(self) -> str:
-        readme_path = 'pages/README.md'
-        with open(readme_path) as file:
-            md = markdown(file.read())
-        return f"""
-            <!doctype html>
-            <head>
-                <meta charset="utf8" />
-                <link rel="stylesheet" href="/github.css" />
-            </head>
-            <body>
-                {md}
-            </body>
-            </html>
-        """
-
-    @property
-    def github_css(self) -> str:
-        css_path = 'pages/github.css'
-        with open(css_path) as file:
-            css = file.read()
-        return css
 
     def log_qa(self, qa_answers: List[QAAnswer]):
         if isinstance(self.log_qa, TextIO):

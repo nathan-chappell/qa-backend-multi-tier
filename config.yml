@@ -1,0 +1,37 @@
+# GitWebhookDatabase
+git_webhook_database:
+  git_dir: './git_dir'
+  host: '0.0.0.0'
+  path: '/webhook'
+  port: 8082
+
+# ElasticsearchDatabase
+es_database:
+  init_file: './git_dir/es_database.init.yml'
+
+# transformer_micro server
+transformers_micro:
+  host: 'localhost'
+  port: 8081
+  model_name: 'twmkn9/distilbert-base-uncased-squad2'
+  use_gpu: true,
+
+# question answering
+qas:
+- type: regex_qa
+  file: './git_dir/regex_qa.yml'
+- type: micro_adapter
+  host: 'localhost'
+  port: 8081
+  path: '/question'
+
+# Server
+qa_server:
+  host: 'localhost'
+  port: 8080
+  qa_log_filename: '.qa_log.jsonl'
+
+# Miscellaneous
+miscellaneous:
+  # cause certain error to print a traceback upon creation
+  PRINT_TB: true

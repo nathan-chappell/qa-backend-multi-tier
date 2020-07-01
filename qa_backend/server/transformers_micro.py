@@ -50,7 +50,7 @@ class TransformersMicro:
 
     def __init__(
             self, host: str = '0.0.0.0', port: int = 8081,
-            transformer_qa: Optional[TransformersQA] = None
+            transformer_qa: Optional[TransformersQA] = None,
         ):
         self.host = host
         self.port = port
