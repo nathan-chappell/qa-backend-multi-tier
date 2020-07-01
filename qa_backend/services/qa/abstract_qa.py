@@ -5,6 +5,7 @@ from typing import List, Optional
 import logging
 
 from . import QAAnswer
+from qa_backend import Configurable
 
 log = logging.getLogger('qa')
 
@@ -22,7 +23,7 @@ class QAQueryError(RuntimeError):
     def __repr__(self) -> str:
         return f'<{str(self)}>'
 
-class QA(ABC):
+class QA(Configurable):
     _requires_context: bool
 
     @abstractmethod
@@ -32,3 +33,6 @@ class QA(ABC):
     @property
     def requires_context(self) -> bool:
         return self._requires_context
+
+    async def shutdown(self):
+        ...

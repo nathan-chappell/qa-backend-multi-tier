@@ -4,13 +4,15 @@ Adapter for a transformers_micro endpoint
 """
 
 import logging
-from typing import List
+from typing import List, MutableMapping
 from json.decoder import JSONDecodeError
+import asyncio
 
 import aiohttp.web as web
 from aiohttp.web import Request, Response
 from aiohttp import ClientSession, ContentTypeError
 
+from qa_backend import check_config_keys, ConfigurationError
 from .abstract_qa import QA, QAAnswer, QAQueryError
 from . import complete_sentence
 
@@ -28,7 +30,21 @@ class MicroAdapter(QA):
         self.port = port
         self.path = path
         self.session = ClientSession()
-    
+
+    def __del__(self):
+        asyncio.get_event_loop().create_task(self.shutdown())
+
+    @staticmethod
+    def from_config(config: MutableMapping[str,str]) -> 'MicroAdapter':
+        check_config_keys(config, ['host','port','path'])
+        try:
+            host = str(config.get('host','localhost'))
+            port = int(config.get('port', 8081))
+            path = str(config.get('path','/question'))
+            return MicroAdapter(host,port,path)
+        except ValueError as e:
+            raise ConfigurationError(str(e))
+
     @property
     def url(self) -> str:
         return f'http://{self.host}:{self.port}{self.path}'
@@ -58,5 +74,6 @@ class MicroAdapter(QA):
             except ContentTypeError as e:
                 raise QAQueryError(str(e))
 
-    async def close(self):
-        await self.session.close()
+    async def shutdown(self):
+        if not self.session.closed():
+            await self.session.close()

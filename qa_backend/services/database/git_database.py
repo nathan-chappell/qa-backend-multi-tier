@@ -4,11 +4,12 @@ CRUD frontend to git repository
 import asyncio
 from asyncio import Lock, StreamReader
 from asyncio.subprocess import PIPE
-from typing import Optional, Tuple, Iterable, List
+from typing import Optional, Tuple, Iterable, List, MutableMapping
 from pathlib import Path
 import logging
 import subprocess
 
+from qa_backend import check_config_keys, ConfigurationError
 from .abstract_database import DocId, Paragraph, Database, acquire_lock
 from .database_error import DatabaseError
 from .database_error import DatabaseCreateError, DatabaseUpdateError
@@ -50,6 +51,7 @@ async def _git_dispatch(git_dir: str, args, GitErrorClass, *, log_error=True, re
             'git','-C',git_dir, *args,
             stdin=PIPE, stdout=PIPE, stderr=PIPE
         )
+    log.debug(f'Git Dispatch: {args}')
     await git.wait()
     if git.returncode != 0:
         err_str = await _get_output(git.stderr)
@@ -105,6 +107,17 @@ class GitDatabase(Database):
         #asyncio.ensure_future(self.initialize())
         self.initialize()
 
+    @staticmethod
+    def from_config(
+            config: MutableMapping[str,str]
+        ) -> 'GitDatabase':
+        check_config_keys(config, ['git dir'])
+        try:
+            git_dir = config['init file']
+            return GitDatabase(git_dir)
+        except ValueError as e:
+            raise ConfigurationError(str(e))
+
     # this needs to be done synchronously, so we do it "by hand"
     def initialize(self, *args):
         path = Path(self.git_dir)
@@ -127,6 +140,7 @@ class GitDatabase(Database):
         ) -> None:
         """Add paragraph to git_dir, and reindex"""
         # check for existing document
+        log.debug(f'GitDB: Creating {paragraph}')
         path = Path(self.git_dir) / paragraph.doc_id
         if path.exists():
             msg = f'doc_id: {paragraph.doc_id} already exists'

@@ -64,5 +64,6 @@ class WebhookListener:
         app.add_routes([
             web.post(self.path, self.webhook),
         ])
+        log.info('Running WebhookListener')
         web.run_app(app, host=self.host, port=self.port)
 

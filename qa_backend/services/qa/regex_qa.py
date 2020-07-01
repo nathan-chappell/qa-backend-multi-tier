@@ -6,10 +6,12 @@ applys any indicated substitutions, and replies.
 
 from pathlib import Path
 from typing import Optional, List, Iterable, Pattern, Union, Match, cast
+from typing import MutableMapping
 import re
 import random
 import yaml
 
+from qa_backend import check_config_keys, ConfigurationError
 from .abstract_qa import QA, QAQueryError, QAAnswer
 
 class RegexQA(QA):
@@ -21,6 +23,14 @@ class RegexQA(QA):
         regex_ = re.sub(r'\s',r'\s+',regex)
         self.regex = re.compile(r'(?i)' + regex_)
         self.responses = responses
+
+    @staticmethod
+    def from_config(config: MutableMapping[str,str]) -> List['RegexQA']:
+        check_config_keys(config, ['file'])
+        try:
+            return RegexQA.from_file(config['file'])
+        except ValueError as e:
+            raise ConfigurationError(str(e))
 
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
         if 'context' in kwargs.keys():

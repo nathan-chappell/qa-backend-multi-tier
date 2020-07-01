@@ -123,12 +123,14 @@ class QAServer:
     def __init__(
             self, database: QueryDatabase, qas: List[QA],
             host='0.0.0.0', port=8080,
-            qa_log_filename: Optional[str] = None,
+            qa_log_file: Optional[str] = None,
         ):
         self.database = database
         self.qas = qas
-        if isinstance(qa_log_filename, str):
-            self.qa_log = open(qa_log_filename, 'a')
+        self.host = host
+        self.port = port
+        if isinstance(qa_log_file, str):
+            self.qa_log = open(qa_log_file, 'a')
         self.no_answers = [
             "I'm sorry, I couldn't find an answer to your question.",
             "I was unable to answer your query.",
@@ -170,6 +172,7 @@ class QAServer:
         }
 
     async def answer_question(self, request: Request, qa_size=3, ir_size=2) -> Response:
+        log.info(f'got question... {request}')
         body = await request.json()
         try:
             question = body['question']
@@ -231,4 +234,4 @@ class QAServer:
         return Response()
 
     def run(self):
-        web.run_app(app, host=self.host, port=self.port)
+        web.run_app(self.app, host=self.host, port=self.port)

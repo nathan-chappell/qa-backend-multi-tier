@@ -1,12 +1,16 @@
 # transformers_qa.py
 
-from typing import List, Optional, cast
+from typing import List, Optional, cast, MutableMapping
+import logging
 
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer # type: ignore
 from transformers import QuestionAnsweringPipeline # type: ignore
 
+from qa_backend import check_config_keys, ConfigurationError
 from .abstract_qa import QA, QAAnswer, QAQueryError
 from . import complete_sentence
+
+log = logging.getLogger('qa')
 
 def create_pipeline(
         model_name: str,
@@ -47,23 +51,37 @@ class TransformersQA(QA):
             return
         elif isinstance(model_name, str):
             self.model_name = model_name
-        else:
-            msg = 'either model_name must be a str, '
-            msg += 'or pipeline must be a QuestionAnsweringPipeline'
-            raise ValueError(msg)
+
         self.pipeline = create_pipeline(
                             self.model_name,
                             use_gpu,
                             device
                         )
-        
+
+    @staticmethod
+    def from_config(config: MutableMapping[str,str]) -> 'TransformersQA':
+        check_config_keys(config, ['model name','use gpu', 'device'])
+        try:
+            model_name = config.get('model name')
+            use_gpu = config.get('use gpu', False)
+            device = int(config.get('device','-1'))
+            return TransformersQA(
+                        model_name=model_name,
+                        use_gpu=use_gpu,
+                        device=device
+                    )
+        except ValueError as e:
+            raise ConfigurationError(str(e))
+    
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
         context: str = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
         question_ = {'question': question, 'context': context}
         question_args = {'handle_impossible_answer':True, 'topk':1}
+        log.info(f'transformers_qa: {question_}')
         answer = self.pipeline(**question_, **question_args)
+        log.info(f'transformers_qa: {answer}')
         # check for "no answer"
         if answer['start'] == answer['end']:
             answer_ = ''

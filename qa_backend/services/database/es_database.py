@@ -5,13 +5,14 @@ CRUD frontend to git repository
 import asyncio
 from pathlib import Path
 import logging
-from typing import Dict, List, Any, Iterable
+from typing import Dict, List, Any, Iterable, MutableMapping
 
 import yaml
 from elasticsearch import Elasticsearch # type: ignore
 from elasticsearch.exceptions import ConflictError # type: ignore
 from elasticsearch.exceptions import NotFoundError # type: ignore
 
+from qa_backend import check_config_keys, ConfigurationError
 from .abstract_database import DocId, Paragraph, Database
 from .database_error import DatabaseError
 from .database_error import DatabaseCreateError, DatabaseUpdateError
@@ -44,6 +45,17 @@ class ElasticsearchDatabase(QueryDatabase):
     def __init__(self, init_file: str, erase_if_exists=False):
         self.init_file = init_file
         self.initialize(erase_if_exists)
+
+    @staticmethod
+    def from_config(
+            config: MutableMapping[str,str]
+        ) -> 'ElasticsearchDatabase':
+        check_config_keys(config, ['init file'])
+        try:
+            init_file = config['init file']
+            return ElasticsearchDatabase(init_file)
+        except ValueError as e:
+            raise ConfigurationError(str(e))
 
     def initialize(self, erase_if_exists=False):
         with open(self.init_file) as file:
