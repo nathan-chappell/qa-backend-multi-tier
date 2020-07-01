@@ -18,7 +18,7 @@ def create_pipeline(
     _device = -1
     if use_gpu:
         model.cuda()
-        if isinstance(device,None):
+        if device is None:
             _device = 0
     model.eval()
     return QuestionAnsweringPipeline(

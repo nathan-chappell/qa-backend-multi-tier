@@ -141,8 +141,6 @@ class QAServer:
         ]
         self.app = web.Application(middlewares=middlewares)
         self.app.add_routes([
-            #web.get('/', self.serve_readme),
-            #web.get('/github.css', self.serve_github_css),
             web.post('/question', self.answer_question),
             web.get('/index', self.crud_read),
             web.post('/index', self.crud_create_update),
@@ -160,20 +158,6 @@ class QAServer:
 
     def no_answer_reply(self) -> str:
         return random.choice(self.no_answers)
-
-    async def serve_readme(self, request: Request) -> Response:
-        return Response(
-                    text=self.readme,
-                    status=200,
-                    content_type='text/html'
-                )
-
-    async def serve_github_css(self, request: Request) -> Response:
-        return Response(
-                    text=self.github_css,
-                    status=200,
-                    content_type='text/css'
-                )
 
     def get_answers_for_response(
             self, answers: List[QAAnswer]

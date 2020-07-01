@@ -7,7 +7,7 @@ git_webhook_database:
 
 # ElasticsearchDatabase
 es_database:
-  init_file: './git_dir/es_database.init.yml'
+  init_file: './{git_dir}/es_database.init.yml'
 
 # transformer_micro server
 transformers_micro:
@@ -19,7 +19,7 @@ transformers_micro:
 # question answering
 qas:
 - type: regex_qa
-  file: './git_dir/regex_qa.yml'
+  file: './{git_dir}/regex_qa.yml'
 - type: micro_adapter
   host: 'localhost'
   port: 8081
