@@ -64,7 +64,6 @@ def load_qas_from_config(config: ConfigParser) -> List[QA]:
 
 class MainServer:
     qa_server: QAServer
-    #git_webhook_es_db: GitWebhookEsDatabase
     database: QueryDatabase
     transformers_micro: Optional[TransformersMicro] = None
     transformers_micro_process: Optional[multiprocessing.Process] = None
@@ -93,9 +92,8 @@ class MainServer:
         es_cfg = config['es database']
         es_db = ElasticsearchDatabase.from_config(es_cfg)
         self.database = es_db
-        #self.git_webhook_es_db = GitWebhookEsDatabase(git_webhook_db, es_db)
         # micro
-        if config['transformers micro service'].getboolean('enabled'):
+        if 'enabled' in config['transformers micro service']:
             log.info(f'Initializing transformers micro service')
             tm_cfg = dict(config['transformers micro service'])
             tm_cfg.pop('enabled')
@@ -107,11 +105,10 @@ class MainServer:
         self.qas = load_qas_from_config(config)
         # qa_server
         qa_kwargs = self.get_qa_config(config['qa server'])
-        #self.qa_server = QAServer(self.git_webhook_es_db, qas, **qa_kwargs)
         self.qa_server = QAServer(self.database, self.qas, **qa_kwargs)
         self.qa_server.app.on_shutdown.append(self.shutdown)
         # miscellaneous
-        if config['miscellaneous'].getboolean('PRINT_TB'):
+        if 'PRINT_TB' in config['miscellaneous']:
             log.info(f'PRINT_TB is ON')
             os.environ['PRINT_TB'] = 'True'
         log.info(f'Initialization complete.')
@@ -125,15 +122,14 @@ class MainServer:
         return result
 
     async def shutdown(self, app: web.Application):
-        log.info('shutting down')
-        #await self.git_webhook_es_db.shutdown()
+        log.info('<main server> shutting down')
         await asyncio.tasks.gather(*[qa.shutdown() for qa in self.qas])
-        #p = self.transformers_micro_process
-        #if p is not None and p.is_alive():
-            #os.kill(self.transformers_micro_process.pid, signal.SIGTERM)
-            #self.transformers_micro_process.terminate()
-            #os.kill(p.pid, signal.SIGINT)
-            #p.join()
+        p = self.transformers_micro_process
+        if p.is_alive():
+            log.info(f'INT/join process: {p.pid} from {os.getpid()}')
+            os.kill(p.pid, signal.SIGINT)
+            os.kill(p.pid, signal.SIGTERM)
+            p.join()
 
     # TODO: serve the readme maybe?
     # serve some sort of documentation?

@@ -54,7 +54,7 @@ class ElasticsearchDatabase(QueryDatabase):
         try:
             init_file = config['init file']
             if 'erase if exists' in config.keys():
-                erase_if_exists = config.getboolean('erase if exists')
+                erase_if_exists = True
             else:
                 erase_if_exists = False
             return ElasticsearchDatabase(init_file, erase_if_exists)
@@ -101,8 +101,15 @@ class ElasticsearchDatabase(QueryDatabase):
             doc_id: DocId
         ) -> List[Paragraph]:
         try:
-            response = es.get(index=self.index, id=doc_id)
-            return [Paragraph(doc_id, response['_source']['text'])]
+            if doc_id == '*':
+                body = {'query': {'match_all': {}}}
+                response = es.search(index=self.index, body=body)
+                paragraphs = [Paragraph(hit['_id'],h['_source']['text'])
+                              for hit in response['hits']['hits']]
+                return paragraphs
+            else:
+                response = es.get(index=self.index, id=doc_id)
+                return [Paragraph(doc_id, response['_source']['text'])]
         except NotFoundError as e:
             return []
 
@@ -133,10 +140,7 @@ class ElasticsearchDatabase(QueryDatabase):
             size: int = 5
         ) -> Iterable[Paragraph]:
         try:
-            if query_string = '*'
-                body = {'query': {'match_all': {}}, 'size':size}
-            else:
-                body = {'query': {'match': {'text': query_string}}, 'size':size}
+            body = {'query': {'match': {'text': query_string}}, 'size':size}
             response = es.search(index=self.index, body=body)
             paragraphs = []
             for hit in response['hits']['hits']:
