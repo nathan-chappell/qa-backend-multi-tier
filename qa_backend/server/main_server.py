@@ -114,7 +114,7 @@ class MainServer:
         if 'PRINT_TB' in config['miscellaneous']:
             log.info(f'PRINT_TB is ON')
             os.environ['PRINT_TB'] = 'True'
-        set_all_loglevels(config['miscellaneous'].get('log levels','warn'))
+        set_all_loglevels(config['miscellaneous'].get('log levels','info'))
         log.info(f'Initialization complete.')
 
     def get_qa_config(self, config: MutableMapping[str,str]) -> Dict[str,Any]:
@@ -148,7 +148,7 @@ class MainServer:
         log.info(f'Started on process: {p.pid}')
 
     def run(self, run_micro: bool = True):
-        self.run_micro()
         log.info(f'running qa_server')
+        self.run_micro()
         self.qa_server.run()
 

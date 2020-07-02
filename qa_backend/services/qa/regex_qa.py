@@ -42,7 +42,7 @@ class RegexQA(QA):
             response: str = match.expand(r_response)
             return [QAAnswer(question, response, 1.)]
         else:
-            return [QAAnswer(question, '', 0.)]
+            return []
 
     @staticmethod
     def from_file(path_: Union[str,Path]) -> List['RegexQA']:

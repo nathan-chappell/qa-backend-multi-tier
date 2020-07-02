@@ -15,6 +15,7 @@ from elasticsearch.exceptions import NotFoundError # type: ignore
 from qa_backend import check_config_keys, ConfigurationError
 from .abstract_database import DocId, Paragraph, Database
 from .database_error import DatabaseError
+from .database_error import DatabaseAlreadyExistsError
 from .database_error import DatabaseCreateError, DatabaseUpdateError
 from .database_error import DatabaseDeleteError, DatabaseReadError
 from .database_error import DatabaseQueryError
@@ -65,9 +66,11 @@ class ElasticsearchDatabase(QueryDatabase):
         with open(self.init_file) as file:
             self.init_data = yaml.full_load(file)
         self.check_init_data()
+        log.info(f'init file: {self.init_file}, index: {self.index}')
         if not es.indices.exists(self.index):
             es.indices.create(self.index, self.creation)
         elif erase_if_exists:
+            log.info(f'erasing old index')
             es.indices.delete(self.index)
             es.indices.create(self.index, self.creation)
 
@@ -94,7 +97,7 @@ class ElasticsearchDatabase(QueryDatabase):
             es.create(self.index, paragraph.docId, body, refresh=True)
         except ConflictError as e:
             msg = f'docId: {paragraph.docId} already exists'
-            raise DatabaseCreateError(msg) # type: ignore
+            raise DatabaseAlreadyExistsError(msg) # type: ignore
 
     async def read(
             self,
@@ -137,7 +140,7 @@ class ElasticsearchDatabase(QueryDatabase):
     async def query(
             self,
             query_string: str,
-            size: int = 5
+            size: int = 10
         ) -> Iterable[Paragraph]:
         try:
             body = {'query': {'match': {'text': query_string}}, 'size':size}

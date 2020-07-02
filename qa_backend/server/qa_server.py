@@ -21,13 +21,15 @@ from aiohttp.web import Request, Response # type: ignore
 from json.decoder import JSONDecodeError
 from markdown import markdown # type: ignore
 
+from qa_backend.services.database.database_error import DatabaseAlreadyExistsError
+
 from qa_backend.services import QAAnswer, Paragraph
 from qa_backend.services.database import QueryDatabase
 from qa_backend.services.qa import QA
 from . import exception_to_dict
 
 log = logging.getLogger('server')
-log.setLevel(logging.DEBUG)
+#log.setLevel(logging.DEBUG)
 
 #
 # Exceptions and exception utilities
@@ -96,6 +98,9 @@ async def exception_middleware(
         info = exception_to_dict(e, log_error=True)
         return web.json_response(info, status=400)
     # catch-all => server error
+    except DatabaseAlreadyExistsError as e:
+        msg = e.message
+        return Response(status=409, reason=msg)
     except Exception as e:
         info = exception_to_dict(e, log_error=True)
         return web.json_response(info ,status=500)
@@ -172,12 +177,16 @@ class QAServer:
         ) -> Dict[str,Any]:
         answers = list(sorted(answers, key=lambda a: a.score, reverse=True))
         answers_ = [answer.to_dict() for answer in answers]
+        if len(answers_) > 0:
+            chosen_answer = answers_[0]
+        else:
+            chosen_answer = None
         return {
-            'chosen_answer': answers_[0],
+            'chosen_answer': chosen_answer,
             'answers': answers_,
         }
 
-    async def answer_question(self, request: Request, qa_size=3, ir_size=2) -> Response:
+    async def answer_question(self, request: Request, qa_size=3, ir_size=5) -> Response:
         log.info(f'got question... {request}')
         body = await request.json()
         log.debug(f'body: {body}')
@@ -189,20 +198,20 @@ class QAServer:
         log.debug(f'body has context: {context}')
         if context is None:
             log.debug('no context, query db...')
-            contexts = list(await self.database.query(question, ir_size))
-            log.debug(f'got context: {contexts}')
-            if len(contexts) > 0:
-                context = contexts[0]
-            else:
-                context = None
+            paragraphs = list(await self.database.query(question, ir_size))
+            log.debug(f'got paragraphs: {paragraphs}')
+        retrieved_docids = [p.docId for p in paragraphs]
+        log.info(f'Retrieved: {", ".join(retrieved_docids)}')
         answers: List[QAAnswer] = []
         for qa in self.qas:
-            if qa.requires_context and isinstance(context,Paragraph):
+            if qa.requires_context and len(paragraphs) > 0:
                 log.debug(f'QA: {qa}')
-                new_answers = await qa.query(question, context=context.text)
-                for new_answer in new_answers:
-                    new_answer.docId = context.docId
-                answers.extend(new_answers)
+                for paragraph in paragraphs:
+                    new_answers = await qa.query(question, context=paragraph.text)
+                    for new_answer in new_answers:
+                        if new_answer.answer != '':
+                            new_answer.docId = paragraph.docId
+                            answers.append(new_answer)
             else:
                 new_answers = await qa.query(question)
                 answers.extend(new_answers)
