@@ -1,0 +1,6 @@
+
+
+Microservices.
+Going further, we started using serverless computing - a code execution model in which the cloud provider fully manages starting and stopping virtual machines as necessary to serve requests.
+In terms of architecture, most of our new solutions use microservices approach, where applications are composed of small, independent and scalable customer-focused services that communicate over standard protocols and with well-defined interfaces.
+Our team has extensive experience with many modern cloud service models and environments. We take pride in building top-notch cloud-based solutions, regardless of the complexity of your requirements.

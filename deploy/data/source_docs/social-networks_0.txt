@@ -1,0 +1,6 @@
+Mono is building custom social networks, enterprise portals and advanced collaboration tools and platforms that enable our clients to connect their users, coworkers, information, and conversations.
+Building niche community portals.
+Our solutions have been deployed in organizations of all types, regardless of the number of users or employees and the complexity of their requirements and organizational infrastructure. We combine our enterprise portal development with a rich set of productivity tools and modules to make collaboration yet more effective: search, calendars, pools and surveys, tagging, file sharing, document management, notifications, discussions, ranking, reputation, social walls, feeds, and updates, messaging, groups...
+Customizability plays a key role: there is no one size fits all approach that could be used to cover different needs in bespoke social networks.
+Therefore, depending on the target functionality, we have used different development tools, approaches, and methodologies. MonoX social networking framework was used in hundreds of new projects, but we also integrated only parts of its functionality into existing systems built with different technologies. We have been using Baasic in most of the recent projects to provide social networking functionality regardless of the target technology or framework.
+

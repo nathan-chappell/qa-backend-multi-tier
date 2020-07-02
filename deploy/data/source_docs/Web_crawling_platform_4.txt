@@ -1,0 +1,4 @@
+
+
+One may wonder why all that XML & C# scripting effort, why not just pack the major functionalities as a class library and then have programmers write custom apps or modules which use that. Well, a number of reasons - first, and most important, it was simply hard to enforce the discipline to the developer-users of the app not to introduce their own modified versions of standard tasks and then we'd end up again with a maintenance and possibly performance mess. Second, the xml scripts for simpler workflows were written by other roles, not strictly developers. Third reason was simplicity - although it would be possible to write a custom library module per each workflow, recompile it on every change and plug it in to the main platform for running, it was way more complex than just changing a simple script file and re-running it.
+

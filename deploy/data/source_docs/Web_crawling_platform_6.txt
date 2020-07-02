@@ -1,0 +1,6 @@
+
+
+using the Actor framework for distributing work.
+While looking into how to do the horizontal scaling in the best way, we choose the [Actor Model](https://en.wikipedia.org/wiki/Actor_model). Studying resources like - [Distributed Systems Done Right: Embracing the Actor Model](https://dzone.com/articles/distributed-systems-done-right-embracing-the-actor-model) - convinced us that this was the right architecture for us. It later proved that it was a right decision, not only due to built-in scaling and cluster support, but also in terms of how it handles concurrency problems (e.g. different parts of workflow doing conflicting actions at the same time) and fault tolerance (when one of the workflow worker parts becomes inaccessible on the network or fails due to an error).
+Using .NET as core technology, our choice was between two actor framework solutions - [Microsoft's Orleans](https://dotnet.github.io/orleans/) and [Akka.NET](https://getakka.net/), a port of the Akka framework from Java/Scala. We spent some time evaluating both of them and chose Akka.Net, despite its slightly higher learning curve, but due to it being more open, customizable and [closer to the original actor model philosophy](https://github.com/akka/akka-meta/blob/master/ComparisonWithOrleans.md).
+

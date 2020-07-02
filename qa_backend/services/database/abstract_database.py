@@ -71,19 +71,17 @@ class Database(Configurable):
             raise DatabaseCreateError(msg)
         paths = directory_path.glob('*.txt')
         for path in paths:
+            log.debug(f'adding path: {path}')
             with open(path) as file:
                 text = file.read()
             try:
-                self.create(Paragraph(path.name, text))
+                await self.create(Paragraph(path.name, text))
             except DatabaseAlreadyExistsError as e:
                 msg = f'{path.name} alread exists'
                 log.info(msg)
 
     # TODO: test, add to api
-    async def dump_to_directory(self, directory_name):
-        directory_path = Path(directory_name)
-        if not directory_path.exists():
-            msg = f'{directory_name} does not exist'
+    async def dump_to_directory(self, directory_path: Path):
         all_paragraphs = await self.get_all()
         for paragraph in all_paragraphs:
             with open(directory_path / paragraph.docId,'w') as file:

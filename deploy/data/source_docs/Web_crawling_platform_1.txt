@@ -1,0 +1,10 @@
+
+
+The first challenge was to abstract and standardize the way users define what the system needs to do for all the different crawling processes. The core logic may be described as the following:
+Fetch the content of a web page,
+Extract the desired parts of the content,
+Do something with the extracted data - e.g. store it to the db or to a file.
+The idea is to pack the logic of common functionality like these into tasks, which users can then invoke and define their web site specific behavior via different properties on those tasks. The most challenging part was how to present this to the users. We had to come up with some user friendly solution so that people are able to define, view and understand complex workflows as easy and as fast as possible.
+A real life web crawling scenario may be much more complex than a simplified view given above. More and more web sites introduce various crawling protection methods. We were using rotating proxies, mimicking human behavior via javascript as well as some other techniques, but at the end of the day, there are sites out there which are so good at detecting bots, that nothing except running them in the browser helps. So, we needed to assess the best headless browser solution and incorporate it to our logic.
+The most important requirement was that the solution has to be able to scale the work to multiple machines automatically. That meant that we had to come up with some kind of a cluster solution in a cloud. For a number of workflows where the processing time is not important and they are scheduled to run at different times, the cluster would dynamically expand and contract based on load demands. For the important ones under a strict deadline, one may need to run a dedicated cluster with a specified scaling parameters, calculated so that they could complete in time.
+

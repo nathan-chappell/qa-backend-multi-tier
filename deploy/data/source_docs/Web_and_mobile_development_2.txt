@@ -1,0 +1,7 @@
+
+
+We support the following tools, technologies and environments: .NET, AngularJS, React, Xamarin, Ionic, Flutter, Python, Amazon AWS, Microsoft Azure.
+We have already built hundreds of software systems for our clients
+Let us know if you have an idea or a concept that needs to be turned into a successful software product or a service. 
+
+

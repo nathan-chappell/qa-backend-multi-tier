@@ -1,0 +1,12 @@
+
+
+Our Development process.
+Business requirements are constantly evolving, so we use an agile, iterative and incremental approach to support and encourage these natural course changes. 
+We will work with you to blueprint a system that can be built efficiently to meet your needs. The idea is to help you define a minimal viable product, the first usable form of your application.
+Your requirements are broken down into small and manageable parts. Each of them describes a small piece of work needed to achieve results. This is where we start to get a sense of the amount of work involved.
+The time and price estimate for your new application is based on estimates for each individual task defined in the previous step. Summing it all up gives us the estimated completion date. Requirements can be added or changed at any time.
+Before development starts, all tasks are added to the product backlog - a list of requirements for a product. It contains everything needed to successfully deliver a viable product.
+A sprint (or iteration) is the basic unit of development. It usually lasts for a week or two and aims to implement a fixed number of backlog items. The goal of each sprint is to have a system that is integrated and ready for delivery.
+At the end of a sprint, the team reviews the sprint to articulate lessons learned and check progress. A new set of backlog items is chosen for the next sprint, and the work continues until the product is ready for the market.
+This process increases the quality of the final product, copes with changes, provides better estimates without spending too much time on them, and allows you to be more in control of the project schedule and state.
+

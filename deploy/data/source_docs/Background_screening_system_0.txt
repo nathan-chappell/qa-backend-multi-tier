@@ -1,0 +1,5 @@
+Background screening system.
+In todays world lots of information is accessible online sgetting to know someone is not a big problem if you have plenty of time to surf around and and manually retrieve and analyze every bit of information. 
+A background check is a process a person or company uses tverify that a person is who they claim to be, and provides an opportunity for someone to check a persons criminal record, education, employment history, and other activities that happened in the past in order to confirm their validity. 
+In majority of cases where background screening is needed, speed of the process plays a crucial role. When done manually or using outdated tools, the background checking process of a candidate can take days or weeks, especially if there are many candidates involved and a thorough check is required. There are many background screening services on the market, but none of them satisfied all functional requirements for this project. We were tasked with building a new solution making use of Machine Learning and other advanced technologies tmake the process faster and more accurate.
+

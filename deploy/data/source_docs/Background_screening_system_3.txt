@@ -1,0 +1,7 @@
+
+
+We have developed advanced techniques for handling Captcha challenges while making sure that none of target data sources are subject toverload or any other kind of unethical behavior. 
+Multiple provider endpoints can be accessed in parallel via proxies, resulting in very fast data collection times. Operations that need hours using standard web crawlers are compressed tminutes. 
+Advanced system configuration allows administrator tconfigure number of parallel tasks per domain, per proxy, limit total number of tasks - all depending on hardware configuration and other infrastructure used.
+Scraping service is the main part of this solution and is responsible for collecting and rating background check information.
+

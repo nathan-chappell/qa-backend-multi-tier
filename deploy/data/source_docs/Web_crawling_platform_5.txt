@@ -1,0 +1,7 @@
+
+
+CEF as headless browser.
+A large part of our development time was dedicated to the headless browser. We had previous experiences with Phantom and Selenium, but wasn't able to cover all required scenarios and didn't really have an organized code base ready to be used across the board. We had a good previous experience with [CEF - Chromium Embedded Framework](https://github.com/chromiumembedded/cef) on another project and used it there to render complex graphics in a desktop application. Having Chromium at its base and being actively developed for years, with a large community, it looked reliable and with great potential. We followed the guidelines on how to run in in headless (or more precisely windowless) mode and packed everything we could think of into scriptable tasks - creating/destroying an instance, loading a url, getting html from current DOM, setting a proxy, setting/clearing cookies, executing JavaScript, etc.
+We used [Xilium.CefGlue](https://gitlab.com/xiliumhq/chromiumembedded/cefglue) .NET CEF implementation as that gave us a de-facto 1:1 mapping to the native C++ CEF code comparing to the more user friendly and a less of a learning curve [CefSharp](https://github.com/cefsharp/CefSharp). It was also better as we were able to do our own custom CEF build and upgrade to newer versions more frequently.
+Finally, with the emergence of .NET core, we wanted to run isolated crawling processes on a number of available Linux machines, so we had to do a custom Linux CEF build and integrate it to our app.
+

@@ -1,0 +1,10 @@
+
+
+We dockerized all of our application parts and run it in Kubernetes, which provided the adaptive load balancing ability, i.e. cluster elasticity. This was not without challenges as we had to make all our actors persistent and resilient to both cluster expansion and contraction. At any time they had to be able to terminate on one machine and re-emerge with the same restored state on another one. This was done via [Akka cluster sharding](https://getakka.net/articles/clustering/cluster-sharding.html), but we couldn't solve the headless browser part in this way as it was simply impossible to save and restore its state. Thus we had to implement the browser part as a separate micro service, with the ability to scale out to new machines via regular [Akka cluster routing](https://getakka.net/articles/clustering/cluster-routing.html), but without the contraction, which had to be controlled manually.
+The client also had a number of physical machines available, which were still running legacy crawling apps, but were underused. We were able to run a direct, static cluster environment on them too. There was no cluster elasticity in this case and the work distribution was done via adaptive loaded balancing provided by the [Akka cluster metrics](https://getakka.net/articles/clustering/cluster-metrics.html) module.
+
+
+
+
+
+

@@ -5,7 +5,10 @@ CRUD frontend to git repository
 import asyncio
 from pathlib import Path
 import logging
-from typing import Dict, List, Any, Iterable, MutableMapping
+from typing import Dict, List, Any, Iterable, MutableMapping, Tuple
+from typing import Optional, TextIO
+import re
+from datetime import datetime
 
 import yaml
 from elasticsearch import Elasticsearch # type: ignore
@@ -13,6 +16,7 @@ from elasticsearch.exceptions import ConflictError # type: ignore
 from elasticsearch.exceptions import NotFoundError # type: ignore
 
 from qa_backend import check_config_keys, ConfigurationError
+from qa_backend.services import JsonRepresentation
 from .abstract_database import DocId, Paragraph, Database
 from .database_error import DatabaseError
 from .database_error import DatabaseAlreadyExistsError
@@ -25,6 +29,25 @@ log = logging.getLogger('database')
 from . import QueryDatabase
 
 es = Elasticsearch()
+
+class Explanation(JsonRepresentation):
+    __slots__ = ['body','scores','docId','index']
+    query: Dict[str,Any]
+    scores: List[Tuple[str,float]]
+    docId: str
+    index: str
+    text_re = re.compile(r'.*\(text:(\w+) .*')
+
+    def __init__(self, body: Dict[str,Any], docId: str, index: str):
+        self.body = body['query']
+        self.docId = docId
+        self.scores = []
+        self.index = index
+        explanation = es.explain(index, id=docId, body={'query':self.body})
+        for detail in explanation['explanation']['details']:
+            text = self.text_re.sub(r'\1',detail['description'])
+            score = float(detail['value'])
+            self.scores.append((text,score))
 
 class ElasticsearchDatabaseError(RuntimeError):
     message: str
@@ -42,23 +65,62 @@ class ElasticsearchDatabaseError(RuntimeError):
 class ElasticsearchDatabase(QueryDatabase):
     init_file: str
     init_data: Dict[str,Any] = {}
+    explain_log: Optional[TextIO] = None
+    backup_dir: Optional[str] = None
 
-    def __init__(self, init_file: str, erase_if_exists=False):
+    def __init__(
+            self, init_file: str, erase_if_exists=False,
+            explain_filename: Optional[str] = None,
+            init_dir: Optional[str] = None,
+            backup_dir: Optional[str] = None,
+        ):
         self.init_file = init_file
+        self.backup_dir = backup_dir
         self.initialize(erase_if_exists)
+        if isinstance(explain_filename, str):
+            log.info(f'Explain log: {explain_filename}')
+            self.explain_log = open(explain_filename, 'a')
+        if isinstance(init_dir, str):
+            log.info(f'init_dir: {init_dir}')
+            coro = self.add_directory(init_dir)
+            asyncio.get_event_loop().run_until_complete(coro)
+
+    async def shutdown(self):
+        if isinstance(self.backup_dir, str):
+            timestamp = datetime.now().strftime('%Y%m%d_%h%m%s')
+            directory_path = Path(self.backup_dir) / timestamp
+            directory_path.mkdir(parents=True)
+            await self.dump_to_directory(directory_path)
 
     @staticmethod
     def from_config(
             config: MutableMapping[str,str]
         ) -> 'ElasticsearchDatabase':
-        check_config_keys(config, ['init file','erase if exists'])
+        conf_keys = [
+                'init file',
+                'erase if exists',
+                'explain file',
+                'init dir',
+                'backup dir',
+            ]
+        check_config_keys(config, conf_keys)
         try:
             init_file = config['init file']
             if 'erase if exists' in config.keys():
                 erase_if_exists = True
+                log.info('erase_if_exists == True')
             else:
                 erase_if_exists = False
-            return ElasticsearchDatabase(init_file, erase_if_exists)
+            explain_filename = config.get('explain file')
+            init_dir = config.get('init dir')
+            backup_dir = config.get('backup dir')
+            return ElasticsearchDatabase(
+                        init_file,
+                        erase_if_exists,
+                        explain_filename,
+                        init_dir,
+                        backup_dir,
+                    )
         except ValueError as e:
             raise ConfigurationError(str(e))
 
@@ -70,7 +132,7 @@ class ElasticsearchDatabase(QueryDatabase):
         if not es.indices.exists(self.index):
             es.indices.create(self.index, self.creation)
         elif erase_if_exists:
-            log.info(f'erasing old index')
+            log.warn(f'erasing old index')
             es.indices.delete(self.index)
             es.indices.create(self.index, self.creation)
 
@@ -98,6 +160,11 @@ class ElasticsearchDatabase(QueryDatabase):
         except ConflictError as e:
             msg = f'docId: {paragraph.docId} already exists'
             raise DatabaseAlreadyExistsError(msg) # type: ignore
+
+    async def get_all(
+            self
+        ) -> List[Paragraph]:
+        return await self.read('*')
 
     async def read(
             self,
@@ -147,7 +214,17 @@ class ElasticsearchDatabase(QueryDatabase):
             response = es.search(index=self.index, body=body)
             paragraphs = []
             for hit in response['hits']['hits']:
-                paragraphs.append(Paragraph(hit['_id'], hit['_source']['text']))
+                _id = hit['_id']
+                hit_text = hit['_source']['text']
+                paragraphs.append(Paragraph(_id, hit_text))
+                try:
+                    if self.explain_log is not None:
+                        print(Explanation(body,_id,self.index),
+                              file=self.explain_log,
+                              flush=True)
+                except KeyError as e:
+                    log.error(f'explain failed: {e}')
+                    pass
             return paragraphs
         except Exception as e:
             raise DatabaseQueryError(str(e)) # type: ignore

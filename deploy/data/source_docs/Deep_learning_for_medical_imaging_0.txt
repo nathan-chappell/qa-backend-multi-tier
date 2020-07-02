@@ -1,0 +1,5 @@
+Deep learning for medical imaging
+Magnetic resonance imaging (MRI) is one of the most advanced noninvasive medical diagnostic methods which produces images of cross-sections of organs in three main planes and their combinations, enabling for more accurate assesment and diagnostic of various diseases. It is often a method of first choice for diagnostic deseases of central nervous system organs, as well as various diseases and states of the locomotor system.
+While the hazards of other imaging methods that use ionizing radiation (X-rays, CT) are now well-understood and controlled, MRI may still be a better choice in many different scenarios. On the other hand, it is a relatively expensive and time-consuming technique. It generates and captures huge amounts of data containing extremely valuable information, at a pace far surpassing what traditional manual methods of analysis can process. The analysis of MR scans require highly specialized experts that manually review and mark regions affected by some sort of pathology. 
+Algorithms and processes that could at least partially automate this work could bring be very valuable in clinical practice.
+

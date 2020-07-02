@@ -8,8 +8,8 @@ creation:
                 my_analyzer:
                     type: custom
                     tokenizer: standard
-                    filters:
-                        - ascii_folding
+                    filter:
+                        - asciifolding
                         - lowercase
                         - porter_stem
     mappings:

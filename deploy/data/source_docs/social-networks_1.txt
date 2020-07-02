@@ -1,0 +1,11 @@
+
+
+White label is a social networking platform built on top of MonoX engine. Personal dashboards, custom user profiles with privacy control, content management, messaging center, subscriptions and notifications, calendars, groups, discussion boards, Q&A
+HOPS Info is a 
+Collaboration tool used to track the performance of the electrical grid and enable knowledge sharing and information flow. Application widgets, notifications, and alerting, discussions, groups, content management
+JobsBoard is a 
+Social recruitment engine and job portal. Custom user profiles, integration with major social networking services, recruitment engine, application tracking system, notifications, alerting
+Jungle Juniors is a 
+Service that makes it super easy to hire awesome nannies and sitters. Custom user profiles, geolocation services, payment processing, reviews, alerting, notifications
+Trackpro is a 
+Fully-featured social network for car racing enthusiasts and professionals. Custom user profiles, discussion boards, reviews, rating, social connections, walls, e-commerce, calendars, events, notifications, search engine

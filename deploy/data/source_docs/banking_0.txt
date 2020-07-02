@@ -1,0 +1,12 @@
+Banking is one of the industries that Mono has served since the very beginning. We have built complex lending management systems, cloud-based loan approval systems, mobile wallets, integration platforms, and payment processor interfaces.
+We are working on a highly configurable, white-label, omnichannel (online and mobile banking, branch and contact center) SaaS implementation of a lending platform that integrates with multiple core systems for automated underwriting and instant loan funding.
+Amongst its features was a flexible decision engine and a configurable traffic manager in the underwriting workflow to process loan requests and enable performance testing of multi-variate underwriting models.
+     
+Small Business Administration loans.
+In addition to this, we have build sbaOpen, an enterprise-class Web application that allows lenders to efficiently and effectively originate, underwrite, authorize and approve SBA loans. The Small Business Administration (SBA) is a United States government agency that provides support to entrepreneurs and small businesses.
+Most American banks participate in the program, as do some non-bank lenders, which expands the availability of loans. Participating lenders agree to structure loans according to the SBA's requirements, and apply and receive a guaranty from the SBA on a portion of this loan.
+
+Following the rules.
+SBA lending and loan processing is based on one of the (if not the) most complex set of rules and standard operating procedures (SOPs).
+SOPs for SBA loans are regularly updated and we have created a solution that allows all these changes to be implemented in a timely manner./p>
+

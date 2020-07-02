@@ -1,0 +1,8 @@
+
+
+A worry-free solution.
+sbaOpen is a worry-free solution for SBA lenders. sbaOpen is the only solution that automatically generates a complete set of eligibility criteria that both lenders and borrowers must follow. At the same time, sbaOpen automatically creates a set of documents that are required for loan submission to SBA.
+After SBA approval is received, sbaOpen automatically generates a set of closing documents, and prepares documents needed in the funding phase.
+Similar work:
+Our solutions include predictive analytics for online banking, text analytics and document management for financial institutions, enterprise collaboration portals, data visualization and reporting, forecasting, big data techniques, asset and liability management, credit risk and fraud detection and prevention solutions.
+

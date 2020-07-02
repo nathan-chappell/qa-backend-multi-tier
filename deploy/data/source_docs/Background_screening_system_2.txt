@@ -1,0 +1,21 @@
+
+
+Our solution was developed using .NET Core stack. 
+The solution is designed using microservices architecture and is targeting cloud environments. It consists of multiple services, including: Web scraping service, Messaging service, Web API, Investigator UI, and BackgroundCheck UI.
+System uses different information providers tcollect data. Providers are categorized into different groups:
+
+* Id Verification information providers: Providers used to confirm search subject identity (SSN and DOB), Discover aliases, Discover addresses, Tracers, FACTS, LexComp
+* Sanctions Search information providers: Various derogatory information SAM.gov, Justice.org, sanctionssearch.ofac.treas.gov, brokercheck.finra.org etc.
+* Criminal/Civil search information providers: Various case records Federal/State Civil/Criminal.
+* Real Estate information providers: Real estate history information.
+* Bankruptcy information providers: Various credit reports.
+* Degree Verification information providers: Confirmation of education.
+* Professional License information providers: Licenses check.
+* Derogatory News Search information providers: Law360, Lexis Nexis.
+ 
+Our background check system is meant tbe deployed on Cloud environment (Azure, Amazon...) and it supports both vertical and horizontal scalability. It is utilizing cloud database and cloud storage solutions. Data at rest is secured on all levels  storage, database, host environment.
+Access tthe system is restricted using IP address and user credentials. System supports multi- factor authentication.
+AWS Lambda (or an alternative cloud service) can be used texecute service operations. This is useful in asynchronous scenarios where providers don't return response immediately. Scheduled jobs are executed to perform status checks in specified intervals. That way we just use resources when we need them instead of creating idle dedicated resources.
+Communication between service instances is done through MQTT protocol and RabbitMQ is used as a message broker.
+Tensure easy maintenance, each service instance can be configured for a specific service providers. Multiple proxies are supported per each instance to avoid usage throttling limitations and IP restrictions imposed by source sites. A lot of work was invested into optimizing memory usage and proxy scheduling.
+

@@ -1,0 +1,11 @@
+
+
+Formatted Provider Responses.
+Some of the providers return formatted results. In such cases, system is capable of parsing complete response and extracting all data automatically and include that information in final report. Formatted responses can contain information about aliases, addresses (current and history), companies, business partners, court records., credit report on various credit cards, fees etc.
+Custom rating algorithm is used tdetermine relevancy of all formatted content.
+Articles, blogs, social media...
+Our background check system collects information from sources that don't provide formatted response - articles, blog posts, social media stories, PDF, Word and other documents types.
+Instead of just collecting this unstructured content, system uses advanced text filtering and content rating techniques tdetermine content that is relevant and then categorizes results by relevance.
+We are using a combination of natural language processing services such as Amazon Comprehend and our custom solutions for named entity recognition. It is used tdiscover entities in downloaded content and calculate their relevance. This way, only relevant user information is presented to users, eliminating huge amounts of non-relevant information that is typically found in manual and semi-automatic searches.
+
+

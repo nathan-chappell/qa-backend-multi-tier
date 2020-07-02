@@ -120,6 +120,7 @@ class MainServer:
     async def shutdown(self, app: web.Application):
         log.info('<main server> shutting down')
         await asyncio.tasks.gather(*[qa.shutdown() for qa in self.qas])
+        await self.database.shutdown()
         if isinstance(self.transformers_micro_process, Process):
             p = self.transformers_micro_process
             if p.is_alive() and isinstance(p.pid, int):
