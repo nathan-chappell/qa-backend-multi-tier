@@ -79,9 +79,9 @@ class TransformersQA(QA):
             raise QAQueryError("context required")
         question_ = {'question': question, 'context': context}
         question_args = {'handle_impossible_answer':True, 'topk':1}
-        log.info(f'transformers_qa: {question_}')
+        log.debug(f'transformers_qa: {question_}')
         answer = self.pipeline(**question_, **question_args)
-        log.info(f'transformers_qa: {answer}')
+        log.debug(f'transformers_qa: {answer}')
         # check for "no answer"
         if answer['start'] == answer['end']:
             answer_ = ''

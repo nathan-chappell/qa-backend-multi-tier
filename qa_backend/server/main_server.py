@@ -18,8 +18,11 @@ from aiohttp.web import Request, Response
 
 from qa_backend import check_config_keys
 
+
 from qa_backend.server import QAServer
 from qa_backend.server import TransformersMicro
+
+from qa_backend.services import set_all_loglevels
 
 from qa_backend.services.database import QueryDatabase
 from qa_backend.services.database import GitWebhookDatabase
@@ -31,7 +34,7 @@ from qa_backend.services.qa import QA
 from qa_backend.services.qa import RegexQA
 from qa_backend.services.qa import MicroAdapter
 
-log = logging.getLogger('server')
+log = logging.getLogger('main')
 
 def load_qas_from_config(config: ConfigParser) -> List[QA]:
     qas : List[QA] = []    
@@ -111,6 +114,7 @@ class MainServer:
         if 'PRINT_TB' in config['miscellaneous']:
             log.info(f'PRINT_TB is ON')
             os.environ['PRINT_TB'] = 'True'
+        set_all_loglevels(config['miscellaneous'].get('log levels','warn'))
         log.info(f'Initialization complete.')
 
     def get_qa_config(self, config: MutableMapping[str,str]) -> Dict[str,Any]:

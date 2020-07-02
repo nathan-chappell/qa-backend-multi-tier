@@ -27,6 +27,7 @@ from qa_backend.services.qa import QA
 from . import exception_to_dict
 
 log = logging.getLogger('server')
+log.setLevel(logging.DEBUG)
 
 #
 # Exceptions and exception utilities
@@ -133,6 +134,7 @@ class QAServer:
         self.port = port
         if isinstance(qa_log_file, str):
             self.qa_log = open(qa_log_file, 'a')
+            log.info(f'qa_log_file: {qa_log_file}')
         self.no_answers = [
             "I'm sorry, I couldn't find an answer to your question.",
             "I was unable to answer your query.",
@@ -156,9 +158,11 @@ class QAServer:
             self.qa_log.close()
 
     def log_qa(self, qa_answers: List[QAAnswer]):
-        if isinstance(self.log_qa, TextIO):
-            json.dump(qa_answers, self.qa_log)
-            self.qa_log.flush()
+        if self.qa_log is not None:
+            try:
+                print(repr(qa_answers), file=self.qa_log, flush=True)
+            except Exception as e:
+                log.error(f'Error while logging: {e}')
 
     def no_answer_reply(self) -> str:
         return random.choice(self.no_answers)
@@ -176,24 +180,28 @@ class QAServer:
     async def answer_question(self, request: Request, qa_size=3, ir_size=2) -> Response:
         log.info(f'got question... {request}')
         body = await request.json()
+        log.debug(f'body: {body}')
         try:
             question = body['question']
         except KeyError as e:
             raise APIError(request, str(e))
         context = body.get('context')
+        log.debug(f'body has context: {context}')
         if context is None:
-            contexts = list(await self.database.query(question,ir_size))
+            log.debug('no context, query db...')
+            contexts = list(await self.database.query(question, ir_size))
+            log.debug(f'got context: {contexts}')
             if len(contexts) > 0:
                 context = contexts[0]
             else:
                 context = None
         answers: List[QAAnswer] = []
         for qa in self.qas:
-            if qa.requires_context:
+            if qa.requires_context and isinstance(context,Paragraph):
+                log.debug(f'QA: {qa}')
                 new_answers = await qa.query(question, context=context.text)
-                if isinstance(context, Paragraph):
-                    for new_answer in new_answers:
-                        new_answer.docId = context.doc_id
+                for new_answer in new_answers:
+                    new_answer.docId = context.docId
                 answers.extend(new_answers)
             else:
                 new_answers = await qa.query(question)
@@ -207,10 +215,10 @@ class QAServer:
     async def crud_read(self, request: Request) -> Response:
         query = request.query
         try:
-            doc_id = query['docId']
+            docId = query['docId']
         except KeyError as e:
             raise APIError(request, str(e))
-        paragraphs = await self.database.read(doc_id)
+        paragraphs = await self.database.read(docId)
         paragraphs_ = [paragraph.to_dict() for paragraph in paragraphs]
         return web.json_response(paragraphs_)
 
@@ -218,11 +226,11 @@ class QAServer:
         body = await request.json()
         try:
             operation = body['operation']
-            doc_id = body['docId']
+            docId = body['docId']
             text = body['text']
         except KeyError as e:
             raise APIError(request, str(e))
-        paragraph = Paragraph(doc_id, text)
+        paragraph = Paragraph(docId, text)
         if operation not in ['create','update']:
             raise APIError(request, 'operation must be in [create, update]')
         if operation == 'create':
@@ -235,10 +243,10 @@ class QAServer:
     async def crud_delete(self, request: Request) -> Response:
         query = request.query
         try:
-            doc_id = query['docId']
+            docId = query['docId']
         except KeyError as e:
             raise APIError(request, str(e))
-        await self.database.delete(doc_id)
+        await self.database.delete(docId)
         return Response()
 
     def run(self):

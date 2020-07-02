@@ -141,9 +141,9 @@ class GitDatabase(Database):
         """Add paragraph to git_dir, and reindex"""
         # check for existing document
         log.debug(f'GitDB: Creating {paragraph}')
-        path = Path(self.git_dir) / paragraph.doc_id
+        path = Path(self.git_dir) / paragraph.docId
         if path.exists():
-            msg = f'doc_id: {paragraph.doc_id} already exists'
+            msg = f'docId: {paragraph.docId} already exists'
             raise DatabaseCreateError(msg) # type: ignore
         # write file
         with open(path,'w') as file:
@@ -161,10 +161,10 @@ class GitDatabase(Database):
     @acquire_lock
     async def read(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> Iterable[Paragraph]:
-        """Retrieve doc_ids (including wildcards)"""
-        paths = list(Path(self.git_dir).glob(doc_id))
+        """Retrieve docIds (including wildcards)"""
+        paths = list(Path(self.git_dir).glob(docId))
         # only return .txt files
         paths = list(filter(lambda p: p.name.endswith('.txt'), paths))
         paths = list(filter(Path.is_file, paths))
@@ -180,33 +180,33 @@ class GitDatabase(Database):
             paragraph: Paragraph
         ) -> None:
         """Update paragraph in git_dir"""
-        path = Path(self.git_dir) / paragraph.doc_id
+        path = Path(self.git_dir) / paragraph.docId
         if not path.exists():
-            msg = f"doc_id: {paragraph.doc_id} doesn't exist"
+            msg = f"docId: {paragraph.docId} doesn't exist"
             raise DatabaseUpdateError(msg) # type: ignore
         with open(path, 'w') as file:
             file.write(paragraph.text)
         try:
-            await git_add(self.git_dir, paragraph.doc_id)
-            await git_commit(self.git_dir, f'update: {paragraph.doc_id}')
+            await git_add(self.git_dir, paragraph.docId)
+            await git_commit(self.git_dir, f'update: {paragraph.docId}')
         except GitError as e:
             raise DatabaseUpdateError(str(e)) # type: ignore
 
     @acquire_lock
     async def delete(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> None:
         """Delete paragraph from git_dir"""
-        path = Path(self.git_dir) / doc_id
+        path = Path(self.git_dir) / docId
         if not path.exists():
-            msg = f"doc_id: {doc_id} doesn't exist"
+            msg = f"docId: {docId} doesn't exist"
             raise DatabaseDeleteError(msg) # type: ignore
         try:
-            await git_rm(self.git_dir, doc_id)
-            await git_commit(self.git_dir, f'removed: {doc_id}')
+            await git_rm(self.git_dir, docId)
+            await git_commit(self.git_dir, f'removed: {docId}')
         except Exception as e:
-            msg = f'delete: error removing {doc_id}'
+            msg = f'delete: error removing {docId}'
             raise DatabaseDeleteError(str(e)) # type: ignore
 
     @acquire_lock

@@ -53,10 +53,10 @@ class GitEsDatabase(QueryDatabase):
     @acquire_lock
     async def read(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> Iterable[Paragraph]:
         # here we appeal only to the git_database
-        return await self.git_database.read(doc_id)
+        return await self.git_database.read(docId)
 
     @acquire_lock
     async def update(
@@ -76,14 +76,14 @@ class GitEsDatabase(QueryDatabase):
     @acquire_lock
     async def delete(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> None:
         try:
-            await self.git_database.delete(doc_id)
+            await self.git_database.delete(docId)
         except DatabaseDeleteError:
             raise
         try:
-            await self.es_database.delete(doc_id)
+            await self.es_database.delete(docId)
         except DatabaseDeleteError:
             raise
 

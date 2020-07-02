@@ -37,7 +37,7 @@ class Database(Configurable):
     @abstractmethod
     async def read(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> Iterable[Paragraph]:
         ...
 
@@ -51,7 +51,7 @@ class Database(Configurable):
     @abstractmethod
     async def delete(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> None:
         ...
 

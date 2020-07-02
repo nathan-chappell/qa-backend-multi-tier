@@ -91,25 +91,25 @@ class ElasticsearchDatabase(QueryDatabase):
         ) -> None:
         body = {'text': paragraph.text}
         try:
-            es.create(self.index, paragraph.doc_id, body)
+            es.create(self.index, paragraph.docId, body, refresh=True)
         except ConflictError as e:
-            msg = f'doc_id: {paragraph.doc_id} already exists'
+            msg = f'docId: {paragraph.docId} already exists'
             raise DatabaseCreateError(msg) # type: ignore
 
     async def read(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> List[Paragraph]:
         try:
-            if doc_id == '*':
+            if docId == '*':
                 body = {'query': {'match_all': {}}}
                 response = es.search(index=self.index, body=body)
                 paragraphs = [Paragraph(hit['_id'],h['_source']['text'])
                               for hit in response['hits']['hits']]
                 return paragraphs
             else:
-                response = es.get(index=self.index, id=doc_id)
-                return [Paragraph(doc_id, response['_source']['text'])]
+                response = es.get(index=self.index, id=docId)
+                return [Paragraph(docId, response['_source']['text'])]
         except NotFoundError as e:
             return []
 
@@ -119,19 +119,19 @@ class ElasticsearchDatabase(QueryDatabase):
         ) -> None:
         try:
             body = {'doc': {'text': paragraph.text}}
-            es.update(self.index, paragraph.doc_id, body)
+            es.update(self.index, paragraph.docId, body)
         except NotFoundError as e:
-            msg = f"doc_id: {paragraph.doc_id} doesn't exist"
+            msg = f"docId: {paragraph.docId} doesn't exist"
             raise DatabaseUpdateError(msg) # type: ignore
 
     async def delete(
             self,
-            doc_id: DocId
+            docId: DocId
         ) -> None:
         try:
-            es.delete(self.index, doc_id)
+            es.delete(self.index, docId)
         except NotFoundError as e:
-            msg = f"doc_id: {doc_id} doesn't exist"
+            msg = f"docId: {docId} doesn't exist"
             raise DatabaseDeleteError(msg) # type: ignore
 
     async def query(

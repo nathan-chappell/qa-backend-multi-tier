@@ -22,7 +22,9 @@ class LoggingFormatter(logging.Formatter):
         #print(f'formatting message: {message}')
         lines: List[str] = list(map(str.strip,re.split("\n", message)))
         lines = list(filter(lambda s: s.strip() != '', lines))
-        formatted = f'[{record.levelname}] [{record.pathname}:{record.lineno}]'
+        formatted = ''.join([f'{"["+record.levelname+"]":10}',
+                              f'{"["+record.name+"]":10}',
+                              f'[{record.pathname}:{record.lineno}]'])
         if len(lines) == 0:
             return formatted
         elif len(lines) == 1:
@@ -31,17 +33,27 @@ class LoggingFormatter(logging.Formatter):
             eol = "\n" + ' '*4 + '-'*4 + ' '*4
             return formatted + eol + eol.join(lines)
         
+_lognames = ['database','qa','server','testing','main']
 def init_logs():
-    lognames = ['database','qa','server']
-    print(f'initializing logs: {", ".join(lognames)}')
-    logs = [logging.getLogger(log) for log in lognames]
+    print(f'initializing logs: {", ".join(_lognames)}')
+    logs = [logging.getLogger(log) for log in _lognames]
     handler = logging.StreamHandler()
     handler.setFormatter(LoggingFormatter())
     for log in logs:
         log.addHandler(handler)
-        log.setLevel(logging.INFO)
+
+def set_all_loglevels(levelname: str):
+    level_map = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warn': logging.WARN,
+        'error': logging.ERROR,
+    }
+    for logname in _lognames:
+        logging.getLogger(logname).setLevel(level_map[levelname])
 
 init_logs()
+set_all_loglevels('info')
 
 #
 # metaclass for objects to be "automatically serialized"
@@ -68,14 +80,14 @@ class QAAnswer(JsonRepresentation):
         self.docId = docId
 
 class Paragraph(JsonRepresentation):
-    __slots__ = ['doc_id','text']
-    doc_id: str
+    __slots__ = ['docId','text']
+    docId: str
     text: str
 
-    def __init__(self, doc_id: str, text: str):
-        if not doc_id.endswith('.txt'):
-            raise ValueError("Paragraph.doc_id must have .txt as suffix")
-        self.doc_id = doc_id
+    def __init__(self, docId: str, text: str):
+        if not docId.endswith('.txt'):
+            raise ValueError("Paragraph.docId must have .txt as suffix")
+        self.docId = docId
         self.text = text
 
 
