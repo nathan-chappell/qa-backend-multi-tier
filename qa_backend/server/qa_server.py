@@ -178,7 +178,7 @@ class QAServer:
         answers = list(sorted(answers, key=lambda a: a.score, reverse=True))
         answers_ = [answer.to_dict() for answer in answers]
         if len(answers_) > 0:
-            chosen_answer = answers_[0]
+            chosen_answer: Optional[Dict[str,Any]] = answers_[0]
         else:
             chosen_answer = None
         return {

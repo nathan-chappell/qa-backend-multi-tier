@@ -17,7 +17,7 @@ from pprint import pprint, pformat
 import aiohttp
 from aiohttp import ClientSession, ClientResponseError
 from aiohttp.client_exceptions import ClientConnectorError
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch # type: ignore
 
 log = logging.getLogger('testing')
 loop = asyncio.get_event_loop()

@@ -4,12 +4,14 @@ Abstract database requires basic CRUD functionality:
 """
 
 from abc import ABC, abstractmethod
-from typing import Iterable, Callable, Coroutine, Any
+from typing import Iterable, Callable, Coroutine, Any, List
 import functools
 import logging
+from pathlib import Path
 
 from qa_backend import Configurable
 from .. import Paragraph, DocId
+from .database_error import *
 
 AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
 
@@ -57,6 +59,35 @@ class Database(Configurable):
 
     async def shutdown(self):
         pass
+
+    async def get_all(self) -> List[Paragraph]:
+        pass
+
+    # TODO: test, add to api
+    async def add_directory(self, directory_name):
+        directory_path = Path(directory_name)
+        if not directory_path.exists():
+            msg = f'{directory_name} does not exist'
+            raise DatabaseCreateError(msg)
+        paths = directory_path.glob('*.txt')
+        for path in paths:
+            with open(path) as file:
+                text = file.read()
+            try:
+                self.create(Paragraph(path.name, text))
+            except DatabaseAlreadyExistsError as e:
+                msg = f'{path.name} alread exists'
+                log.info(msg)
+
+    # TODO: test, add to api
+    async def dump_to_directory(self, directory_name):
+        directory_path = Path(directory_name)
+        if not directory_path.exists():
+            msg = f'{directory_name} does not exist'
+        all_paragraphs = await self.get_all()
+        for paragraph in all_paragraphs:
+            with open(directory_path / paragraph.docId,'w') as file:
+                file.write(paragraph.text)
 
 class QueryDatabase(Database):
     @abstractmethod

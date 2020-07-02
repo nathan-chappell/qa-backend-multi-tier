@@ -105,9 +105,9 @@ class ElasticsearchDatabase(QueryDatabase):
         ) -> List[Paragraph]:
         try:
             if docId == '*':
-                body = {'query': {'match_all': {}}}
+                body: Dict[str,Any] = {'query': {'match_all': {}}}
                 response = es.search(index=self.index, body=body)
-                paragraphs = [Paragraph(hit['_id'],h['_source']['text'])
+                paragraphs = [Paragraph(hit['_id'], hit['_source']['text'])
                               for hit in response['hits']['hits']]
                 return paragraphs
             else:

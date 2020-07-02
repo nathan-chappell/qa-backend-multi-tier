@@ -13,7 +13,7 @@ import yaml
 sys.path.append('..')
 
 from elasticsearch import Elasticsearch # type: ignore
-from qa_backend.services.database import GitDatabase, ElasticsearchDatabase
+from qa_backend.services.database import ElasticsearchDatabase
 
 es = Elasticsearch()
 
@@ -28,28 +28,3 @@ def set_up_es_db(test_case):
 
 def tear_down_es_db(test_case):
     es.indices.delete(test_case.index)
-
-def get_git_dir():
-    git_dir = str(uuid4())
-    if Path(git_dir).exists():
-        raise RuntimeError(f'about to step on {git_dir}')
-    return git_dir
-
-def remove_dir(name: str):
-    subprocess.run(['rm', '-rf', name])
-
-def set_up_git_db(test_case):
-    test_case.git_dir = get_git_dir()
-
-def tear_down_git_db(test_case):
-    remove_dir(test_case.git_dir)
-
-def set_up_git_es_db(test_case):
-    set_up_git_db(test_case)
-    set_up_es_db(test_case)
-    test_case.git_database = GitDatabase(test_case.git_dir)
-    test_case.es_database = ElasticsearchDatabase(test_case.init_file)
-
-def tear_down_git_es_db(test_case):
-    es.indices.delete(test_case.index)
-    remove_dir(test_case.git_dir)
