@@ -31,9 +31,6 @@ class MicroAdapter(QA):
         self.path = path
         self.session = ClientSession()
 
-    def __del__(self):
-        asyncio.get_event_loop().create_task(self.shutdown())
-
     @staticmethod
     def from_config(config: MutableMapping[str,str]) -> 'MicroAdapter':
         check_config_keys(config, ['host','port','path'])
@@ -53,17 +50,20 @@ class MicroAdapter(QA):
         context = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
+        assert isinstance(context, str)
         body = {'question': question, 'context': context}
+        log.debug(f'about to query: {body}')
         async with self.session.post(url=self.url, json=body) as response:
             status = response.status
+            log.debug('got response: {response}')
             if status != 200:
                 msg = f'got {status} from {self.url}: {response.reason}'
                 raise QAQueryError(msg)
             try:
                 resp_json = await response.json()
-                question = resp_json['question']
-                answer = resp_json['answer']
-                score = float(resp_json['score'])
+                question = resp_json[0]['question']
+                answer = resp_json[0]['answer']
+                score = float(resp_json[0]['score'])
                 return [QAAnswer(question, answer, score)]
             except JSONDecodeError as e:
                 text = await response.text()
@@ -75,5 +75,5 @@ class MicroAdapter(QA):
                 raise QAQueryError(str(e))
 
     async def shutdown(self):
-        if not self.session.closed():
+        if not self.session.closed:
             await self.session.close()

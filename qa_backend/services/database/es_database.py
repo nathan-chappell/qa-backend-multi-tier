@@ -50,10 +50,14 @@ class ElasticsearchDatabase(QueryDatabase):
     def from_config(
             config: MutableMapping[str,str]
         ) -> 'ElasticsearchDatabase':
-        check_config_keys(config, ['init file'])
+        check_config_keys(config, ['init file','erase if exists'])
         try:
             init_file = config['init file']
-            return ElasticsearchDatabase(init_file)
+            if 'erase if exists' in config.keys():
+                erase_if_exists = config.getboolean('erase if exists')
+            else:
+                erase_if_exists = False
+            return ElasticsearchDatabase(init_file, erase_if_exists)
         except ValueError as e:
             raise ConfigurationError(str(e))
 
@@ -129,8 +133,10 @@ class ElasticsearchDatabase(QueryDatabase):
             size: int = 5
         ) -> Iterable[Paragraph]:
         try:
-            body = {'query': {'match_all': {'text': query_string}},
-                    'size':size}
+            if query_string = '*'
+                body = {'query': {'match_all': {}}, 'size':size}
+            else:
+                body = {'query': {'match': {'text': query_string}}, 'size':size}
             response = es.search(index=self.index, body=body)
             paragraphs = []
             for hit in response['hits']['hits']:

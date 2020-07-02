@@ -12,7 +12,7 @@ Services:
 import json
 import logging
 import re
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 DocId = str
 
@@ -55,15 +55,17 @@ class JsonRepresentation:
         return json.dumps(self.to_dict())
 
 class QAAnswer(JsonRepresentation):
-    __slots__ = ['score','question','answer']
+    __slots__ = ['score','question','answer','docId']
     question: str
     answer: str
     score: float
+    docId: Optional[str]
 
-    def __init__(self, question: str, answer: str, score: float):
+    def __init__(self, question: str, answer: str, score: float, docId: Optional[str] = None):
         self.question = question
         self.answer = answer
         self.score = score
+        self.docId = docId
 
 class Paragraph(JsonRepresentation):
     __slots__ = ['doc_id','text']

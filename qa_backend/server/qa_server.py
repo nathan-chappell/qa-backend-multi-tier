@@ -82,7 +82,9 @@ async def exception_middleware(
         ) -> web.StreamResponse:
     """Catch listed exceptions and convert them to json responses."""
     try:
-        return await handler(request)
+        result = await handler(request)
+        log.debug('exception middleware not fired')
+        return result
     except JSONDecodeError as e:
         info = exception_to_dict(e, log_error=False)
         return web.json_response(info, status=400)
@@ -183,10 +185,15 @@ class QAServer:
             contexts = list(await self.database.query(question,ir_size))
             if len(contexts) > 0:
                 context = contexts[0]
+            else:
+                context = None
         answers: List[QAAnswer] = []
         for qa in self.qas:
             if qa.requires_context:
-                new_answers = await qa.query(question, context=context)
+                new_answers = await qa.query(question, context=context.text)
+                if isinstance(context, Paragraph):
+                    for new_answer in new_answers:
+                        new_answer.docId = context.doc_id
                 answers.extend(new_answers)
             else:
                 new_answers = await qa.query(question)
@@ -194,6 +201,7 @@ class QAServer:
         self.log_qa(answers)
         response_answers = self.get_answers_for_response(answers)
         response_answers.update({'question':question})
+        log.debug(f'response_answers: type: {type(response_answers)}, val: {response_answers}')
         return web.json_response(response_answers)
 
     async def crud_read(self, request: Request) -> Response:
