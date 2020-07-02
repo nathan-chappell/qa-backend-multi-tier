@@ -200,8 +200,8 @@ class QAServer:
             log.debug('no context, query db...')
             paragraphs = list(await self.database.query(question, ir_size))
             log.debug(f'got paragraphs: {paragraphs}')
-        retrieved_docids = [p.docId for p in paragraphs]
-        log.info(f'Retrieved: {", ".join(retrieved_docids)}')
+        retrieved_docids = "\n".join([p.docId for p in paragraphs])
+        log.info(f'Retrieved: \n{retrieved_docids}')
         answers: List[QAAnswer] = []
         for qa in self.qas:
             if qa.requires_context and len(paragraphs) > 0:

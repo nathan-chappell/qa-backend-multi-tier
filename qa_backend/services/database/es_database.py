@@ -31,8 +31,9 @@ from . import QueryDatabase
 es = Elasticsearch()
 
 class Explanation(JsonRepresentation):
-    __slots__ = ['body','scores','docId','index']
+    __slots__ = ['body','scores','docId','index','total_score']
     query: Dict[str,Any]
+    total_score: float
     scores: List[Tuple[str,float]]
     docId: str
     index: str
@@ -44,6 +45,7 @@ class Explanation(JsonRepresentation):
         self.scores = []
         self.index = index
         explanation = es.explain(index, id=docId, body={'query':self.body})
+        self.total_score = float(explanation['explanation']['value'])
         for detail in explanation['explanation']['details']:
             text = self.text_re.sub(r'\1',detail['description'])
             score = float(detail['value'])
@@ -210,6 +212,7 @@ class ElasticsearchDatabase(QueryDatabase):
             size: int = 10
         ) -> Iterable[Paragraph]:
         try:
+            log.info(f'query[:{size}] {query_string}')
             body = {'query': {'match': {'text': query_string}}, 'size':size}
             response = es.search(index=self.index, body=body)
             paragraphs = []

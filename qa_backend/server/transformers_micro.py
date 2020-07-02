@@ -87,14 +87,14 @@ class TransformersMicro(Configurable):
             raise ConfigurationError(str(e))
 
     async def answer_question(self, request: Request) -> Response:
-        log.info(f'micro got question: {request}')
         body = await request.json()
+        log.debug(f'micro got question: {body}')
         if set(body.keys()) != set(['question','context']):
             raise TypeError()
         question = body['question']
         context = body['context']
         answer = await self.transformer_qa.query(question, context=context)
-        log.info(f'micro got answer: {answer}')
+        log.debug(f'micro got answer: {answer}')
         return web.json_response(text=repr(answer))
 
     def run(self):
@@ -102,6 +102,7 @@ class TransformersMicro(Configurable):
         app.add_routes([
             web.post('/question', self.answer_question),
         ])
+        log.info(f'Running transformers_micro: pid: {os.getpid()}')
         self.transformer_qa = TransformersQA(
                                     model_name=self.model_name,
                                     use_gpu=self.use_gpu,
