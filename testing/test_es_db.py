@@ -18,7 +18,7 @@ es = Elasticsearch()
 loop = asyncio.get_event_loop()
 
 def set_up_es_db(test_case):
-    test_case.init_file = get_es_init_file()
+    test_case.init_file = 'es_test_data/config.yml'
     with open(test_case.init_file) as file:
         test_case.init_data = yaml.full_load(file)
     test_case.index = test_case.init_data['index']
@@ -52,7 +52,7 @@ class ElasticsearchDatabase_TestCreate(unittest.TestCase):
     def test_create(self):
         try:
             for paragraph in self.paragraphs:
-                with self.subTest(doc_id=paragraph.doc_id):
+                with self.subTest(docId=paragraph.docId):
                     loop.run_until_complete(
                         self.es_database.create(paragraph)
                     )
@@ -86,10 +86,10 @@ class ElasticsearchDatabase_TestRead(unittest.TestCase):
         tear_down_es_db(self)
 
     def test_read(self):
-        coro = self.es_database.read(self.paragraphs[0].doc_id)
+        coro = self.es_database.read(self.paragraphs[0].docId)
         paragraphs = loop.run_until_complete(coro)
         self.assertEqual(1,len(paragraphs))
-        self.assertEqual(paragraphs[0].doc_id, self.paragraphs[0].doc_id)
+        self.assertEqual(paragraphs[0].docId, self.paragraphs[0].docId)
         # strip whitespace (\n added from print())
         self.assertEqual(
             paragraphs[0].text.strip(),
@@ -126,7 +126,7 @@ class ElasticsearchDatabase_TestUpdate(unittest.TestCase):
         loop.run_until_complete(
             self.es_database.update(self.paragraph_1)
         )
-        text = es.get(self.index, self.paragraph_1.doc_id)['_source']['text']
+        text = es.get(self.index, self.paragraph_1.docId)['_source']['text']
         self.assertEqual(text.strip(), self.paragraph_1.text.strip())
 
     def test_update_no_exist(self):
@@ -149,14 +149,14 @@ class ElasticsearchDatabase_TestDelete(unittest.TestCase):
 
     def test_delete(self):
         loop.run_until_complete(
-            self.es_database.delete(self.paragraph_0.doc_id)
+            self.es_database.delete(self.paragraph_0.docId)
         )
-        path = Path(self.init_file) / self.paragraph_0.doc_id
+        path = Path(self.init_file) / self.paragraph_0.docId
         self.assertFalse(path.exists())
 
     def test_delete_no_exist(self):
         with self.assertRaises(DatabaseDeleteError):
-            coro = self.es_database.delete(self.paragraph_no_exist.doc_id)
+            coro = self.es_database.delete(self.paragraph_no_exist.docId)
             loop.run_until_complete(coro)
 
 # TODO: Test query

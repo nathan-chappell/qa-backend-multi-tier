@@ -16,6 +16,17 @@ from aiohttp import ClientSession
 sys.path.append('..')
 
 from qa_backend.server import TransformersMicro
+from qa_backend.util import QAAnswer
+
+context = """ Successful unit testing requires writing tests that would
+only fail in case of an actual error or requirement change. There are a
+few rules that help avoid writing fragile unit tests. These are tests that
+would fail due to an internal change in the software that does not affect
+the user.  Since the same developer that wrote the code and knows how the
+solution was implemented usually writes unit tests, it is difficult not to
+test the inner workings of how a feature was implemented. The problem is
+that implementation tends to change and the test will fail even if the
+result is the same.  """
 
 def run():
     transformers_micro = TransformersMicro()
@@ -29,7 +40,6 @@ class TransformersMicro_TestQuery(unittest.TestCase):
         async def get_answer():
             body = {'question': 'what are fragile unit tests?',
                     'context': context}
-            await asyncio.sleep(2)
             async with session.post(self.url,json=body) as response:
                 status = response.status
                 response_body = await response.json()
@@ -37,7 +47,7 @@ class TransformersMicro_TestQuery(unittest.TestCase):
         status, response_body = loop.run_until_complete(get_answer())
         self.assertEqual(status, 200)
         self.assertEqual(set(response_body[0].keys()), 
-                         set(['question','answer','score']))
+                         set(QAAnswer.__slots__))
         log.info(response_body)
 
     def test_api_error(self):
@@ -84,15 +94,5 @@ if __name__ == '__main__':
     startup_successfull = loop.run_until_complete(wait_for_server())
     if not startup_successfull:
         raise RuntimeError("couldn't connect to server")
-
-    context = """ Successful unit testing requires writing tests that would
-    only fail in case of an actual error or requirement change. There are a
-    few rules that help avoid writing fragile unit tests. These are tests that
-    would fail due to an internal change in the software that does not affect
-    the user.  Since the same developer that wrote the code and knows how the
-    solution was implemented usually writes unit tests, it is difficult not to
-    test the inner workings of how a feature was implemented. The problem is
-    that implementation tends to change and the test will fail even if the
-    result is the same.  """
 
     unittest.main()

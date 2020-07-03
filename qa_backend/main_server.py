@@ -28,6 +28,7 @@ from qa_backend.services.database import QueryDatabase
 from qa_backend.services.qa import MicroAdapterQA
 from qa_backend.services.qa import QA
 from qa_backend.services.qa import RegexQA
+from qa_backend.util import Configurable
 from qa_backend.util import check_config_keys
 from qa_backend.util import set_all_loglevels
 

@@ -32,8 +32,8 @@ class RegexQA_TestQuery(unittest.TestCase):
 
     def test_happy_bad(self):
         question = 'is it a pipe?'
-        answer = loop.run_until_complete(self.happy.query(question))[0]
-        self.assertEqual(answer.answer, '')
+        answers = loop.run_until_complete(self.happy.query(question))
+        self.assertEqual(len(answers), 0)
 
     def test_notmad_good(self):
         question = 'Is Nathan Mad at the World?'

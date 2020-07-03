@@ -18,7 +18,7 @@ import logging
 import os
 import sys
 
-from .logging import set_all_loglevels
+from .logging_ import set_all_loglevels
 from .serialization import JsonRepresentation
 from .serialization import Paragraph
 from .serialization import QAAnswer

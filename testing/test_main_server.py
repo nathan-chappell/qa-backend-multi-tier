@@ -34,7 +34,7 @@ config.read(config_file)
 
 def run():
     log.info('running main server for testing...')
-    main_server = MainServer('main_server.cfg')
+    main_server = MainServer(config_file)
     main_server.run()
 
 def wait_for_connection(endpoint:str):
@@ -76,8 +76,15 @@ def start_server_process():
         except:
             print('[[EXCEPTION]]')
     atexit.register(kill_p)
-    wait_for_connection('http://0.0.0.0:8080')
-    wait_for_connection('http://0.0.0.0:8081')
+    config = ConfigParser(interpolation=ExtendedInterpolation())
+    config.read(config_file)
+    tm_host = config['transformers micro service']['host']
+    tm_port = config['transformers micro service'].getint('port')
+    qa_host = config['qa server']['host']
+    qa_port = config['qa server'].getint('port')
+
+    wait_for_connection(f'http://{qa_host}:{qa_port}')
+    wait_for_connection(f'http://{tm_host}:{tm_port}')
 
 def get_host():
     host = config['qa server']['host']
@@ -239,7 +246,7 @@ class MainServer_QA(unittest.TestCase):
 if __name__ == '__main__':
     try:
         if sys.argv[1] == '-r':
-            main_server = MainServer('main_server.cfg')
+            main_server = MainServer(config_file)
             main_server.run()
             exit(0)
     except IndexError:
