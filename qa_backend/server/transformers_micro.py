@@ -36,22 +36,29 @@ class TransformersMicro(Configurable):
     host: str
     port: int
     transformer_qa: TransformersQA
+    transformer_qa_kwargs: Mapping[str,Union[int,bool,str]]
 
     def __init__(
             self, host: str = '0.0.0.0', port: int = 8081,
             transformer_qa: Optional[TransformersQA] = None,
-            model_name: Optional[str] = None, 
-            use_gpu: bool = False,
-            device: int = -1,
+            transformer_qa_kwargs: Optional[Mapping[str,Union[int,bool,str]]],
+            #model_name: Optional[str] = None, 
+            #use_gpu: bool = False,
+            #device: int = -1,
         ):
         self.host = host
         self.port = port
-        self.model_name = model_name
-        self.use_gpu = use_gpu
-        self.device = device
+        #self.model_name = model_name
+        #self.use_gpu = use_gpu
+        #self.device = device
         if isinstance(transformer_qa, TransformersQA):
             self.transformer_qa = transformer_qa
+        else:
+            self.transformer_qa_kwargs = transformer_qa_kwargs
         log.info(f'initialized TransformersMicro: {str(self)}')
+
+    def __str__(self) -> str:
+        return f'{self.url}, {self._info}'
 
     @property
     def url(self) -> str:

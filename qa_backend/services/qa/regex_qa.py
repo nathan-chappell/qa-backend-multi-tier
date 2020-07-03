@@ -30,7 +30,7 @@ class RegexQA(QA):
     
     def __init__(self, regex: str, responses: List[str]):
         self._requires_context = False
-        log.info('RegexQA regex: {regex}')
+        log.info(f'RegexQA regex: {regex}')
         responses_str = "\n".join(responses)
         log.debug(f"RegexQA responses:\n{responses_str}")
         regex_ = re.sub(r'\s',r'\s+',regex)

@@ -30,7 +30,7 @@ class MicroAdapterQA(QA):
         self.host = host
         self.port = port
         self.path = path
-        log.info('created MicroAdapterQA: {self.url}')
+        log.info(f'created MicroAdapterQA: {self.url}')
         self.session = ClientSession()
 
     @staticmethod
@@ -44,7 +44,7 @@ class MicroAdapterQA(QA):
             path = str(config.get('path','/question'))
             return MicroAdapterQA(host,port,path)
         except ValueError as e:
-            msg = 'Error in config: {str(e)}'
+            msg = f'Error in config: {str(e)}'
             log.error(msg)
             raise ConfigurationError(msg)
 
@@ -53,7 +53,7 @@ class MicroAdapterQA(QA):
         return f'http://{self.host}:{self.port}{self.path}'
 
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
-        log.debug('[MicroAdapterQA] question: {question}')
+        log.debug(f'[MicroAdapterQA] question: {question}')
         context = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
@@ -63,7 +63,7 @@ class MicroAdapterQA(QA):
         log.debug(f'about to query: {body}')
         async with self.session.post(url=self.url, json=body) as response:
             status = response.status
-            log.debug('got response: {response}')
+            log.debug(f'got response: {response}')
             if status != 200:
                 msg = f'got {status} from {self.url}: {response.reason}'
                 raise QAQueryError(msg)
