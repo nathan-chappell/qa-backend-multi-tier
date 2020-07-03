@@ -2,27 +2,33 @@
 """
 CRUD frontend to git repository
 """
-import asyncio
-from pathlib import Path
-import logging
-from typing import Dict, List, Any, Iterable, MutableMapping, Tuple
-from typing import Optional, TextIO
-import re
-from datetime import datetime
 
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import MutableMapping
+from typing import Optional
+from typing import TextIO
+from typing import Tuple
+import asyncio
+import logging
+import re
 import yaml
+
 from elasticsearch import Elasticsearch # type: ignore
 from elasticsearch.exceptions import ConflictError # type: ignore
 from elasticsearch.exceptions import NotFoundError # type: ignore
 
-from qa_backend import check_config_keys, ConfigurationError
-from qa_backend.services import JsonRepresentation
-from .abstract_database import DocId, Paragraph, Database
-from .database_error import DatabaseError
-from .database_error import DatabaseAlreadyExistsError
-from .database_error import DatabaseCreateError, DatabaseUpdateError
-from .database_error import DatabaseDeleteError, DatabaseReadError
-from .database_error import DatabaseQueryError
+from .abstract_database import Database
+from .abstract_database import DocId
+from .abstract_database import Paragraph
+from .database_error import *
+from qa_backend.util import ConfigurationError
+from qa_backend.util import JsonRepresentation
+from qa_backend.util import check_config_keys
 
 log = logging.getLogger('database')
 
@@ -174,7 +180,7 @@ class ElasticsearchDatabase(QueryDatabase):
         ) -> List[Paragraph]:
         try:
             if docId == '*':
-                body: Dict[str,Any] = {'query': {'match_all': {}}}
+                body: Dict[str,Any] = {'query':{'match_all':{}},'size':10000}
                 response = es.search(index=self.index, body=body)
                 paragraphs = [Paragraph(hit['_id'], hit['_source']['text'])
                               for hit in response['hits']['hits']]

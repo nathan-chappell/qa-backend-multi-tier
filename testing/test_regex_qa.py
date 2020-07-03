@@ -1,14 +1,14 @@
 # test_regex_qa.py
 
-import unittest
-import asyncio
 from pathlib import Path
+import asyncio
 import logging
 import sys
+import unittest
+
 sys.path.append('..')
 
-import testing
-from qa_backend.services.qa.regex_qa import RegexQA
+from qa_backend.services.qa import RegexQA
 
 log = logging.getLogger('qa')
 loop = asyncio.get_event_loop()

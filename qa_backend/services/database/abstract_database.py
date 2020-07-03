@@ -3,19 +3,24 @@
 Abstract database requires basic CRUD functionality:
 """
 
-from abc import ABC, abstractmethod
-from typing import Iterable, Callable, Coroutine, Any, List
+from abc import abstractmethod
+from pathlib import Path
+from typing import Any
+from typing import Callable
+from typing import Coroutine
+from typing import Iterable
+from typing import List
 import functools
 import logging
-from pathlib import Path
 
-from qa_backend import Configurable
-from .. import Paragraph, DocId
 from .database_error import *
-
-AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
+from qa_backend.util import Configurable
+from qa_backend.util import Paragraph
 
 log = logging.getLogger('database')
+
+DocId = str
+AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
 
 def acquire_lock(f: AsyncMethod) -> AsyncMethod:
     @functools.wraps(f)

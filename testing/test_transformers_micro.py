@@ -1,20 +1,20 @@
 # test_tranformers_micro.py
 
-import multiprocessing
-from multiprocessing import Process
-import signal
-import asyncio
 from aiohttp import ClientConnectionError
-import logging
-import unittest
-import os
+from multiprocessing import Process
+import asyncio
 import atexit
+import logging
+import multiprocessing
+import os
+import signal
 import sys
+import unittest
+
+from aiohttp import ClientSession
+
 sys.path.append('..')
 
-import aiohttp
-from aiohttp import ClientSession
-import testing
 from qa_backend.server import TransformersMicro
 
 def run():

@@ -3,22 +3,23 @@
 Adapter for a transformers_micro endpoint
 """
 
-import logging
-from typing import List, MutableMapping
 from json.decoder import JSONDecodeError
-import asyncio
+from typing import List
+from typing import MutableMapping
+import logging
 
-import aiohttp.web as web
-from aiohttp.web import Request, Response
-from aiohttp import ClientSession, ContentTypeError
+from aiohttp import ClientSession
+from aiohttp import ContentTypeError
 
-from qa_backend import check_config_keys, ConfigurationError
-from .abstract_qa import QA, QAAnswer, QAQueryError
-from . import complete_sentence
+from .abstract_qa import QA
+from .abstract_qa import QAQueryError
+from qa_backend.util import ConfigurationError
+from qa_backend.util import QAAnswer
+from qa_backend.util import check_config_keys
 
 log = logging.getLogger('qa')
 
-class MicroAdapter(QA):
+class MicroAdapterQA(QA):
     host: str
     port: int
     path: str
@@ -32,13 +33,13 @@ class MicroAdapter(QA):
         self.session = ClientSession()
 
     @staticmethod
-    def from_config(config: MutableMapping[str,str]) -> 'MicroAdapter':
+    def from_config(config: MutableMapping[str,str]) -> 'MicroAdapterQA':
         check_config_keys(config, ['host','port','path'])
         try:
             host = str(config.get('host','localhost'))
             port = int(config.get('port', 8081))
             path = str(config.get('path','/question'))
-            return MicroAdapter(host,port,path)
+            return MicroAdapterQA(host,port,path)
         except ValueError as e:
             raise ConfigurationError(str(e))
 

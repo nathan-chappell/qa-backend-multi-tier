@@ -3,9 +3,9 @@
 Errors raised by databases for CRUD operations
 """
 
+from traceback import format_tb
 import logging
 import sys
-from traceback import format_tb
 
 log = logging.getLogger('database')
 

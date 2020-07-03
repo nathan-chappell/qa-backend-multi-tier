@@ -1,21 +1,30 @@
 # test_es_db.py
 
-import asyncio
-import unittest
 from pathlib import Path
+import asyncio
 import sys
-sys.path.append('..')
+import unittest
 
 from elasticsearch import Elasticsearch # type: ignore
 import yaml
 
+sys.path.append('..')
 
-from testing import set_up_es_db, tear_down_es_db
-from qa_backend.services import Paragraph
-from qa_backend.services.database import *
+from qa_backend.services.database import ElasticsearchDatabase
+from qa_backend.services.database.database_error import *
+from qa_backend.util import Paragraph
 
 es = Elasticsearch()
 loop = asyncio.get_event_loop()
+
+def set_up_es_db(test_case):
+    test_case.init_file = get_es_init_file()
+    with open(test_case.init_file) as file:
+        test_case.init_data = yaml.full_load(file)
+    test_case.index = test_case.init_data['index']
+
+def tear_down_es_db(test_case):
+    es.indices.delete(test_case.index)
 
 class ElasticsearchDatabase_TestInit(unittest.TestCase):
     def setUp(self):

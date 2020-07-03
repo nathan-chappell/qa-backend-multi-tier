@@ -1,29 +1,31 @@
 # test_main_server.py
 
-import multiprocessing
-import sys
-sys.path.append('..')
-import logging
+from configparser import ConfigParser
+from configparser import ExtendedInterpolation
+from pprint import pformat
+from typing import Any
+from typing import Tuple
+import asyncio
 import atexit
+import logging
+import multiprocessing
 import os
 import signal
+import sys
 import unittest
-import asyncio
-from typing import Dict, Any, Tuple
-from configparser import ConfigParser, ExtendedInterpolation
-from json.decoder import JSONDecodeError
-from pprint import pprint, pformat
 
-import aiohttp
-from aiohttp import ClientSession, ClientResponseError
+from aiohttp import ClientResponseError
+from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
 from elasticsearch import Elasticsearch # type: ignore
+
+sys.path.append('..')
+
+from qa_backend.server.main_server import MainServer
 
 log = logging.getLogger('testing')
 loop = asyncio.get_event_loop()
 es = Elasticsearch()
-
-from qa_backend.server.main_server import MainServer
 
 context = """ Client session is the recommended interface for making HTTP requests.  Session encapsulates a connection pool (connector instance) and supports keepalives by default. Unless you are connecting to a large, unknown number of different servers over the lifetime of your application, it is suggested you use a single session for the lifetime of your application to benefit from connection pooling.  """
 config_file = 'main_server.cfg'

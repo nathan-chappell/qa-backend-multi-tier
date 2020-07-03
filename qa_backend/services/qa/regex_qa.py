@@ -5,14 +5,21 @@ applys any indicated substitutions, and replies.
 """
 
 from pathlib import Path
-from typing import Optional, List, Iterable, Pattern, Union, Match, cast
+from typing import List
+from typing import Match
 from typing import MutableMapping
-import re
+from typing import Pattern
+from typing import Union
+from typing import cast
 import random
+import re
 import yaml
 
-from qa_backend import check_config_keys, ConfigurationError
-from .abstract_qa import QA, QAQueryError, QAAnswer
+from .abstract_qa import QAQueryError
+from .abstract_qa import QA
+from qa_backend.util import ConfigurationError
+from qa_backend.util import QAAnswer
+from qa_backend.util import check_config_keys
 
 class RegexQA(QA):
     regex: Pattern

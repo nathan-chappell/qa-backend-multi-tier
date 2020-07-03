@@ -3,34 +3,33 @@
 The actual server to run.
 """
 
-import multiprocessing
+from configparser import ConfigParser
+from configparser import ExtendedInterpolation
 from multiprocessing import Process
+from pathlib import Path
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import MutableMapping
+from typing import Optional
+from typing import Union
+import asyncio
 import logging
+import multiprocessing
 import os
 import signal
-import atexit
-from pathlib import Path
-from typing import Union, Optional, Dict, Any, List, MutableMapping
-from configparser import ConfigParser, ExtendedInterpolation
-import asyncio
 
 import aiohttp.web as web
-from aiohttp.web import Request, Response
-
-from qa_backend import check_config_keys
 
 from qa_backend.server import QAServer
 from qa_backend.server import TransformersMicro
-
-from qa_backend.services import set_all_loglevels
-
-from qa_backend.services.database import QueryDatabase
 from qa_backend.services.database import ElasticsearchDatabase
-
-from qa_backend.services.qa import QAAnswer
+from qa_backend.services.database import QueryDatabase
+from qa_backend.services.qa import MicroAdapterQA
 from qa_backend.services.qa import QA
 from qa_backend.services.qa import RegexQA
-from qa_backend.services.qa import MicroAdapter
+from qa_backend.util import check_config_keys
+from qa_backend.util import set_all_loglevels
 
 log = logging.getLogger('main')
 
@@ -43,7 +42,7 @@ def load_qas_from_config(config: ConfigParser) -> List[QA]:
             qas.extend(RegexQA.from_config(qa_cfg))
             log.info('<REGEX QA>')
         elif type_ == 'micro_adapter':
-            qas.append(MicroAdapter.from_config(qa_cfg))
+            qas.append(MicroAdapterQA.from_config(qa_cfg))
             log.info('<MICRO ADAPTER>')
         else:
             raise ValueError(f'unknown QA type: {type_}')
@@ -56,7 +55,7 @@ def load_qas_from_config(config: ConfigParser) -> List[QA]:
 #       QAs:                        |
 #           - RegexQA               |
 #           - [Other QA services]   |
-#           - MicroAdapter -*       |
+#           - MicroAdapterQA -*       |
 #                           |       |
 #   TransformersMicro ------*       |
 #
@@ -145,4 +144,3 @@ class MainServer:
         log.info(f'running qa_server')
         self.run_micro()
         self.qa_server.run()
-

@@ -1,14 +1,21 @@
 # transformers_qa.py
 
-from typing import List, Optional, cast, MutableMapping
+from typing import List
+from typing import MutableMapping
+from typing import Optional
+from typing import cast
 import logging
 
-from transformers import AutoModelForQuestionAnswering, AutoTokenizer # type: ignore
+from transformers import AutoModelForQuestionAnswering # type: ignore
+from transformers import AutoTokenizer # type: ignore
 from transformers import QuestionAnsweringPipeline # type: ignore
 
-from qa_backend import check_config_keys, ConfigurationError
-from .abstract_qa import QA, QAAnswer, QAQueryError
-from . import complete_sentence
+from .abstract_qa import QA
+from .abstract_qa import QAQueryError
+from qa_backend.util import ConfigurationError
+from qa_backend.util import QAAnswer
+from qa_backend.util import check_config_keys
+from qa_backend.util import complete_sentence
 
 log = logging.getLogger('qa')
 

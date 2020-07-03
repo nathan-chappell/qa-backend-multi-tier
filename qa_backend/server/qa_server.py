@@ -6,30 +6,34 @@
 * TODO: use sentence transformers for qa intent detection
 """
 
-import logging
-from typing import Dict, Any, List, TextIO, Optional
 from traceback import print_tb
-import sys
-import os
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import TextIO
 from uuid import uuid4
 import json
+import logging
+import os
 import random
+import sys
 
-import aiohttp.web as web # type: ignore
+from aiohttp.web import Request # type: ignore
+from aiohttp.web import Response # type: ignore
 from aiohttp.web_middlewares import _Handler # type: ignore
-from aiohttp.web import Request, Response # type: ignore
 from json.decoder import JSONDecodeError
 from markdown import markdown # type: ignore
+import aiohttp.web as web # type: ignore
 
-from qa_backend.services.database.database_error import DatabaseAlreadyExistsError
-
-from qa_backend.services import QAAnswer, Paragraph
+from qa_backend.services.database import DatabaseAlreadyExistsError
 from qa_backend.services.database import QueryDatabase
 from qa_backend.services.qa import QA
-from . import exception_to_dict
+from qa_backend.util import Paragraph
+from qa_backend.util import QAAnswer
+from qa_backend.util import exception_to_dict
 
 log = logging.getLogger('server')
-#log.setLevel(logging.DEBUG)
 
 #
 # Exceptions and exception utilities

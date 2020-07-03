@@ -1,11 +1,11 @@
 # abstract_qa.py
 
-from abc import ABC, abstractmethod
-from typing import List, Optional
+from abc import abstractmethod
+from typing import List
 import logging
 
-from . import QAAnswer
-from qa_backend import Configurable
+from qa_backend.util import Configurable
+from qa_backend.util import QAAnswer
 
 log = logging.getLogger('qa')
 

@@ -4,21 +4,27 @@ Microservice exposing transformer_qa.
 Making pytorch work async in python is probably more trouble than it's worth,
 so this is a good compromise
 """
-import logging
-from typing import Dict, Any, Optional, MutableMapping
-from traceback import print_tb
-import sys
-import os
 
-import aiohttp.web as web # type: ignore
-from aiohttp.web_middlewares import _Handler # type: ignore
-from aiohttp.web import Request, Response # type: ignore
 from json.decoder import JSONDecodeError
+import logging
+import os
+from traceback import print_tb
+from typing import Dict
+from typing import Any
+from typing import Optional
+from typing import MutableMapping
+import sys
 
-from qa_backend import Configurable, ConfigurationError, check_config_keys
+from aiohttp.web_middlewares import _Handler # type: ignore
+import aiohttp.web as web # type: ignore
+from aiohttp.web import Request # type: ignore
+from aiohttp.web import Response # type: ignore
+
+from qa_backend.util import check_config_keys
+from qa_backend.util import Configurable
+from qa_backend.util import ConfigurationError
+from qa_backend.util import exception_to_dict
 from qa_backend.services.qa import TransformersQA
-from qa_backend.services import init_logs
-from . import exception_to_dict
 
 log = logging.getLogger('server')
 

@@ -1,15 +1,16 @@
 # test_transformers_qa.py
 
 from pathlib import Path
-import unittest
-import logging
 import asyncio
+import logging
 import sys
+import unittest
+
 sys.path.append('..')
 
-import testing
-from qa_backend.services import QAAnswer
-from qa_backend.services.qa import TransformersQA, QAQueryError
+from qa_backend.services.qa import QAQueryError
+from qa_backend.services.qa import TransformersQA
+from qa_backend.util import QAAnswer
 
 loop = asyncio.get_event_loop()
 log = logging.getLogger('qa')
