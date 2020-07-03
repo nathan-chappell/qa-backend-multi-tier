@@ -24,6 +24,8 @@ def create_pipeline(
         use_gpu: bool = False,
         device: Optional[int] = None,
     ) -> QuestionAnsweringPipeline:
+    msg = f'<model_name:{model_name}, use_gpu:{use_gpu}, device:{device}>'
+    log.info(f'creating pipeline: {msg}')
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForQuestionAnswering.from_pretrained(model_name)
     _device = -1
@@ -58,7 +60,9 @@ class TransformersQA(QA):
             return
         elif isinstance(model_name, str):
             self.model_name = model_name
-
+        else:
+            msg = f'pipline must be a QuestionAnsweringPipeline or model_name must be a str'
+            raise ConfigurationError(msg)
         self.pipeline = create_pipeline(
                             self.model_name,
                             use_gpu,
@@ -67,6 +71,8 @@ class TransformersQA(QA):
 
     @staticmethod
     def from_config(config: MutableMapping[str,str]) -> 'TransformersQA':
+        log.info('creating TransformersQA from config')
+        log.debug('config: {config}')
         check_config_keys(config, ['model name','use gpu', 'device'])
         try:
             model_name = config.get('model name')
@@ -81,18 +87,20 @@ class TransformersQA(QA):
             raise ConfigurationError(str(e))
     
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
+        log.debug(f'[TransformersQA] question: {question}')
         context: str = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
+        log.debug(f'context: {context}')
         question_ = {'question': question, 'context': context}
         question_args = {'handle_impossible_answer':True, 'topk':1}
-        log.debug(f'transformers_qa: {question_}')
         answer = self.pipeline(**question_, **question_args)
-        log.debug(f'transformers_qa: {answer}')
+        log.debug(f'answer: {answer}')
         # check for "no answer"
         if answer['start'] == answer['end']:
             answer_ = ''
         else:
             start,end = answer['start'], answer['end']
             answer_ = complete_sentence(cast(str,context),start, end)
+        log.debug(f'answer_: {answer_}')
         return [QAAnswer(question, answer_, answer['score'])]

@@ -122,12 +122,15 @@ class MainServer:
         await asyncio.tasks.gather(*[qa.shutdown() for qa in self.qas])
         await self.database.shutdown()
         if isinstance(self.transformers_micro_process, Process):
+            log.info(f'shutting down transformers_micro_process')
             p = self.transformers_micro_process
             if p.is_alive() and isinstance(p.pid, int):
                 log.info(f'INT/join process: {p.pid} from {os.getpid()}')
                 os.kill(p.pid, signal.SIGINT)
                 os.kill(p.pid, signal.SIGTERM)
                 p.join()
+            else:
+                log.warn(f'{p.pid} is not alive!')
 
     # TODO: serve the readme maybe?
     # serve some sort of documentation?

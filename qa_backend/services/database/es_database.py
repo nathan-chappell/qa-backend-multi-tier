@@ -21,6 +21,7 @@ import yaml
 from elasticsearch import Elasticsearch # type: ignore
 from elasticsearch.exceptions import ConflictError # type: ignore
 from elasticsearch.exceptions import NotFoundError # type: ignore
+from elasticsearch.exceptions import ElasticsearchException
 
 from .abstract_database import Database
 from .abstract_database import DocId
@@ -46,16 +47,31 @@ class Explanation(JsonRepresentation):
     text_re = re.compile(r'.*\(text:(\w+) .*')
 
     def __init__(self, body: Dict[str,Any], docId: str, index: str):
-        self.body = body['query']
+        try:
+            self.body = body['query']
+        except KeyError as e:
+            info = '<docId:{docId}, index:{index}>'
+            msg = f'explanation body has no query, {info}'
+            log.exception(msg)
+            raise RuntimeError(msg)
         self.docId = docId
         self.scores = []
         self.index = index
-        explanation = es.explain(index, id=docId, body={'query':self.body})
-        self.total_score = float(explanation['explanation']['value'])
-        for detail in explanation['explanation']['details']:
-            text = self.text_re.sub(r'\1',detail['description'])
-            score = float(detail['value'])
-            self.scores.append((text,score))
+        try:
+            explanation = es.explain(index, id=docId, body={'query':self.body})
+        except ElasticsearchException as e:
+            log.exception('ES Exception: {e}')
+            raise RuntimeError(str(e))
+        try:
+            self.total_score = float(explanation['explanation']['value'])
+            for detail in explanation['explanation']['details']:
+                text = self.text_re.sub(r'\1',detail['description'])
+                score = float(detail['value'])
+                self.scores.append((text,score))
+        # KeyError, something in re, etc
+        except Exception as e:
+            log.exception(e)
+            raise RuntimeError(str(e))
 
 class ElasticsearchDatabaseError(RuntimeError):
     message: str
@@ -82,23 +98,33 @@ class ElasticsearchDatabase(QueryDatabase):
             init_dir: Optional[str] = None,
             backup_dir: Optional[str] = None,
         ):
+        msg = ', '.join([init_file,
+                         str(erase_if_exists), 
+                         str(explain_filename),
+                         str(init_dir),
+                         str(backup_dir),
+                     ])
+        log.info(f'creating ElasticsearchDatabase: {msg}')
         self.init_file = init_file
         self.backup_dir = backup_dir
         self.initialize(erase_if_exists)
         if isinstance(explain_filename, str):
-            log.info(f'Explain log: {explain_filename}')
+            log.debug(f'opening explain_log: {explain_filename}')
             self.explain_log = open(explain_filename, 'a')
         if isinstance(init_dir, str):
-            log.info(f'init_dir: {init_dir}')
+            log.debug(f'adding directory: {init_dir}')
             coro = self.add_directory(init_dir)
             asyncio.get_event_loop().run_until_complete(coro)
 
     async def shutdown(self):
+        log.info('shutting down')
         if isinstance(self.backup_dir, str):
             timestamp = datetime.now().strftime('%Y%m%d_%h%m%s')
             directory_path = Path(self.backup_dir) / timestamp
             directory_path.mkdir(parents=True)
+            log.info(f'back up at: {str(directory_path.resolve())}')
             await self.dump_to_directory(directory_path)
+            log.info(f'back up complete')
 
     @staticmethod
     def from_config(
@@ -111,12 +137,13 @@ class ElasticsearchDatabase(QueryDatabase):
                 'init dir',
                 'backup dir',
             ]
+        log.info('initializing ElasticsearchDatabase from config')
+        log.debug(f"config:\n{str(config)}")
         check_config_keys(config, conf_keys)
         try:
             init_file = config['init file']
             if 'erase if exists' in config.keys():
                 erase_if_exists = True
-                log.info('erase_if_exists == True')
             else:
                 erase_if_exists = False
             explain_filename = config.get('explain file')
@@ -129,8 +156,14 @@ class ElasticsearchDatabase(QueryDatabase):
                         init_dir,
                         backup_dir,
                     )
+        except KeyError as e:
+            msg = f'bad ElasticsearchDatabase config: {str(e)}'
+            log.exception(msg)
+            raise ConfigurationError(msg)
         except ValueError as e:
-            raise ConfigurationError(str(e))
+            msg = f'bad ElasticsearchDatabase config: {str(e)}'
+            log.exception(msg)
+            raise ConfigurationError(msg)
 
     def initialize(self, erase_if_exists=False):
         with open(self.init_file) as file:
@@ -163,6 +196,7 @@ class ElasticsearchDatabase(QueryDatabase):
             paragraph: Paragraph
         ) -> None:
         body = {'text': paragraph.text}
+        log.info(f'creating docId: {paragraph.docId}')
         try:
             es.create(self.index, paragraph.docId, body, refresh=True)
         except ConflictError as e:
@@ -178,6 +212,7 @@ class ElasticsearchDatabase(QueryDatabase):
             self,
             docId: DocId
         ) -> List[Paragraph]:
+        log.info(f'read docId: {docId}')
         try:
             if docId == '*':
                 body: Dict[str,Any] = {'query':{'match_all':{}},'size':10000}
@@ -195,17 +230,22 @@ class ElasticsearchDatabase(QueryDatabase):
             self,
             paragraph: Paragraph
         ) -> None:
+        log.info(f'updating {paragraph.docId}')
+        log.debug(f'text: {paragraph.text}')
         try:
             body = {'doc': {'text': paragraph.text}}
             es.update(self.index, paragraph.docId, body)
+            log.info('update complete')
         except NotFoundError as e:
             msg = f"docId: {paragraph.docId} doesn't exist"
-            raise DatabaseUpdateError(msg) # type: ignore
+            log.info(msg)
+            raise DatabaseUpdateNotFoundError(msg) # type: ignore
 
     async def delete(
             self,
             docId: DocId
         ) -> None:
+        log.info(f'delete docId: {docId}')
         try:
             es.delete(self.index, docId)
         except NotFoundError as e:
@@ -217,23 +257,23 @@ class ElasticsearchDatabase(QueryDatabase):
             query_string: str,
             size: int = 10
         ) -> Iterable[Paragraph]:
-        try:
-            log.info(f'query[:{size}] {query_string}')
-            body = {'query': {'match': {'text': query_string}}, 'size':size}
-            response = es.search(index=self.index, body=body)
-            paragraphs = []
-            for hit in response['hits']['hits']:
+        log.info(f'query[:{size}] {query_string}')
+        body = {'query': {'match': {'text': query_string}}, 'size':size}
+        response = es.search(index=self.index, body=body)
+        paragraphs = []
+        for hit in response['hits']['hits']:
+            try:
                 _id = hit['_id']
                 hit_text = hit['_source']['text']
-                paragraphs.append(Paragraph(_id, hit_text))
-                try:
-                    if self.explain_log is not None:
+            except KeyError as e:
+                log.exception(f'explain failed: {str(e)}')
+                return []
+            paragraphs.append(Paragraph(_id, hit_text))
+            try:
+                if self.explain_log is not None:
                         print(Explanation(body,_id,self.index),
                               file=self.explain_log,
                               flush=True)
-                except KeyError as e:
-                    log.error(f'explain failed: {e}')
-                    pass
-            return paragraphs
-        except Exception as e:
-            raise DatabaseQueryError(str(e)) # type: ignore
+            except RuntimeError as e:
+                log.error(f'explain failed: {e}')
+        return paragraphs

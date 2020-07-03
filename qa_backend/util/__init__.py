@@ -33,7 +33,10 @@ def exception_to_dict(exception: Exception, log_error=False) -> Dict[str,Any]:
             log.error(format_tb(sys.exc_info()[2]))
     return {'error_type': type(exception).__name__, 'message': str(exception)}
 
-class ConfigurationError(ValueError): pass
+class ConfigurationError(ValueError):
+    def __init__(self, message: str):
+        super().__init__(message)
+        log.error(message)
 
 class Configurable(ABC):
     """Abstraction for classes which may be constructed from config section"""
@@ -49,6 +52,7 @@ def check_config_keys(section: MutableMapping[str,str], keys: List[str]):
     if not set(section.keys()) <= set(keys):
         unk_keys = key_set - set(keys)
         msg = f'Unknown keys in config: {", ".join(list(unk_keys))}'
+        log.error(msg)
         raise ValueError(msg)
 
 def complete_sentence(context: str, start: int, end: int) -> str:

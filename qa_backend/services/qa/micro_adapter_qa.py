@@ -30,28 +30,35 @@ class MicroAdapterQA(QA):
         self.host = host
         self.port = port
         self.path = path
+        log.info('created MicroAdapterQA: {self.url}')
         self.session = ClientSession()
 
     @staticmethod
     def from_config(config: MutableMapping[str,str]) -> 'MicroAdapterQA':
         check_config_keys(config, ['host','port','path'])
+        log.info('creating MicroAdapterQA from config')
+        log.debug(f"config:\n{config}")
         try:
             host = str(config.get('host','localhost'))
             port = int(config.get('port', 8081))
             path = str(config.get('path','/question'))
             return MicroAdapterQA(host,port,path)
         except ValueError as e:
-            raise ConfigurationError(str(e))
+            msg = 'Error in config: {str(e)}'
+            log.error(msg)
+            raise ConfigurationError(msg)
 
     @property
     def url(self) -> str:
         return f'http://{self.host}:{self.port}{self.path}'
 
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
+        log.debug('[MicroAdapterQA] question: {question}')
         context = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
-        assert isinstance(context, str)
+        if not isinstance(context, str):
+            raise QAQueryError("context must be a string")
         body = {'question': question, 'context': context}
         log.debug(f'about to query: {body}')
         async with self.session.post(url=self.url, json=body) as response:
@@ -68,7 +75,7 @@ class MicroAdapterQA(QA):
                 return [QAAnswer(question, answer, score)]
             except JSONDecodeError as e:
                 text = await response.text()
-                msg = f'error decoding json: {self.url}: {text}'
+                msg = f"error decoding json:\n{self.url}\n{text}\n{str(e)}"
                 raise QAQueryError(msg)
             except KeyError as e:
                 raise QAQueryError(str(e))
@@ -76,5 +83,6 @@ class MicroAdapterQA(QA):
                 raise QAQueryError(str(e))
 
     async def shutdown(self):
+        log.info('shutting down MicroAdapterQA')
         if not self.session.closed:
             await self.session.close()

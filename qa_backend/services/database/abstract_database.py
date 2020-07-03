@@ -20,17 +20,6 @@ from qa_backend.util import Paragraph
 log = logging.getLogger('database')
 
 DocId = str
-AsyncMethod = Callable[..., Coroutine[Any,Any,Any]]
-
-def acquire_lock(f: AsyncMethod) -> AsyncMethod:
-    @functools.wraps(f)
-    async def wrapped(self, *args, **kwargs):
-        log.warn('not acquiring lock')
-        #await self.lock.acquire()
-        result = await f(self, *args, **kwargs)
-        #self.lock.release()
-        return result
-    return wrapped
 
 class Database(Configurable):
     @abstractmethod
@@ -45,7 +34,7 @@ class Database(Configurable):
     async def read(
             self,
             docId: DocId
-        ) -> Iterable[Paragraph]:
+        ) -> List[Paragraph]:
         ...
 
     @abstractmethod

@@ -21,7 +21,7 @@ from elasticsearch import Elasticsearch # type: ignore
 
 sys.path.append('..')
 
-from qa_backend.server.main_server import MainServer
+from qa_backend.main_server import MainServer
 
 log = logging.getLogger('testing')
 loop = asyncio.get_event_loop()
