@@ -22,6 +22,7 @@ import signal
 import aiohttp.web as web
 
 from qa_backend.server import QAServer
+from qa_backend.server import QAServerConfig
 from qa_backend.server import TransformersMicro
 from qa_backend.services.database import ElasticsearchDatabase
 from qa_backend.services.database import QueryDatabase
@@ -29,7 +30,6 @@ from qa_backend.services.qa import MicroAdapterQA
 from qa_backend.services.qa import QA
 from qa_backend.services.qa import RegexQA
 from qa_backend.util import Configurable
-from qa_backend.util import check_config_keys
 from qa_backend.util import set_all_loglevels
 
 log = logging.getLogger('main')
@@ -84,9 +84,9 @@ class MainServer:
         # database
         log.info(f'Initializing database services')
         #
-        es_cfg = config['es database']
-        es_db = ElasticsearchDatabase.from_config(es_cfg)
-        self.database = es_db
+        es_config = config['es database']
+        es_database = ElasticsearchDatabase.from_config(es_config)
+        self.database = es_database
         # micro
         if 'enabled' in config['transformers micro service']:
             log.info(f'Initializing transformers micro service')
@@ -99,8 +99,8 @@ class MainServer:
         log.info(f'Loading QA Services')
         self.qas = load_qas_from_config(config)
         # qa_server
-        qa_kwargs = self.get_qa_config(config['qa server'])
-        self.qa_server = QAServer(self.database, self.qas, **qa_kwargs)
+        qa_server_config = QAServerConfig(**config['qa server'])
+        self.qa_server = QAServer(self.database, self.qas, qa_server_config)
         self.qa_server.app.on_shutdown.append(self.shutdown)
         # miscellaneous
         if 'PRINT_TB' in config['miscellaneous']:
@@ -108,14 +108,6 @@ class MainServer:
             os.environ['PRINT_TB'] = 'True'
         set_all_loglevels(config['miscellaneous'].get('log levels','info'))
         log.info(f'Initialization complete.')
-
-    def get_qa_config(self, config: MutableMapping[str,str]) -> Dict[str,Any]:
-        check_config_keys(config, ['host', 'port', 'qa log file'])
-        result: Dict[str,Any] = {}
-        result['host'] = config.get('host','localhost')
-        result['port'] = int(config.get('port',8080))
-        result['qa_log_file'] = config.get('qa log file','qa_log.jsonl')
-        return result
 
     async def shutdown(self, app: web.Application):
         log.info('<main server> shutting down')

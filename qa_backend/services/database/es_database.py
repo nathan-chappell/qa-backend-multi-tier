@@ -13,6 +13,7 @@ from typing import MutableMapping
 from typing import Optional
 from typing import TextIO
 from typing import Tuple
+from typing import Union
 import asyncio
 import logging
 import re
@@ -22,6 +23,7 @@ from elasticsearch import Elasticsearch # type: ignore
 from elasticsearch.exceptions import ConflictError # type: ignore
 from elasticsearch.exceptions import NotFoundError # type: ignore
 from elasticsearch.exceptions import ElasticsearchException
+import attr
 
 from .abstract_database import Database
 from .abstract_database import DocId
@@ -29,7 +31,7 @@ from .abstract_database import Paragraph
 from .database_error import *
 from qa_backend.util import ConfigurationError
 from qa_backend.util import JsonRepresentation
-from qa_backend.util import check_config_keys
+from qa_backend.util import convert_bool
 
 log = logging.getLogger('database')
 
@@ -86,41 +88,37 @@ class ElasticsearchDatabaseError(RuntimeError):
         msg = self.message
         return f'<{cls}:(message={msg})>'
 
-class ElasticsearchDatabase(QueryDatabase):
+@attr.s(slots=True, auto_attribs=True)
+class ElasticsearchDatabaseConfig:
     init_file: str
+    erase_if_exists: Union[bool,str] = attr.ib(default=False, kw_only=True,
+                                       converter=convert_bool)
+    explain_filename: Optional[str] = attr.ib(default=None, kw_only=True)
+    backup_dir: Optional[str] = attr.ib(default=None, kw_only=True)
+    index_on_startup_dir: Optional[str] = attr.ib(default=None, kw_only=True)
+
+class ElasticsearchDatabase(QueryDatabase):
+    config: ElasticsearchDatabaseConfig
     init_data: Dict[str,Any] = {}
     explain_log: Optional[TextIO] = None
-    backup_dir: Optional[str] = None
 
-    def __init__(
-            self, init_file: str, erase_if_exists=False,
-            explain_filename: Optional[str] = None,
-            init_dir: Optional[str] = None,
-            backup_dir: Optional[str] = None,
-        ):
-        msg = ', '.join([init_file,
-                         str(erase_if_exists), 
-                         str(explain_filename),
-                         str(init_dir),
-                         str(backup_dir),
-                     ])
-        log.info(f'creating ElasticsearchDatabase: {msg}')
-        self.init_file = init_file
-        self.backup_dir = backup_dir
-        self.initialize(erase_if_exists)
-        if isinstance(explain_filename, str):
-            log.debug(f'opening explain_log: {explain_filename}')
-            self.explain_log = open(explain_filename, 'a')
-        if isinstance(init_dir, str):
-            log.debug(f'adding directory: {init_dir}')
-            coro = self.add_directory(init_dir)
+    def __init__(self, config: ElasticsearchDatabaseConfig):
+        log.info(f'creating ElasticsearchDatabase: {config}')
+        self.config = config
+        self.initialize()
+        if isinstance(config.explain_filename, str):
+            log.debug(f'opening explain_log: {config.explain_filename}')
+            self.explain_log = open(config.explain_filename, 'a')
+        if isinstance(config.index_on_startup_dir, str):
+            log.debug(f'adding directory: {config.index_on_startup_dir}')
+            coro = self.add_directory(config.index_on_startup_dir)
             asyncio.get_event_loop().run_until_complete(coro)
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         log.info('shutting down')
-        if isinstance(self.backup_dir, str):
+        if isinstance(self.config.backup_dir, str):
             timestamp = datetime.now().strftime('%Y%m%d_%h%m%s')
-            directory_path = Path(self.backup_dir) / timestamp
+            directory_path = Path(self.config.backup_dir) / timestamp
             directory_path.mkdir(parents=True)
             log.info(f'back up at: {str(directory_path.resolve())}')
             await self.dump_to_directory(directory_path)
@@ -130,49 +128,17 @@ class ElasticsearchDatabase(QueryDatabase):
     def from_config(
             config: MutableMapping[str,str]
         ) -> 'ElasticsearchDatabase':
-        conf_keys = [
-                'init file',
-                'erase if exists',
-                'explain file',
-                'init dir',
-                'backup dir',
-            ]
-        log.info('initializing ElasticsearchDatabase from config')
-        log.debug(f"config:\n{str(config)}")
-        check_config_keys(config, conf_keys)
-        try:
-            init_file = config['init file']
-            if 'erase if exists' in config.keys():
-                erase_if_exists = True
-            else:
-                erase_if_exists = False
-            explain_filename = config.get('explain file')
-            init_dir = config.get('init dir')
-            backup_dir = config.get('backup dir')
-            return ElasticsearchDatabase(
-                        init_file,
-                        erase_if_exists,
-                        explain_filename,
-                        init_dir,
-                        backup_dir,
-                    )
-        except KeyError as e:
-            msg = f'bad ElasticsearchDatabase config: {str(e)}'
-            log.exception(msg)
-            raise ConfigurationError(msg)
-        except ValueError as e:
-            msg = f'bad ElasticsearchDatabase config: {str(e)}'
-            log.exception(msg)
-            raise ConfigurationError(msg)
+        es_config = ElasticsearchDatabaseConfig(**config)
+        return ElasticsearchDatabase(es_config)
 
-    def initialize(self, erase_if_exists=False):
-        with open(self.init_file) as file:
+    def initialize(self, erase_if_exists: bool = False):
+        with open(self.config.init_file) as file:
             self.init_data = yaml.full_load(file)
         self.check_init_data()
-        log.info(f'init file: {self.init_file}, index: {self.index}')
+        log.info(f'init file: {self.config.init_file}, index: {self.index}')
         if not es.indices.exists(self.index):
             es.indices.create(self.index, self.creation)
-        elif erase_if_exists:
+        elif self.config.erase_if_exists:
             log.warn(f'erasing old index')
             es.indices.delete(self.index)
             es.indices.create(self.index, self.creation)

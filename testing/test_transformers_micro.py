@@ -16,6 +16,8 @@ from aiohttp import ClientSession
 sys.path.append('..')
 
 from qa_backend.server import TransformersMicro
+from qa_backend.server import TransformersMicroConfig
+from qa_backend.services.qa import TransformersQAConfig
 from qa_backend.util import QAAnswer
 
 context = """ Successful unit testing requires writing tests that would
@@ -29,7 +31,11 @@ that implementation tends to change and the test will fail even if the
 result is the same.  """
 
 def run():
-    transformers_micro = TransformersMicro()
+    logging.getLogger('server').setLevel(logging.DEBUG)
+    transformers_micro = TransformersMicro.from_config({
+                            'device': -1,
+                            'use_gpu': False,
+                        })
     transformers_micro.run()
 
 class TransformersMicro_TestQuery(unittest.TestCase):
@@ -77,6 +83,7 @@ if __name__ == '__main__':
     multiprocessing.set_start_method('spawn')
     loop = asyncio.get_event_loop()
     log = logging.getLogger('server')
+    log.setLevel(logging.DEBUG)
 
     session = ClientSession()
     # start server

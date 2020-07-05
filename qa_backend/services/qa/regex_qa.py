@@ -16,13 +16,18 @@ import random
 import re
 import yaml
 
+import attr
+
 from .abstract_qa import QAQueryError
 from .abstract_qa import QA
 from qa_backend.util import ConfigurationError
 from qa_backend.util import QAAnswer
-from qa_backend.util import check_config_keys
 
 log = logging.getLogger('qa')
+
+@attr.s(slots=True, auto_attribs=True)
+class RegexQAConfig:
+    file: str
 
 class RegexQA(QA):
     regex: Pattern
@@ -41,11 +46,8 @@ class RegexQA(QA):
     def from_config(config: MutableMapping[str,str]) -> List['RegexQA']:
         log.info('creating RegexQA from config')
         log.debug(f"config:\n{config}")
-        check_config_keys(config, ['file'])
-        try:
-            return RegexQA.from_file(config['file'])
-        except ValueError as e:
-            raise ConfigurationError(str(e))
+        re_config = RegexQAConfig(**config)
+        return RegexQA.from_file(re_config.file)
 
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
         log.debug(f'[RegexQA] question: {question}')

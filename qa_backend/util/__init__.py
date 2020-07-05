@@ -7,6 +7,7 @@ Various utilities for the qa backend
 
 from abc import ABC
 from abc import abstractmethod
+from configparser import ConfigParser
 from traceback import format_tb
 from typing import Any
 from typing import Dict
@@ -18,6 +19,11 @@ import logging
 import os
 import sys
 
+from .api_error import APIError
+from .api_error import exception_middleware
+from .from_request import JsonCrudOperation
+from .from_request import JsonQuestion
+from .from_request import JsonQuestionOptionalContext
 from .logging_ import set_all_loglevels
 from .serialization import JsonRepresentation
 from .serialization import Paragraph
@@ -25,13 +31,15 @@ from .serialization import QAAnswer
 
 log = logging.getLogger('util')
 
-def exception_to_dict(exception: Exception, log_error=False) -> Dict[str,Any]:
-    """Convert an exception into a dict for JSON response."""
-    if log_error:
-        log.error(f'converting exception: {str(exception)}')
-        if os.environ.get('PRINT_TB'):
-            log.error(format_tb(sys.exc_info()[2]))
-    return {'error_type': type(exception).__name__, 'message': str(exception)}
+def convert_bool(arg: Union[str,bool]) -> bool:
+    if isinstance(arg, bool):
+        return arg
+    elif isinstance(arg, str):
+        p = ConfigParser()
+        p.read_string(f"[-]\narg={arg}")
+        return p['-'].getboolean('arg')
+    else:
+        raise RuntimeError('Unreachable')
 
 class ConfigurationError(ValueError):
     def __init__(self, message: str):
@@ -40,20 +48,15 @@ class ConfigurationError(ValueError):
 
 class Configurable(ABC):
     """Abstraction for classes which may be constructed from config section"""
-    @staticmethod
-    @abstractmethod
+    def __init__(self, **kwargs):
+        assert False and "Don't instantiate this class"
+
+    @classmethod
     def from_config(
+            cls,
             section: MutableMapping[str,str]
         ) -> Union['Configurable', Sequence['Configurable']]:
-        ...
-
-def check_config_keys(section: MutableMapping[str,str], keys: List[str]):
-    key_set = set(section.keys())
-    if not set(section.keys()) <= set(keys):
-        unk_keys = key_set - set(keys)
-        msg = f'Unknown keys in config: {", ".join(list(unk_keys))}'
-        log.error(msg)
-        raise ValueError(msg)
+        return cls(**section)
 
 def complete_sentence(context: str, start: int, end: int) -> str:
     """Turn the span into a complete sentence."""

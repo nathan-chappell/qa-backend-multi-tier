@@ -10,10 +10,12 @@ sys.path.append('..')
 
 from qa_backend.services.qa import QAQueryError
 from qa_backend.services.qa import TransformersQA
+from qa_backend.services.qa import TransformersQAConfig
 from qa_backend.util import QAAnswer
 
 loop = asyncio.get_event_loop()
 log = logging.getLogger('qa')
+log.setLevel(logging.DEBUG)
 
 context = """
 Each Hypertext Transfer Protocol (HTTP) message is either a request or a
@@ -29,13 +31,18 @@ resource (Section 2), regardless of its type, nature , or implementation, via
 the manipulation and transfer of representations ( Section 3).
 """
 
+config = {
+    'device': -1,
+    'use_gpu': False,
+}
+
 class TransformersQA_Test(unittest.TestCase):
     trasformers_qa: TransformersQA
 
     # this is expensive, do it once for the whole class
     @classmethod
     def setUpClass(cls):
-        cls.trasformers_qa = TransformersQA()
+        cls.trasformers_qa = TransformersQA.from_config(config)
 
     def setUp(self):
         self.answerable_questions = [

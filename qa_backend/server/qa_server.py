@@ -10,7 +10,7 @@ from traceback import print_tb
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import Mapping
+from typing import MutableMapping
 from typing import Optional
 from typing import TextIO
 from uuid import uuid4
@@ -27,20 +27,19 @@ from aiohttp.web_middlewares import _Handler # type: ignore
 from json.decoder import JSONDecodeError
 from markdown import markdown # type: ignore
 import aiohttp.web as web # type: ignore
+import attr
 
-from .api_error import APIError
-from .api_error import JsonType
-from .api_error import TypeCheckArg
-from .api_error import exception_middleware
-from .api_error import get_json_body
+from qa_backend.util import APIError
+from qa_backend.util import exception_middleware
 from qa_backend.services.database import DatabaseAlreadyExistsError
 from qa_backend.services.database import DatabaseReadNotFoundError
 from qa_backend.services.database import QueryDatabase
 from qa_backend.services.qa import QA
 from qa_backend.services.qa import QAQueryError
+from qa_backend.util import JsonCrudOperation
+from qa_backend.util import JsonQuestionOptionalContext
 from qa_backend.util import Paragraph
 from qa_backend.util import QAAnswer
-from qa_backend.util import exception_to_dict
 
 log = logging.getLogger('server')
 
@@ -67,43 +66,46 @@ async def attach_uuid_middleware(
 # API
 #
 
+@attr.s(slots=True)
+class QAServerConfig:
+    host: str = attr.ib(default='0.0.0.0')
+    port: int = attr.ib(default=8080, converter=int)
+    qa_log_file: Optional[str] = attr.ib(default=None)
+
+    @property
+    def origin(self) -> str:
+        return f'http://{self.host}:{self.port}'
+
 class QAServer:
     database: QueryDatabase
     qas: List[QA]
     app: web.Application
+    config: QAServerConfig
     qa_log: Optional[TextIO] = None
     no_answers: List[str]
 
     def __init__(
-            self, database: QueryDatabase, qas: List[QA],
-            host='0.0.0.0', port=8080,
-            qa_log_file: Optional[str] = None,
+            self,
+            database: QueryDatabase,
+            qas: List[QA],
+            config: QAServerConfig,
         ):
-        log.debug('initializing qa server')
+        log.debug(f'initializing qa server: {config}')
         self.database = database
         self.qas = qas
-        self.host = host
-        self.port = port
-        if isinstance(qa_log_file, str):
-            self.qa_log = open(qa_log_file, 'a')
-            log.info(f'qa_log_file: {qa_log_file}')
+        self.config = config
+        if isinstance(config.qa_log_file, str):
+            self.qa_log = open(config.qa_log_file, 'a')
         self.no_answers = [
             "I'm sorry, I couldn't find an answer to your question.",
             "I was unable to answer your query.",
             "Unfortunately I don't know how to answer that question.",
         ]
-
         middlewares = [
             exception_middleware,
             attach_uuid_middleware,
         ]
         self.app = web.Application(middlewares=middlewares)
-        self.app.add_routes([
-            web.post('/question', self.answer_question),
-            web.get('/index', self.crud_read),
-            web.post('/index', self.crud_create_update),
-            web.delete('/index', self.crud_delete),
-        ])
 
     def __del__(self):
         log.debug('deleting qa server')
@@ -127,7 +129,7 @@ class QAServer:
         ) -> Dict[str,Any]:
         log.debug(f'getting answers from list of length: {len(answers)}')
         answers = list(sorted(answers, key=lambda a: a.score, reverse=True))
-        answers_ = [answer.to_dict() for answer in answers]
+        answers_ = [attr.asdict(answer) for answer in answers]
         if len(answers_) > 0:
             chosen_answer: Optional[Dict[str,Any]] = answers_[0]
         else:
@@ -137,23 +139,27 @@ class QAServer:
             'answers': answers_,
         }
 
-    async def answer_question(self, request: Request, qa_size=3, ir_size=5) -> Response:
+    async def answer_question(
+            self, request: Request, qa_size=3, ir_size=5
+        ) -> Response:
         log.debug('answering question')
-        json_fmt: Mapping[str,TypeCheckArg] = {'question': str, 'context': [str, type(None)]}
-        body = await get_json_body(request, json_fmt)
-        log.debug(f'body {body}')
-        question = body['question']
-        context = body.get('context')
+        json_question: JsonQuestionOptionalContext\
+                = await JsonQuestionOptionalContext.from_request(request)
+        log.debug(f'json_question {json_question}')
+        question = json_question.question
+        context = json_question.context
         if context is None:
             log.debug('no context, querying db...')
             paragraphs = list(await self.database.query(question, ir_size))
             log.debug(f'got {len(paragraphs)} paragraphs of context')
             log.debug(f'{paragraphs}')
+        else:
+            paragraphs = [Paragraph(docId='provided.txt',text=context)]
         retrieved_docids = "\n".join([p.docId for p in paragraphs])
         log.info(f'Retrieved: \n{retrieved_docids}')
         answers: List[QAAnswer] = []
         for qa in self.qas:
-            log.debug(f'QA: {qa}')
+            log.info(f'QA: {qa}')
             if qa.requires_context and len(paragraphs) > 0:
                 for paragraph in paragraphs:
                     try:
@@ -191,28 +197,22 @@ class QAServer:
             paragraphs = await self.database.read(docId)
         except DatabaseReadNotFoundError as e:
             return HTTPNotFound()
-        log.info('got {len(paragraphs)} paragraphs')
+        log.info(f'got {len(paragraphs)} paragraphs')
         if len(paragraphs) == 0:
             return HTTPNotFound()
-        paragraphs_ = [paragraph.to_dict() for paragraph in paragraphs]
+        paragraphs_ = [attr.asdict(paragraph) for paragraph in paragraphs]
         return web.json_response(paragraphs_)
 
     async def crud_create_update(self, request: Request) -> Response:
-        json_fmt = {'operation':str, 'docId':str, 'text':str}
-        body = await get_json_body(request, json_fmt)
-        operation = body['operation']
-        docId = body['docId']
-        text = body['text']
-        paragraph = Paragraph(docId, text)
+        crud_op = await JsonCrudOperation.from_request(request)
+        paragraph = Paragraph(crud_op.docId, crud_op.text)
         log.debug(f'create/update paragraph: {str(paragraph)}')
-        if operation not in ['create','update']:
-            raise APIError(request, 'operation must be in [create, update]')
-        if operation == 'create':
-            log.info(f'creating: {docId}')
+        if crud_op.operation == 'create':
+            log.info(f'creating: {crud_op.docId}')
             await self.database.create(paragraph)
             return Response()
-        else: # operation == 'update':
-            log.info(f'updating: {docId}')
+        else: # crud_op.operation == 'update':
+            log.info(f'updating: {crud_op.docId}')
             await self.database.update(paragraph)
             return Response()
 
@@ -229,4 +229,10 @@ class QAServer:
 
     def run(self):
         log.info('running qa_server')
-        web.run_app(self.app, host=self.host, port=self.port)
+        self.app.add_routes([
+            web.get('/index', self.crud_read),
+            web.post('/index', self.crud_create_update),
+            web.delete('/index', self.crud_delete),
+            web.post('/question', self.answer_question),
+        ])
+        web.run_app(self.app, host=self.config.host, port=self.config.port)

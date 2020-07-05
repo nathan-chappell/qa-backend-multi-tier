@@ -6,7 +6,7 @@ Error raised when client uses API incorrectly
 from json.decoder import JSONDecodeError
 from typing import Any
 from typing import List
-from typing import Mapping
+from typing import MutableMapping
 from typing import Type
 from typing import Union
 import logging
@@ -20,13 +20,6 @@ from aiohttp.web import middleware
 from aiohttp.web_middlewares import _Handler # type: ignore
 
 log = logging.getLogger('server')
-
-JsonType = Union[Type[str],
-                 Type[int],
-                 Type[float],
-                 Type[None],
-                 ]
-TypeCheckArg = Union[JsonType, List[JsonType]]
 
 class APIError(RuntimeError):
     """Exception class to indicate API related errors."""
@@ -61,47 +54,12 @@ async def exception_middleware(
         result = await handler(request)
         return result
     except APIError as e:
-        log.info('[API ERROR]: {str(self)}')
+        log.info(f'[API ERROR]: {str(e)}')
         return Response(status=400, text=str(e))
     except HTTPException as e:
-        log.warn(f'HTTPException: {e}')
+        log.warn(f'{e.__class__.__name__}: {e}')
         return e
     except Exception as e:
-        log.exception(e)
+        log.exception(e,exc_info=True,stack_info=True)
         msg = 'an internal error has occurred'
         return Response(text=msg, status=500)
-
-def _get_type_name(types: TypeCheckArg) -> str:
-    if isinstance(types, type):
-        return types.__name__
-    elif isinstance(types,list):
-        return '|'.join([type_.__name__ for type_ in types])
-    else:
-        raise RuntimeError('Unreachable')
-
-def _type_check(type_: type, types: TypeCheckArg) -> bool:
-    if isinstance(types, type):
-        return type_ == types
-    elif isinstance(types, list):
-        return type_ in types
-    else:
-        raise RuntimeError('Unreachable')
-
-# very basic type checking
-async def get_json_body(
-        request: Request,
-        json_fmt: Mapping[str,TypeCheckArg]
-    ) -> Mapping[str,Any]:
-    """Check for json and do type checking on body"""
-    json_fmt_str = str({k:_get_type_name(json_fmt[k]) for k in json_fmt})
-    msg = f'required: json with format: {json_fmt_str}'
-    try:
-        body = await request.json()
-    except JSONDecodeError as e:
-        raise APIError(request, msg)
-    if set(body.keys()) != set(json_fmt.keys()):
-        raise APIError(request, msg)
-    if not all([_type_check(type(body[k]), json_fmt[k])
-                for k in json_fmt]):
-        raise APIError(request, msg)
-    return body

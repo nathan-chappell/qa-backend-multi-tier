@@ -10,72 +10,74 @@ import logging
 
 from aiohttp import ClientSession
 from aiohttp import ContentTypeError
+import attr
 
 from .abstract_qa import QA
 from .abstract_qa import QAQueryError
 from qa_backend.util import ConfigurationError
 from qa_backend.util import QAAnswer
-from qa_backend.util import check_config_keys
 
 log = logging.getLogger('qa')
 
-class MicroAdapterQA(QA):
-    host: str
-    port: int
-    path: str
-    session: ClientSession
+def strip_leading_slash(path: str) -> str:
+    if len(path) > 0:
+        if path[0] == '/':
+            return path[1:]
+    return path
 
-    def __init__(self, host='localhost', port=8081, path='/question'):
-        self._requires_context = True
-        self.host = host
-        self.port = port
-        self.path = path
-        log.info(f'created MicroAdapterQA: {self.url}')
+@attr.s(slots=True)
+class MicroAdapterQAConfig:
+    host: str = attr.ib(default='0.0.0.0')
+    port: int = attr.ib(default=8081, converter=int)
+    path: str = attr.ib(default='question',converter=strip_leading_slash)
+
+    @property
+    def url(self) -> str:
+        return f'http://{self.host}:{self.port}/{self.path}'
+
+class MicroAdapterQA(QA):
+    session: ClientSession
+    config: MicroAdapterQAConfig
+    _requires_context = True
+
+    def __init__(self, config: MicroAdapterQAConfig):
+        log.info(f'creating MicroAdapterQA: {config}')
+        self.config = config
         self.session = ClientSession()
 
     @staticmethod
     def from_config(config: MutableMapping[str,str]) -> 'MicroAdapterQA':
-        check_config_keys(config, ['host','port','path'])
         log.info('creating MicroAdapterQA from config')
         log.debug(f"config:\n{config}")
-        try:
-            host = str(config.get('host','localhost'))
-            port = int(config.get('port', 8081))
-            path = str(config.get('path','/question'))
-            return MicroAdapterQA(host,port,path)
-        except ValueError as e:
-            msg = f'Error in config: {str(e)}'
-            log.error(msg)
-            raise ConfigurationError(msg)
-
-    @property
-    def url(self) -> str:
-        return f'http://{self.host}:{self.port}{self.path}'
+        ma_config = MicroAdapterQAConfig(**config)
+        return MicroAdapterQA(ma_config)
 
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
-        log.debug(f'[MicroAdapterQA] question: {question}')
+        log.info(f'[MicroAdapterQA] question: {question}')
         context = kwargs.get('context','')
         if context == '':
             raise QAQueryError("context required")
         if not isinstance(context, str):
             raise QAQueryError("context must be a string")
         body = {'question': question, 'context': context}
-        log.debug(f'about to query: {body}')
-        async with self.session.post(url=self.url, json=body) as response:
+        log.info(f'about to query: {self.config.url}: {body}')
+        async with self.session.post(self.config.url, json=body) as response:
             status = response.status
-            log.debug(f'got response: {response}')
+            log.info(f'got response: {response}')
             if status != 200:
-                msg = f'got {status} from {self.url}: {response.reason}'
+                msg = f'got {status} from {self.config.url}: {response.reason}'
                 raise QAQueryError(msg)
             try:
                 resp_json = await response.json()
+                if len(resp_json) == 0:
+                    return []
                 question = resp_json[0]['question']
                 answer = resp_json[0]['answer']
                 score = float(resp_json[0]['score'])
                 return [QAAnswer(question, answer, score)]
             except JSONDecodeError as e:
                 text = await response.text()
-                msg = f"error decoding json:\n{self.url}\n{text}\n{str(e)}"
+                msg = f"error decoding json:\n{self.config.url}\n{text}\n{str(e)}"
                 raise QAQueryError(msg)
             except KeyError as e:
                 raise QAQueryError(str(e))

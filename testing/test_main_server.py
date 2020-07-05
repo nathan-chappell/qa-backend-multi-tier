@@ -22,10 +22,12 @@ from elasticsearch import Elasticsearch # type: ignore
 sys.path.append('..')
 
 from qa_backend.main_server import MainServer
+from qa_backend.util import set_all_loglevels
 
 log = logging.getLogger('testing')
 loop = asyncio.get_event_loop()
 es = Elasticsearch()
+set_all_loglevels('debug')
 
 context = """ Client session is the recommended interface for making HTTP requests.  Session encapsulates a connection pool (connector instance) and supports keepalives by default. Unless you are connecting to a large, unknown number of different servers over the lifetime of your application, it is suggested you use a single session for the lifetime of your application to benefit from connection pooling.  """
 config_file = 'main_server.cfg'
@@ -33,6 +35,7 @@ config = ConfigParser(interpolation=ExtendedInterpolation())
 config.read(config_file)
 
 def run():
+    set_all_loglevels('debug')
     log.info('running main server for testing...')
     main_server = MainServer(config_file)
     main_server.run()
@@ -59,6 +62,7 @@ def wait_for_connection(endpoint:str):
         loop.run_until_complete(session.close())
     if not success:
         raise ConnectionRefusedError()
+    print("*"*20+"\n*** connection complete ***")
 
 def start_server_process():
     p = multiprocessing.Process(target=run)
@@ -226,6 +230,7 @@ class MainServer_CRUD(unittest.TestCase):
 
 class MainServer_QA(unittest.TestCase):
     def test_RegexQA(self):
+        log.info('test_RegexQA')
         question = 'do you think that jelena is happy?'
         status, answers = answer_question(question)
         self.assertEqual(status, 200)
@@ -233,9 +238,11 @@ class MainServer_QA(unittest.TestCase):
         log.info(answers['chosen_answer'])
 
     def test_MicroQA(self):
+        log.info('test_MicroQA')
         c_status = create_context()
         self.assertEqual(c_status, 200)
         question = 'what is http?'
+        log.info('answering question')
         qa_status, answers = answer_question(question)
         self.assertEqual(qa_status, 200)
         #log.info(pformat(answers,indent=2))

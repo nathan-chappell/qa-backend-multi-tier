@@ -3,88 +3,88 @@
 from typing import List
 from typing import MutableMapping
 from typing import Optional
+from typing import Union
 from typing import cast
 import logging
 
+from attr.validators import instance_of
 from transformers import AutoModelForQuestionAnswering # type: ignore
 from transformers import AutoTokenizer # type: ignore
 from transformers import QuestionAnsweringPipeline # type: ignore
+import attr
 
 from .abstract_qa import QA
 from .abstract_qa import QAQueryError
 from qa_backend.util import ConfigurationError
 from qa_backend.util import QAAnswer
-from qa_backend.util import check_config_keys
 from qa_backend.util import complete_sentence
+from qa_backend.util import convert_bool
 
 log = logging.getLogger('qa')
 
-def create_pipeline(
-        model_name: str,
-        use_gpu: bool = False,
-        device: Optional[int] = None,
-    ) -> QuestionAnsweringPipeline:
-    msg = f'<model_name:{model_name}, use_gpu:{use_gpu}, device:{device}>'
-    log.info(f'creating pipeline: {msg}')
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForQuestionAnswering.from_pretrained(model_name)
-    _device = -1
-    if use_gpu:
+@attr.s(kw_only=True)
+class TransformersQAConfig:
+    model_name: str = attr.ib(default='twmkn9/distilbert-base-uncased-squad2',
+                              validator=instance_of(str))
+    device: int = attr.ib(default=0, converter=int)
+    use_gpu: bool = attr.ib(default=True, converter=convert_bool)
+
+def create_pipeline(config: TransformersQAConfig) -> QuestionAnsweringPipeline:
+    log.info(f'creating pipeline: {config}')
+    tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+    model = AutoModelForQuestionAnswering.from_pretrained(config.model_name)
+    if config.use_gpu:
         model.cuda()
-        if device is None:
-            _device = 0
     model.eval()
     return QuestionAnsweringPipeline(
                 model=model, 
                 tokenizer=tokenizer,
-                device=_device,
+                device=config.device,
             )
 
+class LazyPipeline:
+    """Doesn't create pipeline until called"""
+    _pipeline: Optional[QuestionAnsweringPipeline] = None
+    config: TransformersQAConfig
+
+    def __init__(self, config: TransformersQAConfig):
+        self.config = config
+
+    def __call__(self, *args, **kwargs):
+        if self._pipeline is None:
+            self._pipeline = create_pipeline(self.config)
+        return self._pipeline(*args, **kwargs)
+
 class TransformersQA(QA):
-    model_name: str = 'twmkn9/distilbert-base-uncased-squad2'
-    pipeline: QuestionAnsweringPipeline
+    pipeline: Union[QuestionAnsweringPipeline, LazyPipeline]
+    config: Optional[TransformersQAConfig] = None
+    _requires_context = True
 
     def __init__(
             self,
             pipeline: Optional[QuestionAnsweringPipeline] = None,
-            model_name: Optional[str] = None,
-            use_gpu = False,
-            device = -1,
+            config: Optional[TransformersQAConfig] = None
         ):
-        self._requires_context = True
-        if pipeline is not None and model_name is not None:
-            msg = 'Only one of pipeline and model_name should be specified'
-            raise ValueError(msg)
-        if isinstance(pipeline, QuestionAnsweringPipeline):
+        if isinstance(pipeline, QuestionAnsweringPipeline) and config is None:
             self.pipeline = pipeline
-            return
-        elif isinstance(model_name, str):
-            self.model_name = model_name
+        elif isinstance(config, TransformersQAConfig) and pipeline is None:
+            self.pipeline = LazyPipeline(config)
         else:
-            msg = f'pipline must be a QuestionAnsweringPipeline or model_name must be a str'
-            raise ConfigurationError(msg)
-        self.pipeline = create_pipeline(
-                            self.model_name,
-                            use_gpu,
-                            device
-                        )
+            msg = 'Either a config or pipeline must be specified'
+            raise ValueError(msg)
+
+    def __str__(self) -> str:
+        if self.config is not None:
+            return f'{self.config}'
+        else:
+            return f'{self.pipeline}'
 
     @staticmethod
     def from_config(config: MutableMapping[str,str]) -> 'TransformersQA':
         log.info('creating TransformersQA from config')
         log.debug('config: {config}')
-        check_config_keys(config, ['model name','use gpu', 'device'])
-        try:
-            model_name = config.get('model name')
-            use_gpu = config.get('use gpu', False)
-            device = int(config.get('device','-1'))
-            return TransformersQA(
-                        model_name=model_name,
-                        use_gpu=use_gpu,
-                        device=device
-                    )
-        except ValueError as e:
-            raise ConfigurationError(str(e))
+        t_config = TransformersQAConfig(**config)
+        return TransformersQA(config=t_config)
     
     async def query(self, question: str, **kwargs) -> List[QAAnswer]:
         log.debug(f'[TransformersQA] question: {question}')
