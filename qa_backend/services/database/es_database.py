@@ -127,13 +127,14 @@ class ElasticsearchDatabase(QueryDatabase):
             backup_dir.mkdir(parents=True)
             log.info(f'back up at: {str(backup_dir.resolve())}')
             await self.dump_to_directory(backup_dir)
-            link = backup_dir / '../last_backup'
-            if link.exists():
-                log.error(f'tried to create symlink to backup, file already exists!')
-            elif link.is_symlink():
+            link = backup_dir / '../../last_backup'
+            if link.is_symlink():
                 log.debug(f'unlinking existing symlink: {link}')
                 link.unlink()
-            log.debug(f'updating symlink: {backup_dir} <- {link}')
+            elif link.exists():
+                log.error(f'tried to overwrite file with symlink to backup')
+                return
+            log.info(f'updating symlink: {backup_dir} <- {link}')
             os.symlink(backup_dir, link)
             log.info(f'back up complete')
 
