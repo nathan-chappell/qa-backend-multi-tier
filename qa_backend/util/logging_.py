@@ -3,6 +3,7 @@
 Global logging configuration and utilities
 """
 
+from collections import defaultdict
 from typing import List
 import logging
 import re
@@ -36,12 +37,13 @@ def init_logs():
         log.addHandler(handler)
 
 def set_all_loglevels(levelname: str):
-    level_map = {
+    level_map = defaultdict(
+        lambda : logging.INFO, {
         'debug': logging.DEBUG,
         'info': logging.INFO,
         'warn': logging.WARN,
         'error': logging.ERROR,
-    }
+    })
     for logname in _lognames:
         logging.getLogger(logname).setLevel(level_map[levelname])
 

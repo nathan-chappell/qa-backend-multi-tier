@@ -45,7 +45,7 @@ class Explanation(JsonRepresentation):
     __slots__ = ['body','scores','docId','index','total_score']
     query: Dict[str,Any]
     total_score: float
-    scores: List[Tuple[str,float]]
+    scores: List[Tuple[str,float,float]]
     docId: str
     index: str
     text_re = re.compile(r'.*\(text:(\w+) .*')
@@ -53,7 +53,22 @@ class Explanation(JsonRepresentation):
     def __repr__(self) -> str:
         return json.dumps({k:getattr(self,k) for k in self.__slots__})
 
+    @classmethod
+    def get_score_tuple(cls, detail: Dict[str,Any]) -> Tuple[str,float]:
+        text = cls.text_re.sub(r'\1',detail['description'])
+        score = float(detail['value'])
+        def get_freq_from_detail(detail_: Dict[str,Any]) -> float:
+            return float(detail_['details'][0]\
+                                ['details'][2]['details'][0]['value'])
+        try:
+            freq = get_freq_from_detail(detail)
+        except (KeyError,ValueError,TypeError) as e:
+            log.error(e)
+            freq = -1
+        return (text,score,freq)
+
     def __init__(self, body: Dict[str,Any], docId: str, index: str):
+        log.info(f'getting explanation for: {body}')
         try:
             self.body = body['query']
         except KeyError as e:
@@ -71,10 +86,11 @@ class Explanation(JsonRepresentation):
             raise RuntimeError(str(e))
         try:
             self.total_score = float(explanation['explanation']['value'])
-            for detail in explanation['explanation']['details']:
-                text = self.text_re.sub(r'\1',detail['description'])
-                score = float(detail['value'])
-                self.scores.append((text,score))
+            if explanation['explanation']['description'] == 'sum of':
+                for detail in explanation['explanation']['details']:
+                    self.scores.append(self.get_score_tuple(detail))
+            else:
+                self.scores = [self.get_score_tuple(explanation['explanation'])]
         # KeyError, something in re, etc
         except Exception as e:
             log.exception(e)
@@ -127,7 +143,7 @@ class ElasticsearchDatabase(QueryDatabase):
             backup_dir.mkdir(parents=True)
             log.info(f'back up at: {str(backup_dir.resolve())}')
             await self.dump_to_directory(backup_dir)
-            link = backup_dir / '../../last_backup'
+            link = backup_dir / '../last_backup'
             if link.is_symlink():
                 log.debug(f'unlinking existing symlink: {link}')
                 link.unlink()
@@ -135,7 +151,7 @@ class ElasticsearchDatabase(QueryDatabase):
                 log.error(f'tried to overwrite file with symlink to backup')
                 return
             log.info(f'updating symlink: {backup_dir} <- {link}')
-            os.symlink(backup_dir, link)
+            os.symlink(backup_dir.name, link)
             log.info(f'back up complete')
 
     @staticmethod

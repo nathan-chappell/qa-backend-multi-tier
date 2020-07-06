@@ -60,7 +60,7 @@ class MicroAdapterQA(QA):
         if not isinstance(context, str):
             raise QAQueryError("context must be a string")
         body = {'question': question, 'context': context}
-        log.info(f'about to query: {self.config.url}: {body}')
+        log.info(f'about to query: {self.config.url}')
         async with self.session.post(self.config.url, json=body) as response:
             status = response.status
             log.info(f'got response: {response}')
@@ -88,3 +88,4 @@ class MicroAdapterQA(QA):
         log.info('shutting down MicroAdapterQA')
         if not self.session.closed:
             await self.session.close()
+        log.info('session closed')

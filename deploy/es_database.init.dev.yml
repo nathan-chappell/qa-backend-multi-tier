@@ -1,5 +1,5 @@
 # used for creating test index for elasticsearch
-index: deployment-main-index
+index: deployment-dev-index
 creation:
     settings:
         refresh_interval: 50ms
@@ -16,7 +16,7 @@ creation:
             filter:
                 my_stopword_filter:
                     type: stop
-                    stopwords_path: elasticsearch_config/stopwords.txt
+                    stopwords_path: qa_backend_config/stopwords.txt
     mappings:
         properties:
             text:

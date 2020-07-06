@@ -109,7 +109,7 @@ class MainServer:
         if 'PRINT_TB' in config['miscellaneous']:
             log.info(f'PRINT_TB is ON')
             os.environ['PRINT_TB'] = 'True'
-        set_all_loglevels(config['miscellaneous'].get('log levels','info'))
+        set_all_loglevels(config['miscellaneous'].get('log_level','info'))
         log.info(f'Initialization complete.')
 
     async def shutdown(self, app: web.Application):
@@ -134,7 +134,9 @@ class MainServer:
         if self.transformers_micro is None:
             return
         log.info(f'Starting transformers micro service.')
-        p = multiprocessing.Process(target=self.transformers_micro.run)
+        kwargs = {'create_pipeline_now':True}
+        target = self.transformers_micro.run
+        p = multiprocessing.Process(target=target,kwargs=kwargs)
         self.transformers_micro_process = p
         p.start()
         log.info(f'Started on process: {p.pid}')

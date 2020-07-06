@@ -26,6 +26,7 @@ from attr.validators import instance_of
 import aiohttp.web as web # type: ignore
 import attr
 
+from qa_backend.services.qa import LazyPipeline
 from qa_backend.services.qa import TransformersQA
 from qa_backend.services.qa import TransformersQAConfig
 from qa_backend.util import APIError
@@ -107,7 +108,7 @@ class TransformersMicro:
     async def answer_question(self, request: Request) -> Response:
         log.debug('answering question')
         json_question: JsonQuestion = await JsonQuestion.from_request(request)
-        log.info(f'json_question: {json_question}')
+        log.info(f'json_question: {json_question.question}')
         question = json_question.question
         context = json_question.context
         # QAQueryError will pass to middleware
@@ -116,7 +117,10 @@ class TransformersMicro:
         answers_ = [attr.asdict(answer) for answer in answers]
         return web.json_response(answers_)
 
-    def run(self) -> None:
+    def run(self, create_pipeline_now = False) -> None:
+        if create_pipeline_now and isinstance(self.transformers_qa.pipeline,
+                                              LazyPipeline):
+            self.transformers_qa.pipeline.create_now()
         app = web.Application(middlewares=[exception_middleware])
         app.add_routes([
             web.post(f'/{self.config.path}', self.answer_question),
