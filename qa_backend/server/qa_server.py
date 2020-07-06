@@ -134,6 +134,8 @@ class QAServer:
             answer_ = attr.asdict(answer)
             if hasattr(answer,'paragraph'):
                 answer_['paragraph'] = attr.asdict(answer.paragraph)
+            else:
+                answer_['paragraph'] = None
             answers_.append(answer_)
         #answers_ = [attr.asdict(answer) for answer in answers]
         if len(answers_) > 0:
