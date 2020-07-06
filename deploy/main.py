@@ -4,7 +4,7 @@ import sys
 sys.path.append('..')
 import logging
 
-from qa_backend.server import MainServer
+from qa_backend import MainServer
 
 main_server = MainServer('main_server.cfg')
 

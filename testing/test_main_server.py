@@ -246,6 +246,7 @@ class MainServer_QA(unittest.TestCase):
         qa_status, answers = answer_question(question)
         self.assertEqual(qa_status, 200)
         #log.info(pformat(answers,indent=2))
+        log.info(answers)
         log.info(answers['chosen_answer'])
         d_status = delete_context()
         self.assertEqual(d_status, 200)

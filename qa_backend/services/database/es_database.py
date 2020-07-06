@@ -15,6 +15,7 @@ from typing import TextIO
 from typing import Tuple
 from typing import Union
 import asyncio
+import json
 import logging
 import re
 import yaml
@@ -47,6 +48,9 @@ class Explanation(JsonRepresentation):
     docId: str
     index: str
     text_re = re.compile(r'.*\(text:(\w+) .*')
+
+    def __repr__(self) -> str:
+        return json.dumps({k:getattr(self,k) for k in self.__slots__})
 
     def __init__(self, body: Dict[str,Any], docId: str, index: str):
         try:

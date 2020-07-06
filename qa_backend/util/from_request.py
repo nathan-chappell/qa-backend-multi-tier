@@ -65,7 +65,7 @@ JsonQuestion._api_error_message = \
 @attr.s
 class JsonQuestionOptionalContext(FromRequest['JsonQuestionOptionalContext']):
     question: str = attr.ib(converter=str, validator=validate_question)
-    context: Optional[str] = attr.ib(converter=str, default=None,
+    context: Optional[str] = attr.ib(default=None,
                                      validator=optional(validate_context))
 
 JsonQuestionOptionalContext._api_error_message = \

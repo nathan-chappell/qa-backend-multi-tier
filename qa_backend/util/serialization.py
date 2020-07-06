@@ -21,13 +21,13 @@ class JsonRepresentation:
         return json.dumps(attr.asdict(self))
 
 @attr.s(auto_attribs=True, slots=True)
+class Paragraph(JsonRepresentation):
+    docId: str = attr.ib(validator=matches_re(r'[a-zA-Z_\-0-9]+.txt'))
+    text: str
+
+@attr.s(auto_attribs=True, slots=True)
 class QAAnswer(JsonRepresentation):
     question: str
     answer: str
     score: float
     docId: str = ''
-
-@attr.s(auto_attribs=True, slots=True)
-class Paragraph(JsonRepresentation):
-    docId: str = attr.ib(validator=matches_re(r'[a-zA-A_\-0-9]+.txt'))
-    text: str

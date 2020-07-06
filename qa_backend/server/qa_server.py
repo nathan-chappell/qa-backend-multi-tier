@@ -129,7 +129,13 @@ class QAServer:
         ) -> Dict[str,Any]:
         log.debug(f'getting answers from list of length: {len(answers)}')
         answers = list(sorted(answers, key=lambda a: a.score, reverse=True))
-        answers_ = [attr.asdict(answer) for answer in answers]
+        answers_: List[Dict[str,Any]] = []
+        for answer in answers:
+            answer_ = attr.asdict(answer)
+            if hasattr(answer,'paragraph'):
+                answer_['paragraph'] = attr.asdict(answer.paragraph)
+            answers_.append(answer_)
+        #answers_ = [attr.asdict(answer) for answer in answers]
         if len(answers_) > 0:
             chosen_answer: Optional[Dict[str,Any]] = answers_[0]
         else:
@@ -145,11 +151,11 @@ class QAServer:
         log.debug('answering question')
         json_question: JsonQuestionOptionalContext\
                 = await JsonQuestionOptionalContext.from_request(request)
-        log.debug(f'json_question {json_question}')
+        log.info(f'json_question {json_question}')
         question = json_question.question
         context = json_question.context
         if context is None:
-            log.debug('no context, querying db...')
+            log.info('no context, querying db...')
             paragraphs = list(await self.database.query(question, ir_size))
             log.debug(f'got {len(paragraphs)} paragraphs of context')
             log.debug(f'{paragraphs}')
@@ -167,6 +173,7 @@ class QAServer:
                         for new_answer in new_answers:
                             if new_answer.answer != '':
                                 new_answer.docId = paragraph.docId
+                                new_answer.paragraph = paragraph
                                 answers.append(new_answer)
                     except QAQueryError as e:
                         msg = f'[QAQueryError]: {str(e)}'
