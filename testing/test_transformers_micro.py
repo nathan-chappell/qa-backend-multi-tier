@@ -1,6 +1,7 @@
 # test_tranformers_micro.py
 
-from aiohttp import ClientConnectionError
+from configparser import ConfigParser
+from configparser import ExtendedInterpolation
 from multiprocessing import Process
 import asyncio
 import atexit
@@ -11,14 +12,42 @@ import signal
 import sys
 import unittest
 
+from aiohttp import ClientConnectionError
 from aiohttp import ClientSession
 
 sys.path.append('..')
 
 from qa_backend.server import TransformersMicro
 from qa_backend.server import TransformersMicroConfig
+from qa_backend.server.transformers_micro import split_micro_config
 from qa_backend.services.qa import TransformersQAConfig
 from qa_backend.util import QAAnswer
+
+log = logging.getLogger('test')
+
+def set_configs():
+    global micro_config, transformers_qa_config
+    config_file = 'main_server.cfg'
+    parser = ConfigParser(interpolation=ExtendedInterpolation())
+    parser.read(config_file)
+    raw_config = parser['transformers micro service']
+    log.debug('***** raw_config')
+    log.debug(dict(raw_config))
+    _micro_config, _transformers_qa_config = split_micro_config(raw_config)
+    log.debug('***** _micro_config')
+    log.debug(_micro_config)
+    log.debug('***** _transformers_qa_config')
+    log.debug(_transformers_qa_config)
+    micro_config = TransformersMicroConfig(**_micro_config)
+    log.debug('***** micro_config')
+    log.debug(micro_config)
+    log.debug('***** transformers_qa_config')
+    transformers_qa_config = TransformersQAConfig(**_transformers_qa_config)
+    log.debug(transformers_qa_config)
+
+set_configs()
+print(micro_config)
+print(transformers_qa_config)
 
 context = """ Successful unit testing requires writing tests that would
 only fail in case of an actual error or requirement change. There are a
@@ -32,21 +61,20 @@ result is the same.  """
 
 def run():
     logging.getLogger('server').setLevel(logging.DEBUG)
-    transformers_micro = TransformersMicro.from_config({
-                            'device': -1,
-                            'use_gpu': False,
-                        })
+    #print(f'*****{str(dict(raw_config))}')
+    #transformers_micro = TransformersMicro.from_config(raw_config)
+    transformers_micro = TransformersMicro(
+                            config=micro_config,
+                            transformers_qa_config=transformers_qa_config,
+                        )
     transformers_micro.run()
 
 class TransformersMicro_TestQuery(unittest.TestCase):
-    def setUp(self):
-        self.url = f'http://localhost:8081/question'
-
     def test_answer(self):
         async def get_answer():
             body = {'question': 'what are fragile unit tests?',
                     'context': context}
-            async with session.post(self.url,json=body) as response:
+            async with session.post(micro_config.url,json=body) as response:
                 status = response.status
                 response_body = await response.json()
             return status, response_body
@@ -58,7 +86,7 @@ class TransformersMicro_TestQuery(unittest.TestCase):
 
     def test_api_error(self):
         async def bad_method():
-            async with session.get(self.url) as response:
+            async with session.get(micro_config.url) as response:
                 return response.status
         status = loop.run_until_complete(bad_method())
         log.info(f'[STATUS]: {status}')
@@ -66,10 +94,11 @@ class TransformersMicro_TestQuery(unittest.TestCase):
 
 async def wait_for_server(seconds: int = 10) -> bool:
     count = 0
+    endpoint = f'http://{micro_config.host}:{micro_config.port}'
     while count < seconds:
         count += 1
         try:
-            async with session.get('http://localhost:8081'):
+            async with session.get(endpoint):
                 return True
         except ClientConnectionError:
             await asyncio.sleep(1)

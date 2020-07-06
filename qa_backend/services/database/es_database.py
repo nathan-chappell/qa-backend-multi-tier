@@ -17,6 +17,7 @@ from typing import Union
 import asyncio
 import json
 import logging
+import os
 import re
 import yaml
 
@@ -121,11 +122,19 @@ class ElasticsearchDatabase(QueryDatabase):
     async def shutdown(self) -> None:
         log.info('shutting down')
         if isinstance(self.config.backup_dir, str):
-            timestamp = datetime.now().strftime('%Y%m%d_%h%m%s')
-            directory_path = Path(self.config.backup_dir) / timestamp
-            directory_path.mkdir(parents=True)
-            log.info(f'back up at: {str(directory_path.resolve())}')
-            await self.dump_to_directory(directory_path)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            backup_dir = Path(self.config.backup_dir) / timestamp
+            backup_dir.mkdir(parents=True)
+            log.info(f'back up at: {str(backup_dir.resolve())}')
+            await self.dump_to_directory(backup_dir)
+            link = backup_dir / '../last_backup'
+            if link.exists():
+                log.error(f'tried to create symlink to backup, file already exists!')
+            elif link.is_symlink():
+                log.debug(f'unlinking existing symlink: {link}')
+                link.unlink()
+            log.debug(f'updating symlink: {backup_dir} <- {link}')
+            os.symlink(backup_dir, link)
             log.info(f'back up complete')
 
     @staticmethod

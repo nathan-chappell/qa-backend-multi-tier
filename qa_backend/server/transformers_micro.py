@@ -81,7 +81,8 @@ class TransformersMicro:
         if isinstance(transformers_qa, TransformersQA):
             self.transformers_qa = transformers_qa
         elif isinstance(transformers_qa_config, TransformersQAConfig):
-            self.transformer_qa = TransformersQA(transformers_qa_config)
+            log.info(f'TransformersMicro: creating from config:{transformers_qa_config}')
+            self.transformers_qa = TransformersQA(config=transformers_qa_config)
         else:
             msg = f'Either a TransformersQA or config must be specified'
             raise ValueError(msg)
