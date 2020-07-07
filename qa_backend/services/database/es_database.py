@@ -51,27 +51,6 @@ class Explanation(JsonRepresentation):
     qid: str
     text_re = re.compile(r'.*\(text:?(\w+|"[^"]*")? .*')
 
-    def __repr__(self) -> str:
-        return json.dumps({k:getattr(self,k) for k in self.__slots__})
-
-    @classmethod
-    def get_score_tuple(cls, detail: Dict[str,Any]) -> Tuple[str,float,float]:
-        text = cls.text_re.sub(r'\1',detail['description'])
-        score = float(detail['value'])
-        def get_freq_from_detail(detail_: Dict[str,Any]) -> float:
-            try: 
-                return float(detail_['details'][0]\
-                                    ['details'][2]['details'][0]['value'])
-            except (KeyError, IndexError) as e:
-                log.debug(f'failed to get freq: {e}')
-                return -1
-        try:
-            freq = get_freq_from_detail(detail)
-        except Exception as e:
-            log.exception(e)
-            freq = -1
-        return (text,score,freq)
-
     def __init__(self, body: Dict[str,Any], docId: str, index: str, qid: str):
         log.info(f'getting explanation for: {body}')
         try:
@@ -101,6 +80,27 @@ class Explanation(JsonRepresentation):
         except Exception as e:
             log.exception(e)
             raise RuntimeError(str(e))
+
+    def __repr__(self) -> str:
+        return json.dumps({k:getattr(self,k) for k in self.__slots__})
+
+    @classmethod
+    def get_score_tuple(cls, detail: Dict[str,Any]) -> Tuple[str,float,float]:
+        text = cls.text_re.sub(r'\1',detail['description'])
+        score = float(detail['value'])
+        def get_freq_from_detail(detail_: Dict[str,Any]) -> float:
+            try: 
+                return float(detail_['details'][0]\
+                                    ['details'][2]['details'][0]['value'])
+            except (KeyError, IndexError) as e:
+                log.debug(f'failed to get freq: {e}')
+                return -1
+        try:
+            freq = get_freq_from_detail(detail)
+        except Exception as e:
+            log.exception(e)
+            freq = -1
+        return (text,score,freq)
 
 class ElasticsearchDatabaseError(RuntimeError):
     message: str

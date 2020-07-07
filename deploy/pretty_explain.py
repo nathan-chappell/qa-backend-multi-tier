@@ -2,10 +2,11 @@
 
 from pprint import pprint
 import json
+import sys
 
 cur_qid = None
 
-def print_explain(explain):
+def print_explain(explain, file=sys.stdout):
     #scores = []
     #q = explain['body']['match']['text']
     print('')
@@ -16,7 +17,8 @@ def print_explain(explain):
     scores = sorted(scores, key = lambda tpl: tpl[1], reverse=True)
     for i, tpl in enumerate(scores):
         #scores.append(f'{tpl[0]:12} {tpl[1]:6.3f} {tpl[2]:2.0f}')
-        print(' --- ' + f'{tpl[0]:12} {tpl[1]:6.3f} {tpl[2]:2.0f}', flush=True)
+        print(' --- ' + f'{tpl[0]:12} {tpl[1]:6.3f} {tpl[2]:2.0f}',
+              flush=True, file=file)
     #print(json.dumps(json.loads(q),indent=2),flush=True)
     #pprint(explain)
 

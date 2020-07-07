@@ -5,7 +5,7 @@ team, mono, company, guys
 use, work with, utilize, take advantage of, choose
 
 # IT business
-software, program, programs
+software, program, program, solution
 app, application, applications,
 make, design, develop, produce, create
 
