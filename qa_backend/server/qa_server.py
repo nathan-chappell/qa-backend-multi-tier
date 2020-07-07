@@ -112,11 +112,14 @@ class QAServer:
         if isinstance(self.qa_log, TextIO):
             self.qa_log.close()
 
-    def log_qa(self, qa_answers: List[QAAnswer]):
+    def log_qa(self, qa_answers: List[QAAnswer], qid: str):
         log.debug('logging qa')
         if self.qa_log is not None:
             try:
-                print(repr(qa_answers), file=self.qa_log, flush=True)
+                answers = [attr.asdict(qa_answer) 
+                           for qa_answer in qa_answers]
+                entry = {'qid': qid, 'answers':answers}
+                print(entry, file=self.qa_log, flush=True)
             except Exception as e:
                 log.error(f'Error while logging: {e}')
 
@@ -137,7 +140,6 @@ class QAServer:
             else:
                 answer_['paragraph'] = None
             answers_.append(answer_)
-        #answers_ = [attr.asdict(answer) for answer in answers]
         if len(answers_) > 0:
             chosen_answer: Optional[Dict[str,Any]] = answers_[0]
         else:
@@ -156,9 +158,10 @@ class QAServer:
         log.info(f'json_question {json_question}')
         question = json_question.question
         context = json_question.context
+        qid = request['qid']
         if context is None:
             log.info('no context, querying db...')
-            paragraphs = list(await self.database.query(question, ir_size))
+            paragraphs = list(await self.database.query(question, ir_size, qid))
             log.debug(f'got {len(paragraphs)} paragraphs of context')
             log.debug(f'{paragraphs}')
         else:
@@ -187,7 +190,7 @@ class QAServer:
                 except QAQueryError as e:
                     msg = f'[QAQueryError]: {str(e)}'
                     log.exception(msg)
-        self.log_qa(answers)
+        self.log_qa(answers, qid)
         log.debug(f'got {len(answers)} answers')
         response_answers = self.get_answers_for_response(answers)
         response_answers.update({'question':question})

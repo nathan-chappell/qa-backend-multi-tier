@@ -1,0 +1,5 @@
+kind, type, kinds, types
+software, program, programs
+app, application, applications,
+ai, machine learning, artificial intelligence
+make, design, develop, produce, create

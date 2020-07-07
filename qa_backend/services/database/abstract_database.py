@@ -86,6 +86,7 @@ class QueryDatabase(Database):
     async def query(
             self,
             query_string: str,
-            size: int
+            size: int,
+            qid: str = ''
         ) -> Iterable[Paragraph]:
         ...

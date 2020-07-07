@@ -14,3 +14,6 @@ does
 is
 are
 
+# pronouns
+you
+we

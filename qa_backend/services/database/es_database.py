@@ -42,32 +42,37 @@ from . import QueryDatabase
 es = Elasticsearch()
 
 class Explanation(JsonRepresentation):
-    __slots__ = ['body','scores','docId','index','total_score']
+    __slots__ = ['body','scores','docId','index','total_score','qid']
     query: Dict[str,Any]
     total_score: float
     scores: List[Tuple[str,float,float]]
     docId: str
     index: str
+    qid: str
     text_re = re.compile(r'.*\(text:(\w+) .*')
 
     def __repr__(self) -> str:
         return json.dumps({k:getattr(self,k) for k in self.__slots__})
 
     @classmethod
-    def get_score_tuple(cls, detail: Dict[str,Any]) -> Tuple[str,float]:
+    def get_score_tuple(cls, detail: Dict[str,Any]) -> Tuple[str,float,float]:
         text = cls.text_re.sub(r'\1',detail['description'])
         score = float(detail['value'])
         def get_freq_from_detail(detail_: Dict[str,Any]) -> float:
-            return float(detail_['details'][0]\
-                                ['details'][2]['details'][0]['value'])
+            try: 
+                return float(detail_['details'][0]\
+                                    ['details'][2]['details'][0]['value'])
+            except (KeyError, IndexError) as e:
+                log.debug(f'failed to get freq: {e}')
+                return -1
         try:
             freq = get_freq_from_detail(detail)
-        except (KeyError,ValueError,TypeError) as e:
-            log.error(e)
+        except Exception as e:
+            log.exception(e)
             freq = -1
         return (text,score,freq)
 
-    def __init__(self, body: Dict[str,Any], docId: str, index: str):
+    def __init__(self, body: Dict[str,Any], docId: str, index: str, qid: str):
         log.info(f'getting explanation for: {body}')
         try:
             self.body = body['query']
@@ -79,6 +84,7 @@ class Explanation(JsonRepresentation):
         self.docId = docId
         self.scores = []
         self.index = index
+        self.qid = qid
         try:
             explanation = es.explain(index, id=docId, body={'query':self.body})
         except ElasticsearchException as e:
@@ -86,7 +92,7 @@ class Explanation(JsonRepresentation):
             raise RuntimeError(str(e))
         try:
             self.total_score = float(explanation['explanation']['value'])
-            if explanation['explanation']['description'] == 'sum of':
+            if explanation['explanation']['description'] == 'sum of:':
                 for detail in explanation['explanation']['details']:
                     self.scores.append(self.get_score_tuple(detail))
             else:
@@ -251,7 +257,8 @@ class ElasticsearchDatabase(QueryDatabase):
     async def query(
             self,
             query_string: str,
-            size: int = 10
+            size: int = 10,
+            qid: str = '',
         ) -> Iterable[Paragraph]:
         log.info(f'query[:{size}] {query_string}')
         body = {'query': {'match': {'text': query_string}}, 'size':size}
@@ -267,7 +274,7 @@ class ElasticsearchDatabase(QueryDatabase):
             paragraphs.append(Paragraph(_id, hit_text))
             try:
                 if self.explain_log is not None:
-                        print(Explanation(body,_id,self.index),
+                        print(Explanation(body,_id,self.index,qid),
                               file=self.explain_log,
                               flush=True)
             except RuntimeError as e:

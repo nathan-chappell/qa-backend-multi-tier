@@ -24,6 +24,8 @@ from qa_backend.services.qa import TransformersQAConfig
 from qa_backend.util import QAAnswer
 
 log = logging.getLogger('test')
+micro_config: TransformersMicroConfig
+transformers_qa_config: TransformersQAConfig
 
 def set_configs():
     global micro_config, transformers_qa_config

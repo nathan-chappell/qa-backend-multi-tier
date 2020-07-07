@@ -13,12 +13,25 @@ creation:
                         - lowercase
                         - my_stopword_filter
                         - porter_stem
+                my_query_analyzer:
+                    type: custom
+                    tokenizer: standard
+                    filter:
+                        - asciifolding
+                        - lowercase
+                        - my_synonym_filter
+                        - my_stopword_filter
+                        - porter_stem
             filter:
                 my_stopword_filter:
                     type: stop
                     stopwords_path: qa_backend_config/stopwords.txt
+                my_synonym_filter:
+                    type: synonym_graph
+                    synonyms_path: qa_backend_config/synonyms.txt
     mappings:
         properties:
             text:
                 type: text
                 analyzer: my_analyzer
+                search_analyzer: my_query_analyzer
