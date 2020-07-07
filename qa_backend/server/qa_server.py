@@ -119,7 +119,7 @@ class QAServer:
                 answers = [attr.asdict(qa_answer) 
                            for qa_answer in qa_answers]
                 entry = {'qid': qid, 'answers':answers}
-                print(entry, file=self.qa_log, flush=True)
+                print(json.dumps(entry), file=self.qa_log, flush=True)
             except Exception as e:
                 log.error(f'Error while logging: {e}')
 
@@ -132,9 +132,11 @@ class QAServer:
         ) -> Dict[str,Any]:
         log.debug(f'getting answers from list of length: {len(answers)}')
         answers = list(sorted(answers, key=lambda a: a.score, reverse=True))
+        #log.debug(answers)
         answers_: List[Dict[str,Any]] = []
         for answer in answers:
             answer_ = attr.asdict(answer)
+            #log.debug(answer_)
             if hasattr(answer,'paragraph'):
                 answer_['paragraph'] = attr.asdict(answer.paragraph)
             else:
@@ -175,6 +177,8 @@ class QAServer:
                 for paragraph in paragraphs:
                     try:
                         new_answers = await qa.query(question, context=paragraph.text)
+                        log.debug('[NEW ANSWERS]')
+                        log.debug(f'{new_answers}')
                         for new_answer in new_answers:
                             if new_answer.answer != '':
                                 new_answer.docId = paragraph.docId

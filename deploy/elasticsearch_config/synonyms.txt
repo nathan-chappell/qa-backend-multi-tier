@@ -1,5 +1,14 @@
+# generics
 kind, type, kinds, types
+located, based, where are
+team, mono, company, guys
+use, work with, utilize, take advantage of, choose
+
+# IT business
 software, program, programs
 app, application, applications,
-ai, machine learning, artificial intelligence
 make, design, develop, produce, create
+
+# more specific
+ai, machine learning, artificial intelligence
+

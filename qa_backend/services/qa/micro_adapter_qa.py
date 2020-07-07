@@ -69,12 +69,7 @@ class MicroAdapterQA(QA):
                 raise QAQueryError(msg)
             try:
                 resp_json = await response.json()
-                if len(resp_json) == 0:
-                    return []
-                question = resp_json[0]['question']
-                answer = resp_json[0]['answer']
-                score = float(resp_json[0]['score'])
-                return [QAAnswer(question, answer, score)]
+                return [QAAnswer(**answer) for answer in resp_json]
             except JSONDecodeError as e:
                 text = await response.text()
                 msg = f"error decoding json:\n{self.config.url}\n{text}\n{str(e)}"

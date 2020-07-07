@@ -6,3 +6,4 @@ transformers
 Markdown
 pyyaml
 attr
+ansimarkup

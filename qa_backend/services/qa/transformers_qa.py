@@ -115,8 +115,11 @@ class TransformersQA(QA):
         # check for "no answer"
         if answer['start'] == answer['end']:
             answer_ = ''
+            original_span = ''
         else:
             start,end = answer['start'], answer['end']
+            original_span = answer['answer']
             answer_ = complete_sentence(cast(str,context),start, end)
         log.debug(f'answer_: {answer_}')
-        return [QAAnswer(question, answer_, answer['score'])]
+        return [QAAnswer(question, answer_, answer['score'],
+                         original_span=original_span)]

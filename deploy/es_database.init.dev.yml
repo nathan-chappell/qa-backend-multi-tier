@@ -11,6 +11,7 @@ creation:
                     filter:
                         - asciifolding
                         - lowercase
+                        - my_synonym_filter
                         - my_stopword_filter
                         - porter_stem
                 my_query_analyzer:

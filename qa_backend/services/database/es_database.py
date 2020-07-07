@@ -49,7 +49,7 @@ class Explanation(JsonRepresentation):
     docId: str
     index: str
     qid: str
-    text_re = re.compile(r'.*\(text:(\w+) .*')
+    text_re = re.compile(r'.*\(text:?(\w+|"[^"]*")? .*')
 
     def __repr__(self) -> str:
         return json.dumps({k:getattr(self,k) for k in self.__slots__})
