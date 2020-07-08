@@ -1,0 +1,1469 @@
+question - What is mono software?
+
+answer - Mono develops high-quality cloud-based solutions for all cloud service models and environments.
+ 1.945 cloud_0.txt
+ --- compani       1.411 12
+ --- program       0.534 13
+--------------------------------------------------------------------------------
+ --- Mono develops high-quality cloud-based solutions for all cloud service
+ --- models and environments. Mono team has been working with different
+ --- cloud-based environments for more than 10 years. We have started with
+ --- Amazons Elastic Compute Cloud and adopted Microsoft Azure services
+ --- right after their official release in 2010. In parallel with our work
+ --- with these public clouds, we have built and used complex private cloud
+ --- environments, as well as hybrid models. Today, almost all of our
+ --- solutions rely on at least several cloud-based services.  We gained
+ --- significant experience with all cloud service models, including
+ --- Infrastructure as a Service (IaaS), type of online services that hide
+ --- the low-level details of underlying network infrastructure and
+ --- physical resources via virtualization. This allows businesses to
+ --- purchase resources on demand and as needed, instead of having to buy
+ --- hardware outright, but still requires significant skills to maintain
+ --- the infrastructure. Platform as a Service (PaaS) provides developers
+ --- with a framework they can use to build custom applications upon,
+ --- without having to deal with data serving, storage, management, and
+ --- similar tasks.   Software as a Service (Saas) refers to cloud-based
+ --- software solutions that are hosted online and are available for
+ --- purchase on a subscription basis. Backend as a Service (BaaS) provides
+ --- application developers with a mechanism to connect their applications
+ --- to cloud storage and other computing services with APIs and SDKs
+ --- exposed to their applications. We even built a complete BaaS solution
+ --- from scratch and are using it as a backbone of many of our own
+ --- solutions!
+________________________________________________________________________________
+question - How many years does Mono exist?
+
+answer - Mono team has been working with different cloud-based environments for more than 10 years.
+ 4.808 cloud_0.txt
+ --- year          1.922  1
+ --- mani          1.475  1
+ --- compani       1.411 12
+--------------------------------------------------------------------------------
+ --- Mono develops high-quality cloud-based solutions for all cloud service
+ --- models and environments. Mono team has been working with different
+ --- cloud-based environments for more than 10 years. We have started with
+ --- Amazons Elastic Compute Cloud and adopted Microsoft Azure services
+ --- right after their official release in 2010. In parallel with our work
+ --- with these public clouds, we have built and used complex private cloud
+ --- environments, as well as hybrid models. Today, almost all of our
+ --- solutions rely on at least several cloud-based services.  We gained
+ --- significant experience with all cloud service models, including
+ --- Infrastructure as a Service (IaaS), type of online services that hide
+ --- the low-level details of underlying network infrastructure and
+ --- physical resources via virtualization. This allows businesses to
+ --- purchase resources on demand and as needed, instead of having to buy
+ --- hardware outright, but still requires significant skills to maintain
+ --- the infrastructure. Platform as a Service (PaaS) provides developers
+ --- with a framework they can use to build custom applications upon,
+ --- without having to deal with data serving, storage, management, and
+ --- similar tasks.   Software as a Service (Saas) refers to cloud-based
+ --- software solutions that are hosted online and are available for
+ --- purchase on a subscription basis. Backend as a Service (BaaS) provides
+ --- application developers with a mechanism to connect their applications
+ --- to cloud storage and other computing services with APIs and SDKs
+ --- exposed to their applications. We even built a complete BaaS solution
+ --- from scratch and are using it as a backbone of many of our own
+ --- solutions!
+________________________________________________________________________________
+question - Is Mono an awarded IT company?
+
+answer - Mono is a software company based in Croatia.
+ 3.260 about_0.txt
+ --- compani       2.966 16
+ --- it            0.294  1
+--------------------------------------------------------------------------------
+ --- Mono is a software company based in Croatia. We've been in business
+ --- since 2003, growing steadily, and achieving great business results
+ --- that have been recognized internationally. Why choose Mono?  There are
+ --- a number of reasons to choose mono: we offer One-stop service, we are
+ --- No-nonsense, we are committed to Honest communication, we provide
+ --- Transparency, we are proud of our High quality, and we are Cost-
+ --- effective.  On top of all that, we have Great partnerships.
+ --- Consulting, requirements gathering and analysis, functional
+ --- specification, architectural design, UX design, development, testing,
+ --- deployment, maintenance, support - we’ve got it all covered. We don't
+ --- overcomplicate. Even if the technology and processes behind the scene
+ --- are very complex, our solutions are simple to use and understand. We
+ --- communicate clearly and openly, even when the news are not good. Our
+ --- experts provide sound advice on technology and application design
+ --- options.
+________________________________________________________________________________
+question - Have you won any awards?
+
+answer - We are the recipients of many notable Awards.
+ 7.078 about_2.txt
+ --- award         6.456  4
+ --- have          0.622  1
+--------------------------------------------------------------------------------
+ ---   We are the recipients of many notable Awards. Mono holds a Gold
+ --- Microsoft Partner status with Application Development and Independent
+ --- Software Vendor competencies for more than 10 consecutive years. Gold
+ --- partners are Microsoft's most highly accredited independent technical
+ --- support providers. We were awarded by Deloitte Technology Fast 50 in
+ --- Central Europe 2013, a prestigious annual programme that honors the
+ --- fastest growing Central European technology companies, based on the
+ --- percentage of revenue growth over the five-year period. We are also a
+ --- National Champion in the organic growth category for The European
+ --- Business Awards 2014/2015. There is so much more about Mono than
+ --- economic indicators and awards. We cherish a great working atmosphere
+ --- and believe in agile methodologies and continuous delivery. Our teams
+ --- adapt quickly and efficiently. We are a one-stop provider and can
+ --- handle all combinations of requirements gathering, architecture
+ --- design, UX, testing, validation, maintenance, and support. We have an
+ --- unmatched reputation for delivering responsive, expert and
+ --- professional support. And, above all, we take a great deal of pride in
+ --- what we do. With great city comes a great community. Our hometown is a
+ --- software development hub with dozens of successful IT companies. Many
+ --- of us are connected with Osijek Software City—an association which
+ --- goals are mainly focused on education and providing support for young
+ --- developers and designers.
+________________________________________________________________________________
+question - What is your expertise?
+
+answer - Whatever the reason is, our team extension services will allow you to augment your teams with selected, competent professionals that will match or exceed productivity of you internal team members.
+ 2.251 Team_extension_services_0.txt
+ --- your          2.251  7
+--------------------------------------------------------------------------------
+ --- Team extension services: Augmenting your in-house IT team to add
+ --- missing tech skills. Get immediate access to some of the best IT
+ --- professionals, while maintaining your strategic competencies in house.
+ --- Our developers and architects will add missing skills to your internal
+ --- teams, so it can grow fast and achieve business goals on time.  Many
+ --- companies around the world cannot hire right local tech talent on
+ --- time. Some are unhappy with high attrition rates of in-house teams or
+ --- need to quickly scale their delivery capacity. Whatever the reason is,
+ --- our team extension services will allow you to augment your teams with
+ --- selected, competent professionals that will match or exceed
+ --- productivity of you internal team members. Team extension model
+ --- acknowledges the fact that technical skills of individual team members
+ --- are just one factor contributing to the success of the project.
+ --- Successful software engineering is also about leadership and
+ --- management. You will be able to keep control over the whole team - new
+ --- developers that we provide are a complement to your existing team, not
+ --- an independent group. In essence, they are becoming an internal part
+ --- of your company for the length of the project. When working in a team
+ --- extension model, our first priority is to set up a fully functional
+ --- core team. Its goal is to become familiar with your corporate culture,
+ --- business domain knowledge, development technologies and management
+ --- methodologies. In later phases, they are able to transfer this
+ --- knowledge to new team members without clients involvement.
+ --- Furthermore, you will benefit not only from instant capacity, but also
+ --- from flexibility to scale the team size up ad down as business goals
+ --- change over time.
+________________________________________________________________________________
+question - What services does Mono offer?
+
+answer - Why choose Mono?  There are a number of reasons to choose mono: we offer One-stop service, we are No-nonsense, we are committed to Honest communication, we provide Transparency, we are proud of our High quality, and we are Cost-effective.
+ 4.599 about_0.txt
+ --- offer         2.379  1
+ --- compani       1.483 16
+ --- servic        0.737  1
+--------------------------------------------------------------------------------
+ --- Mono is a software company based in Croatia. We've been in business
+ --- since 2003, growing steadily, and achieving great business results
+ --- that have been recognized internationally. Why choose Mono?  There are
+ --- a number of reasons to choose mono: we offer One-stop service, we are
+ --- No-nonsense, we are committed to Honest communication, we provide
+ --- Transparency, we are proud of our High quality, and we are Cost-
+ --- effective.  On top of all that, we have Great partnerships.
+ --- Consulting, requirements gathering and analysis, functional
+ --- specification, architectural design, UX design, development, testing,
+ --- deployment, maintenance, support - we’ve got it all covered. We don't
+ --- overcomplicate. Even if the technology and processes behind the scene
+ --- are very complex, our solutions are simple to use and understand. We
+ --- communicate clearly and openly, even when the news are not good. Our
+ --- experts provide sound advice on technology and application design
+ --- options.
+________________________________________________________________________________
+question - What services do you offer?
+
+answer - Why choose Mono?  There are a number of reasons to choose mono: we offer One-stop service, we are No-nonsense, we are committed to Honest communication, we provide Transparency, we are proud of our High quality, and we are Cost-effective.
+ 3.116 about_0.txt
+ --- offer         2.379  1
+ --- servic        0.737  1
+--------------------------------------------------------------------------------
+ --- Mono is a software company based in Croatia. We've been in business
+ --- since 2003, growing steadily, and achieving great business results
+ --- that have been recognized internationally. Why choose Mono?  There are
+ --- a number of reasons to choose mono: we offer One-stop service, we are
+ --- No-nonsense, we are committed to Honest communication, we provide
+ --- Transparency, we are proud of our High quality, and we are Cost-
+ --- effective.  On top of all that, we have Great partnerships.
+ --- Consulting, requirements gathering and analysis, functional
+ --- specification, architectural design, UX design, development, testing,
+ --- deployment, maintenance, support - we’ve got it all covered. We don't
+ --- overcomplicate. Even if the technology and processes behind the scene
+ --- are very complex, our solutions are simple to use and understand. We
+ --- communicate clearly and openly, even when the news are not good. Our
+ --- experts provide sound advice on technology and application design
+ --- options.
+________________________________________________________________________________
+question - What are your services?
+
+answer - Our DevOps services cover monitoring, security, tool-chain pipelines, automation and cloud adoption.
+ 2.957 DevOps.txt
+ --- your          1.960  3
+ --- servic        0.998  3
+--------------------------------------------------------------------------------
+ --- DevOps: Improve speed, scalability, reliability and security of your
+ --- software solutions by automating processes that are complicated and
+ --- slow. DevOps is a set of practices that combines software development
+ --- and infrastructure management to shorten the development life cycle
+ --- and provide continuous delivery and high quality of software products
+ --- and services. Our DevOps services cover monitoring, security, tool-
+ --- chain pipelines, automation and cloud adoption. We offer this as a
+ --- part of software development process as well as a separate service. We
+ --- can help you with: * build configuration and automation * continuous
+ --- integration and deployment * release management * resource monitoring
+ --- * infrastructure security * cloud management * performance
+ --- optimization and load testing * end-to-end testing   New trends in
+ --- mobile and web development, including big data, IoT, cloud and
+ --- artificial intelligence are driving demand for more complex and high
+ --- quality solutions. The benefits of DevOps span the entire delivery
+ --- pipeline. It leads to removal of manual operations, decreasing errors,
+ --- and boosting the agility of your team. Deployment frequency is
+ --- increased, time to market is shortened with lower failure rate of new
+ --- releases and faster time to recovery.  Start a project with us. Lets
+ --- discuss your needs. We can support you at every DevOps-related task.
+ --- Our experience spans almost two decades and several hundreds completed
+ --- projects.
+________________________________________________________________________________
+question - Can we outsource your team?
+
+answer - Our teams are self-sufficient and do not have to be micromanaged.
+ 4.158 Web_and_mobile_development_0.txt
+ --- your          2.174  6
+ --- compani       1.433 15
+ --- can           0.551  1
+--------------------------------------------------------------------------------
+ --- When off-the-shelf software cannot meet your business requirements,
+ --- our custom software development expertise and business domain
+ --- knowledge mean a world of difference. We are ready to start within
+ --- days. Custom software development is at our core. We have more than 17
+ --- years of business experience and employ the very best developers,
+ --- business analysts, project managers, designers and testers.  We've
+ --- implemented solutions for clients ranging from one-person startups to
+ --- Fortune 500 companies. From medicine and pharma to banking and
+ --- finance; from recruitment and transportation to real estate and
+ --- education - we are building secure, scalable and robust software
+ --- systems. From single user, standalone desktop and mobile apps to web
+ --- systems spanning dozens of different clustered resources, our system
+ --- architects will design the optimal solution addressing your business
+ --- requirements. You can start small and scale the team as your business
+ --- grows.   Our work gets praises from clients all over the world.   Our
+ --- services cover the complete software product lifecycle, from business
+ --- analysis, UX/UI design and development to quality assurance and
+ --- support.   Our pricing plans are straightforward and provides great
+ --- value for your money.   Our work is completely transparent. You are
+ --- continuously updated about the status of the development and have full
+ --- control. You will have access to timesheets detailing every second
+ --- spent on the project.   Our teams are self-sufficient and do not have
+ --- to be micromanaged.   We support several models of collaboration with
+ --- our clients, including team extension model - where you augment your
+ --- in-house teams with developers that will complement your staff's skill
+ --- gaps; and dedicated development team model - where we handle the
+ --- complete project as a separate entity with its own management and
+ --- frameworks.
+________________________________________________________________________________
+question - What are the industries Mono works for?
+
+answer - Banking is one of the industries that Mono has served since the very beginning.
+ 4.192 banking_0.txt
+ --- industri      2.415  1
+ --- compani       1.199  4
+ --- work          0.376  1
+ --- for           0.202  2
+--------------------------------------------------------------------------------
+ --- Banking is one of the industries that Mono has served since the very
+ --- beginning. We have built complex lending management systems, cloud-
+ --- based loan approval systems, mobile wallets, integration platforms,
+ --- and payment processor interfaces. We are working on a highly
+ --- configurable, white-label, omnichannel (online and mobile banking,
+ --- branch and contact center) SaaS implementation of a lending platform
+ --- that integrates with multiple core systems for automated underwriting
+ --- and instant loan funding. Amongst its features was a flexible decision
+ --- engine and a configurable traffic manager in the underwriting workflow
+ --- to process loan requests and enable performance testing of multi-
+ --- variate underwriting models.       Small Business Administration
+ --- loans. In addition to this, we have build sbaOpen, an enterprise-class
+ --- Web application that allows lenders to efficiently and effectively
+ --- originate, underwrite, authorize and approve SBA loans. The Small
+ --- Business Administration (SBA) is a United States government agency
+ --- that provides support to entrepreneurs and small businesses. Most
+ --- American banks participate in the program, as do some non-bank
+ --- lenders, which expands the availability of loans. Participating
+ --- lenders agree to structure loans according to the SBA's requirements,
+ --- and apply and receive a guaranty from the SBA on a portion of this
+ --- loan.  Following the rules. SBA lending and loan processing is based
+ --- on one of the (if not the) most complex set of rules and standard
+ --- operating procedures (SOPs). SOPs for SBA loans are regularly updated
+ --- and we have created a solution that allows all these changes to be
+ --- implemented in a timely manner./p>
+________________________________________________________________________________
+question - What are the industries Mono is experienced in?
+
+answer - Mono delivered multiple advanced software systems for organizations in the power distribution and energy trading industry.
+ 4.060 power-distribution.txt
+ --- industri      2.571  1
+ --- compani       1.394  9
+ --- in            0.094  3
+--------------------------------------------------------------------------------
+ --- Mono delivered multiple advanced software systems for organizations in
+ --- the power distribution and energy trading industry. Enterprise portals
+ --- for energy operators. Energy markets are becoming more competitive
+ --- every day, and our applications are streamlining operations and
+ --- enabling easy access to vital operations for improved decision making.
+ --- Croatian transmission system operator is a provider of public
+ --- regulated services of electricity transmission for the needs of
+ --- participants in the Croatian market. We have developed a unique,
+ --- modular, multi-portal solution that is used to track the performance
+ --- of their grid, discover and analyze key operational events, problems
+ --- and issues, manage technical documentation and perform other day-to-
+ --- day operations. This customized solution features a robust and
+ --- flexible security model, as well as all standard content management
+ --- features. More importantly, it allows for rapid development of
+ --- customized application modules and subsystems. We have built a number
+ --- of applications for companies in the energy trading sector that
+ --- offering real-time intelligence and decision-making capabilities that
+ --- improve their overall performance on the market. Management of the
+ --- electric grid is becoming increasingly complex with growing amounts of
+ --- distributed energy resources at all levels. Mono provides custom
+ --- solutions for the management, tracking, and orchestration of
+ --- distribution grids that include modular architecture and support for
+ --- predictive analytics.
+________________________________________________________________________________
+question - What are the industries you have experience in?
+
+answer - We developed cloud-based real estate systems to satisfy specific business scenarios in the real estate industry, catering to the needs of real estate agents and their customers.
+ 3.481 real-estate.txt
+ --- industri      2.749  1
+ --- have          0.665  1
+ --- in            0.066  1
+--------------------------------------------------------------------------------
+ --- We developed cloud-based real estate systems to satisfy specific
+ --- business scenarios in the real estate industry, catering to the needs
+ --- of real estate agents and their customers. Our goal was to develop an
+ --- intuitive and user-friendly software solution for listing and
+ --- presentation of different property types. Besides the responsive
+ --- design and fully customizable back-end engine, we were focused on the
+ --- integration of the real estate listings with various mapping and
+ --- geolocation services. We have also developed a service for retrieving
+ --- and automatic processing of listings and the accompanying resources
+ --- (photos, documents) using third-party APIs used by different Multiple
+ --- Listing Services (MLS). Our solution enables users to keep a complete
+ --- overview of all client activities and build a detailed understanding
+ --- of their preferences. A wealth of information sharing features
+ --- promotes collaboration for the entire sales team. A customized
+ --- reporting engine with intuitive dashboards allows users to visualize
+ --- all relevant business data and use it for better decision making.
+ --- Custom workflows cover all processes and tasks inside real-estate
+ --- companies, from client interactions to back-office procedures.
+________________________________________________________________________________
+question - Who are your clients?
+
+answer - We've implemented solutions for clients ranging from one-person startups to Fortune 500 companies.
+ 3.715 Web_and_mobile_development_0.txt
+ --- your          2.174  6
+ --- client        1.541  3
+--------------------------------------------------------------------------------
+ --- When off-the-shelf software cannot meet your business requirements,
+ --- our custom software development expertise and business domain
+ --- knowledge mean a world of difference. We are ready to start within
+ --- days. Custom software development is at our core. We have more than 17
+ --- years of business experience and employ the very best developers,
+ --- business analysts, project managers, designers and testers.  We've
+ --- implemented solutions for clients ranging from one-person startups to
+ --- Fortune 500 companies. From medicine and pharma to banking and
+ --- finance; from recruitment and transportation to real estate and
+ --- education - we are building secure, scalable and robust software
+ --- systems. From single user, standalone desktop and mobile apps to web
+ --- systems spanning dozens of different clustered resources, our system
+ --- architects will design the optimal solution addressing your business
+ --- requirements. You can start small and scale the team as your business
+ --- grows.   Our work gets praises from clients all over the world.   Our
+ --- services cover the complete software product lifecycle, from business
+ --- analysis, UX/UI design and development to quality assurance and
+ --- support.   Our pricing plans are straightforward and provides great
+ --- value for your money.   Our work is completely transparent. You are
+ --- continuously updated about the status of the development and have full
+ --- control. You will have access to timesheets detailing every second
+ --- spent on the project.   Our teams are self-sufficient and do not have
+ --- to be micromanaged.   We support several models of collaboration with
+ --- our clients, including team extension model - where you augment your
+ --- in-house teams with developers that will complement your staff's skill
+ --- gaps; and dedicated development team model - where we handle the
+ --- complete project as a separate entity with its own management and
+ --- frameworks.
+________________________________________________________________________________
+question - Does Mono practice an agile approach?
+
+answer - We follow Continuous Integration practices that allow our teams to move fast while keeping high-quality standards that are checked automatically.
+ 4.126 about_1.txt
+ --- practic       2.749  1
+ --- compani       1.376  7
+--------------------------------------------------------------------------------
+ ---   We get things done, and our products are consistently delivered on
+ --- time and budget. A dedicated project management teams monitor all
+ --- activities and report them back to the client, ensuring that every
+ --- minute spent on the project is accounted for. We build reliable
+ --- software. Our dedicated team of testers controls the behavior and
+ --- performance of all products. We follow Continuous Integration
+ --- practices that allow our teams to move fast while keeping high-quality
+ --- standards that are checked automatically. Custom software development
+ --- doesn’t need to break the bank. Due to the somewhat lower cost of
+ --- living in our part of the European Union, our rates are lower.
+ --- However, our engineers still boast high education, work ethics,
+ --- English skills, and advanced programming abilities. We will go an
+ --- extra mile to earn trust and become our clients' long-term partner.
+ --- Some of our partners are with us for more than 10 years, as we spare
+ --- no effort to meet their needs and support their growth. Our clients
+ --- range from one-person startups to Fortune 500 companies and government
+ --- organizations from more than 70 countries around the world.
+________________________________________________________________________________
+question - Do you practice an agile approach?
+
+answer - Business requirements are constantly evolving, so we use an agile, iterative and incremental approach to support and encourage these natural course changes.
+ 4.352 Web_and_mobile_development_1.txt
+ --- agil          2.537  1
+ --- approach      1.815  1
+--------------------------------------------------------------------------------
+ ---   Our Development process. Business requirements are constantly
+ --- evolving, so we use an agile, iterative and incremental approach to
+ --- support and encourage these natural course changes.  We will work with
+ --- you to blueprint a system that can be built efficiently to meet your
+ --- needs. The idea is to help you define a minimal viable product, the
+ --- first usable form of your application. Your requirements are broken
+ --- down into small and manageable parts. Each of them describes a small
+ --- piece of work needed to achieve results. This is where we start to get
+ --- a sense of the amount of work involved. The time and price estimate
+ --- for your new application is based on estimates for each individual
+ --- task defined in the previous step. Summing it all up gives us the
+ --- estimated completion date. Requirements can be added or changed at any
+ --- time. Before development starts, all tasks are added to the product
+ --- backlog - a list of requirements for a product. It contains everything
+ --- needed to successfully deliver a viable product. A sprint (or
+ --- iteration) is the basic unit of development. It usually lasts for a
+ --- week or two and aims to implement a fixed number of backlog items. The
+ --- goal of each sprint is to have a system that is integrated and ready
+ --- for delivery. At the end of a sprint, the team reviews the sprint to
+ --- articulate lessons learned and check progress. A new set of backlog
+ --- items is chosen for the next sprint, and the work continues until the
+ --- product is ready for the market. This process increases the quality of
+ --- the final product, copes with changes, provides better estimates
+ --- without spending too much time on them, and allows you to be more in
+ --- control of the project schedule and state.
+________________________________________________________________________________
+question - What is the price to develop an app?
+
+answer - Our pricing plans are straightforward and provides great value for your money.
+ 4.143 Web_and_mobile_development_0.txt
+ --- price         2.701  1
+ --- creat         0.726 18
+ --- app           0.607  1
+ --- to            0.109  8
+--------------------------------------------------------------------------------
+ --- When off-the-shelf software cannot meet your business requirements,
+ --- our custom software development expertise and business domain
+ --- knowledge mean a world of difference. We are ready to start within
+ --- days. Custom software development is at our core. We have more than 17
+ --- years of business experience and employ the very best developers,
+ --- business analysts, project managers, designers and testers.  We've
+ --- implemented solutions for clients ranging from one-person startups to
+ --- Fortune 500 companies. From medicine and pharma to banking and
+ --- finance; from recruitment and transportation to real estate and
+ --- education - we are building secure, scalable and robust software
+ --- systems. From single user, standalone desktop and mobile apps to web
+ --- systems spanning dozens of different clustered resources, our system
+ --- architects will design the optimal solution addressing your business
+ --- requirements. You can start small and scale the team as your business
+ --- grows.   Our work gets praises from clients all over the world.   Our
+ --- services cover the complete software product lifecycle, from business
+ --- analysis, UX/UI design and development to quality assurance and
+ --- support.   Our pricing plans are straightforward and provides great
+ --- value for your money.   Our work is completely transparent. You are
+ --- continuously updated about the status of the development and have full
+ --- control. You will have access to timesheets detailing every second
+ --- spent on the project.   Our teams are self-sufficient and do not have
+ --- to be micromanaged.   We support several models of collaboration with
+ --- our clients, including team extension model - where you augment your
+ --- in-house teams with developers that will complement your staff's skill
+ --- gaps; and dedicated development team model - where we handle the
+ --- complete project as a separate entity with its own management and
+ --- frameworks.
+________________________________________________________________________________
+question - I want to create a mobile app, how much does it cost?
+
+answer - Our mobile app projects share great amounts of code between platforms, enabling us to deliver mobile solutions at a fraction of the time and cost needed to build separate versions for each platform.
+ 9.840 mobile.txt
+ --- mobil         2.782  9
+ --- cost          2.465  1
+ --- much          2.119  1
+ --- app           1.288 13
+ --- creat         0.668  8
+ --- it            0.405  4
+ --- to            0.114 11
+--------------------------------------------------------------------------------
+ --- Mono development team can build mobile apps for every platform and
+ --- purpose, using a wide array of cross-platform tools. We have started
+ --- building mobile apps for iOS and Android platform using native
+ --- development tools (Objective-C and Swift for iOS and Java for
+ --- Android). More recently we have switched most of our projects to
+ --- cross-development tools, using write-once-run-anywhere approach. Our
+ --- mobile app projects share great amounts of code between platforms,
+ --- enabling us to deliver mobile solutions at a fraction of the time and
+ --- cost needed to build separate versions for each platform. In parallel
+ --- with native development tools, we started using the first generation
+ --- cross-platform JavaScript tools - PhoneGap and Ionic - a while ago.
+ --- Their performance was not spectacular, so we switched to Xamarin
+ --- quickly, as it was much better in terms of performance and
+ --- functionality. It has also allowed us to utilize our large base of
+ --- experienced C# developers to cover desktop, Web and mobile application
+ --- development using a single set of tools. As React Native gained wider
+ --- adoption, we started to use it in parallel with Xamarin; once again we
+ --- were able to reuse our existing knowledge of JavaScript to build
+ --- advanced mobile apps. More recently, we have started using Flutter and
+ --- Dart to build fast and powerful mobile solutions, as it introduces
+ --- additional performance improvements for developers. We have mastered a
+ --- wide array of mobile development tools and can implement all kinds of
+ --- mobile software solutions per your specifications. Usage of cross-
+ --- platform tools allows us to cover multiple platforms quickly and
+ --- efficiently.
+________________________________________________________________________________
+question - What are the technologies you work with?
+
+answer - Our clients work with different supplies and materials and have branch offices in different locations.
+ 7.028 purchase-order.txt
+ --- "take advantag of"  2.618  2
+ --- choos         1.683  4
+ --- util          1.611  4
+ --- "work with"   0.725  2
+ --- us            0.391  4
+--------------------------------------------------------------------------------
+ --- Our solution automates purchase order processing, making life simpler
+ --- for our clients that work with different suppliers and have branch
+ --- offices in different locations. Our clients work with different
+ --- supplies and materials and have branch offices in different locations.
+ --- They have a number of vendors from which they can purchase the
+ --- supplies, but the market is very competitive - each vendor offers
+ --- different terms, prices, and quality of their merchandise. Our
+ --- solution takes the hassle out of ordering process by automating the
+ --- entire purchasing workflow. Our purchase order system includes the
+ --- following features: a list of all supplies with aggregated vendor
+ --- offers an easy-to-use order generation tool that sends out finished
+ --- orders by email in various formats, order administration section
+ --- (copying, templating, etc.), and a report section.  Orders are made on
+ --- the branch office level, where users can choose who is to be billed
+ --- for the order and where it is to be delivered. It generates unique
+ --- purchase order numbers, and allow users to keep track of the orders
+ --- they are responsible for. Supply and price lists, vendor SKUs and
+ --- other important information, can be imported in XLS/CSV format, so no
+ --- manual intervention is needed during the import process.
+________________________________________________________________________________
+question - Do you work with AI?
+
+answer - We are building solutions powered by Artificial Intelligence (AI) for relevant search and personalization.
+12.833 tourism.txt
+ --- "machin learn"  4.861  3
+ --- "artifici intellig"  3.997  1
+ --- ai            3.616  4
+ --- us            0.359  3
+--------------------------------------------------------------------------------
+ --- Hospitality and tourism sector is experiencing a rising demand for
+ --- more authentic and engaging travel experiences. We are building
+ --- solutions powered by Artificial Intelligence (AI) for relevant search
+ --- and personalization. When preparing for their trips using "old-school"
+ --- sites and apps, visitors typically see a home page with a mix of
+ --- content, none of which is directly relevant to their real interests.
+ --- It takes a lot of effort, skill, and patience to find that ideal hotel
+ --- or location. We are building AI-backed recommendation engines that
+ --- allow site owners to show recommendations on every page, such as
+ --- relevant trips, services, packages, and content, based on crowd usage
+ --- data and explicit user interests, with additional filters. No
+ --- questionnaires or forms are involved, and users get clean, transparent
+ --- and simple experience. Our search engine implementations improve
+ --- relevance by incorporating cutting-edge machine learning algorithms
+ --- (including Learning to Rank), secondary data sources, text analytics
+ --- and natural language understanding (semantic tagging). Recommendations
+ --- quality is enhanced by the data dynamically aggregated and
+ --- extrapolated from the Facebook check-ins. The cold-start problem has
+ --- been addressed by using users' friends' check-in data. To further
+ --- improve how users interact with our systems, we embraced
+ --- conversational interfaces and bots. We are using Microsoft Bot
+ --- Framework to interact with users on a website, app, Skype, Slack,
+ --- Facebook Messenger, and more.
+________________________________________________________________________________
+question - What is Baasic?
+
+answer - Baasic is a full-stack platform-as-a-service, covering both front and back-end aspects of web and mobile application development.
+ 4.582 baasic.txt
+ --- baasic        4.582  3
+--------------------------------------------------------------------------------
+ --- A platform for rapid web and mobile app development using pre-existing
+ --- front-end modules and scalable back-end infrastructure. Baasic is a
+ --- full-stack platform-as-a-service, covering both front and back-end
+ --- aspects of web and mobile application development. It can be used with
+ --- client-side javascript frameworks and all major server-side languages
+ --- and technologies. You can even bring new life to your static HTML
+ --- sites. However, we are well aware that one size never really fits all;
+ --- that's why Baasic allows you to mix and match the right tools for each
+ --- individual scenario. You don't have to start from scratch. Choose from
+ --- a wide range of web or mobile application startup kits, ranging from
+ --- simple sites to complex applications, all free and open-sourced. Use
+ --- and customize built-in modules. If that isn't enough, you can create
+ --- your own front-end components based on customized data models and make
+ --- them first-class citizens in your applications. Use the tools you know
+ --- and love. Baasic comes with an SDK for the language or framework you
+ --- already use, so you never need to leave your comfort zone. Create as
+ --- many applications as you want, scale them as needed. Set yourself free
+ --- from server-side infrastructure setup and maintenance headaches. Small
+ --- or large, we have you covered.
+________________________________________________________________________________
+question - How does Baasic work?
+
+answer - We have been using Baasic in most of the recent projects to provide social networking functionality regardless of the target technology or framework.
+ 3.153 social-networks_0.txt
+ --- baasic        3.153  1
+--------------------------------------------------------------------------------
+ --- Mono is building custom social networks, enterprise portals and
+ --- advanced collaboration tools and platforms that enable our clients to
+ --- connect their users, coworkers, information, and conversations.
+ --- Building niche community portals. Our solutions have been deployed in
+ --- organizations of all types, regardless of the number of users or
+ --- employees and the complexity of their requirements and organizational
+ --- infrastructure. We combine our enterprise portal development with a
+ --- rich set of productivity tools and modules to make collaboration yet
+ --- more effective: search, calendars, pools and surveys, tagging, file
+ --- sharing, document management, notifications, discussions, ranking,
+ --- reputation, social walls, feeds, and updates, messaging, groups...
+ --- Customizability plays a key role: there is no one size fits all
+ --- approach that could be used to cover different needs in bespoke social
+ --- networks. Therefore, depending on the target functionality, we have
+ --- used different development tools, approaches, and methodologies. MonoX
+ --- social networking framework was used in hundreds of new projects, but
+ --- we also integrated only parts of its functionality into existing
+ --- systems built with different technologies. We have been using Baasic
+ --- in most of the recent projects to provide social networking
+ --- functionality regardless of the target technology or framework.
+________________________________________________________________________________
+question - What does Baasic include?
+
+answer - More recently, we created Baasic, a completely modular, pluggable, scalable, secure and technology-agnostic framework and service for rapid development of web and mobile apps.
+ 2.780 net-framework.txt
+ --- baasic        2.780  1
+--------------------------------------------------------------------------------
+ --- Mono provides full-cycle .NET custom development services resulting in
+ --- robust and scalable .NET web, desktop and mobile solutions that can
+ --- run on virtually any environment. Weve been working with .NET from the
+ --- early beta release of version 1.0 in late 2001. From early Win Forms
+ --- and Web Forms applications, through more complex ASP.NET MVC layered
+ --- architectures, to full blown, cloud-based solutions based on
+ --- microservices, our team has always adopted the best engineering
+ --- practices and built reliable and scalable software. We have started
+ --- our .NET journey by building custom solutions and Web controls -
+ --- scheduler, data grid, formatted textboxes, calendars, file managers,
+ --- These products were successfully shipped through the early 2000s to
+ --- thousands of end users. At the same time, weve built several versions
+ --- of MonoX, a free and massively popular content management and social
+ --- networking platform based on Web Forms and Web parts frameworks. It
+ --- still powers hundreds of web sites and applications all over the
+ --- world. More recently, we created Baasic, a completely modular,
+ --- pluggable, scalable, secure and technology-agnostic framework and
+ --- service for rapid development of web and mobile apps. Our team of
+ --- experienced Microsoft-certified professionals can transform your ideas
+ --- and requirements into flexible and highly scalable .NET web and mobile
+ --- solutions that can run on virtually any environment. From mobile
+ --- applications running on iOS, Android and Windows, to enterprise server
+ --- applications running on Windows Server and Linux, or high-scale
+ --- microservices running in the cloud, we are there for you.
+________________________________________________________________________________
+question - Is Baasic free?
+
+answer - Choose from a wide range of web or mobile application startup kits, ranging from simple sites to complex applications, all free and open-sourced.
+ 8.258 baasic.txt
+ --- baasic        4.582  3
+ --- free          3.676  2
+--------------------------------------------------------------------------------
+ --- A platform for rapid web and mobile app development using pre-existing
+ --- front-end modules and scalable back-end infrastructure. Baasic is a
+ --- full-stack platform-as-a-service, covering both front and back-end
+ --- aspects of web and mobile application development. It can be used with
+ --- client-side javascript frameworks and all major server-side languages
+ --- and technologies. You can even bring new life to your static HTML
+ --- sites. However, we are well aware that one size never really fits all;
+ --- that's why Baasic allows you to mix and match the right tools for each
+ --- individual scenario. You don't have to start from scratch. Choose from
+ --- a wide range of web or mobile application startup kits, ranging from
+ --- simple sites to complex applications, all free and open-sourced. Use
+ --- and customize built-in modules. If that isn't enough, you can create
+ --- your own front-end components based on customized data models and make
+ --- them first-class citizens in your applications. Use the tools you know
+ --- and love. Baasic comes with an SDK for the language or framework you
+ --- already use, so you never need to leave your comfort zone. Create as
+ --- many applications as you want, scale them as needed. Set yourself free
+ --- from server-side infrastructure setup and maintenance headaches. Small
+ --- or large, we have you covered.
+________________________________________________________________________________
+question - Can I register for a custom Baasic plan?
+
+answer - Users and clients can define custom notifications for predefined events, preventing regular checks and procedures to be skipped or forgotten.
+ 4.812 occupational-safety.txt
+ --- plan          2.571  1
+ --- can           1.017  4
+ --- custom        0.985  1
+ --- for           0.239  3
+--------------------------------------------------------------------------------
+ --- Our web solution replaces handwritten reports, work orders, and
+ --- dispatch notes while saving time and making sure that risks in the
+ --- workplace are properly controlled. Safety engineers regularly review
+ --- plans and specifications for the new and existing equipment and
+ --- machinery and maintain and apply knowledge of current policies and
+ --- regulations. When every segment in the work process is described and
+ --- examined, detailed reports have to be produced. Our solution replaces
+ --- paperwork and helps users to reinforce health and safety in their
+ --- organizations. The application includes predefined checklists that
+ --- rely on regulatory conditions and prerequisites, as well as
+ --- information about instruments used, existing work orders and reports,
+ --- names and information about companies and people in charge, etc. Users
+ --- can document and asses risks according to individual companies and
+ --- their line of work, implement safeguards, compile operation
+ --- instructions and manage incidents and damaging events. All work orders
+ --- and reports can be shared among users, based on their roles and access
+ --- rights. They can copy reports, dynamically add specific details for
+ --- every check and produce final reports in a very short time. Users and
+ --- clients can define custom notifications for predefined events,
+ --- preventing regular checks and procedures to be skipped or forgotten.
+________________________________________________________________________________
+question - What comes with Baasic free plan?
+
+answer - Baasic comes with an SDK for the language or framework you already use, so you never need to leave your comfort zone.
+10.987 baasic.txt
+ --- baasic        4.582  3
+ --- free          3.676  2
+ --- come          2.490  1
+ --- with          0.238  6
+--------------------------------------------------------------------------------
+ --- A platform for rapid web and mobile app development using pre-existing
+ --- front-end modules and scalable back-end infrastructure. Baasic is a
+ --- full-stack platform-as-a-service, covering both front and back-end
+ --- aspects of web and mobile application development. It can be used with
+ --- client-side javascript frameworks and all major server-side languages
+ --- and technologies. You can even bring new life to your static HTML
+ --- sites. However, we are well aware that one size never really fits all;
+ --- that's why Baasic allows you to mix and match the right tools for each
+ --- individual scenario. You don't have to start from scratch. Choose from
+ --- a wide range of web or mobile application startup kits, ranging from
+ --- simple sites to complex applications, all free and open-sourced. Use
+ --- and customize built-in modules. If that isn't enough, you can create
+ --- your own front-end components based on customized data models and make
+ --- them first-class citizens in your applications. Use the tools you know
+ --- and love. Baasic comes with an SDK for the language or framework you
+ --- already use, so you never need to leave your comfort zone. Create as
+ --- many applications as you want, scale them as needed. Set yourself free
+ --- from server-side infrastructure setup and maintenance headaches. Small
+ --- or large, we have you covered.
+________________________________________________________________________________
+question - Is eCTD Office free?
+
+answer - Choose from a wide range of web or mobile application startup kits, ranging from simple sites to complex applications, all free and open-sourced.
+ 3.676 baasic.txt
+ --- free          3.676  2
+--------------------------------------------------------------------------------
+ --- A platform for rapid web and mobile app development using pre-existing
+ --- front-end modules and scalable back-end infrastructure. Baasic is a
+ --- full-stack platform-as-a-service, covering both front and back-end
+ --- aspects of web and mobile application development. It can be used with
+ --- client-side javascript frameworks and all major server-side languages
+ --- and technologies. You can even bring new life to your static HTML
+ --- sites. However, we are well aware that one size never really fits all;
+ --- that's why Baasic allows you to mix and match the right tools for each
+ --- individual scenario. You don't have to start from scratch. Choose from
+ --- a wide range of web or mobile application startup kits, ranging from
+ --- simple sites to complex applications, all free and open-sourced. Use
+ --- and customize built-in modules. If that isn't enough, you can create
+ --- your own front-end components based on customized data models and make
+ --- them first-class citizens in your applications. Use the tools you know
+ --- and love. Baasic comes with an SDK for the language or framework you
+ --- already use, so you never need to leave your comfort zone. Create as
+ --- many applications as you want, scale them as needed. Set yourself free
+ --- from server-side infrastructure setup and maintenance headaches. Small
+ --- or large, we have you covered.
+________________________________________________________________________________
+question - Is eCTD Viewer free?
+
+answer - At the same time, weve built several versions of MonoX, a free and massively popular content management and social networking platform based on Web Forms and Web parts frameworks.
+ 2.537 net-framework.txt
+ --- free          2.537  1
+--------------------------------------------------------------------------------
+ --- Mono provides full-cycle .NET custom development services resulting in
+ --- robust and scalable .NET web, desktop and mobile solutions that can
+ --- run on virtually any environment. Weve been working with .NET from the
+ --- early beta release of version 1.0 in late 2001. From early Win Forms
+ --- and Web Forms applications, through more complex ASP.NET MVC layered
+ --- architectures, to full blown, cloud-based solutions based on
+ --- microservices, our team has always adopted the best engineering
+ --- practices and built reliable and scalable software. We have started
+ --- our .NET journey by building custom solutions and Web controls -
+ --- scheduler, data grid, formatted textboxes, calendars, file managers,
+ --- These products were successfully shipped through the early 2000s to
+ --- thousands of end users. At the same time, weve built several versions
+ --- of MonoX, a free and massively popular content management and social
+ --- networking platform based on Web Forms and Web parts frameworks. It
+ --- still powers hundreds of web sites and applications all over the
+ --- world. More recently, we created Baasic, a completely modular,
+ --- pluggable, scalable, secure and technology-agnostic framework and
+ --- service for rapid development of web and mobile apps. Our team of
+ --- experienced Microsoft-certified professionals can transform your ideas
+ --- and requirements into flexible and highly scalable .NET web and mobile
+ --- solutions that can run on virtually any environment. From mobile
+ --- applications running on iOS, Android and Windows, to enterprise server
+ --- applications running on Windows Server and Linux, or high-scale
+ --- microservices running in the cloud, we are there for you.
+________________________________________________________________________________
+question - What is Clokke?
+
+answer - It is the simplest time tracking tool that keeps your work organized and your clients happy.
+ 7.178 clokke.txt
+ --- clokk         7.178  5
+--------------------------------------------------------------------------------
+ --- Time is money, and Clokke saves both. It is the simplest time tracking
+ --- tool that keeps your work organized and your clients happy. With
+ --- Clokke, youll focus more on your work rather than how to track it.
+ --- Working with timesheets is not anybodys idea of fun. Clokke removes
+ --- the drudgery from it - it is easy as pushing a button.       Clokke is
+ --- Designed to save time, and will help you: Organize your coworkers into
+ --- teams, Assign project managers, Assign different roles and permissions
+ --- to the users,  Clokke makes Invoicing easy, by: Breaking down your
+ --- time by project, clients, and tasks, Generating other reports in
+ --- various formats, Viewing analytics and track teams' performance.
+________________________________________________________________________________
+question - Is Clokke free?
+
+answer - Choose from a wide range of web or mobile application startup kits, ranging from simple sites to complex applications, all free and open-sourced.
+ 3.676 baasic.txt
+ --- free          3.676  2
+--------------------------------------------------------------------------------
+ --- A platform for rapid web and mobile app development using pre-existing
+ --- front-end modules and scalable back-end infrastructure. Baasic is a
+ --- full-stack platform-as-a-service, covering both front and back-end
+ --- aspects of web and mobile application development. It can be used with
+ --- client-side javascript frameworks and all major server-side languages
+ --- and technologies. You can even bring new life to your static HTML
+ --- sites. However, we are well aware that one size never really fits all;
+ --- that's why Baasic allows you to mix and match the right tools for each
+ --- individual scenario. You don't have to start from scratch. Choose from
+ --- a wide range of web or mobile application startup kits, ranging from
+ --- simple sites to complex applications, all free and open-sourced. Use
+ --- and customize built-in modules. If that isn't enough, you can create
+ --- your own front-end components based on customized data models and make
+ --- them first-class citizens in your applications. Use the tools you know
+ --- and love. Baasic comes with an SDK for the language or framework you
+ --- already use, so you never need to leave your comfort zone. Create as
+ --- many applications as you want, scale them as needed. Set yourself free
+ --- from server-side infrastructure setup and maintenance headaches. Small
+ --- or large, we have you covered.
+________________________________________________________________________________
+question - Are you experienced in developing banking software?
+
+answer - Custom software development doesn’t need to break the bank.
+ 3.734 about_1.txt
+ --- bank          2.749  1
+ --- program       0.517  7
+ --- develop       0.402  1
+ --- in            0.066  1
+--------------------------------------------------------------------------------
+ ---   We get things done, and our products are consistently delivered on
+ --- time and budget. A dedicated project management teams monitor all
+ --- activities and report them back to the client, ensuring that every
+ --- minute spent on the project is accounted for. We build reliable
+ --- software. Our dedicated team of testers controls the behavior and
+ --- performance of all products. We follow Continuous Integration
+ --- practices that allow our teams to move fast while keeping high-quality
+ --- standards that are checked automatically. Custom software development
+ --- doesn’t need to break the bank. Due to the somewhat lower cost of
+ --- living in our part of the European Union, our rates are lower.
+ --- However, our engineers still boast high education, work ethics,
+ --- English skills, and advanced programming abilities. We will go an
+ --- extra mile to earn trust and become our clients' long-term partner.
+ --- Some of our partners are with us for more than 10 years, as we spare
+ --- no effort to meet their needs and support their growth. Our clients
+ --- range from one-person startups to Fortune 500 companies and government
+ --- organizations from more than 70 countries around the world.
+________________________________________________________________________________
+question - Do you build learning software?
+
+answer - We have built a series of bespoke mobile-friendly eLearning systems for various educational organizations.
+ 4.198 e-learning.txt
+ --- learn         2.283  2
+ --- build         1.390  2
+ --- program       0.525  8
+--------------------------------------------------------------------------------
+ --- We have been building advanced eLearning applications for various
+ --- educational organizations around the world, delivering customized
+ --- solutions when off-the-shelf software was not able to offer
+ --- satisfactory functionality. We have built a series of bespoke mobile-
+ --- friendly eLearning systems for various educational organizations. The
+ --- user interface of these solutions is elegant and intuitive, which
+ --- keeps both lecturers and students happy and engaged. Simplicity was
+ --- one of the key factors so that the applications can be used easily,
+ --- without a steep learning curve. A complete set of eLearning features
+ --- is supported, including tools for course organization, delivering rich
+ --- content, tracking the learning progress and analyzing students'
+ --- activity. Students can quickly access their tasks, documents,
+ --- homework, lectures and other material. Messaging, walls, discussion
+ --- forums, chat/video conferences, and other social networking tools make
+ --- it easy to communicate and collaborate. Based on our experiences with
+ --- previous projects, we have produced an innovative cloud-based
+ --- eLearning service: Theor.io. In addition to that, we have been
+ --- building a cloud-based eLearning and social networking solution for a
+ --- worldwide community of schools with millions of students.
+________________________________________________________________________________
+question - Can you make purchase software?
+
+answer - Software as a Service (Saas) refers to cloud-based software solutions that are hosted online and are available for purchase on a subscription basis.
+ 5.511 cloud_0.txt
+ --- purchas       3.863  2
+ --- can           0.567  1
+ --- creat         0.547  3
+ --- program       0.534 13
+--------------------------------------------------------------------------------
+ --- Mono develops high-quality cloud-based solutions for all cloud service
+ --- models and environments. Mono team has been working with different
+ --- cloud-based environments for more than 10 years. We have started with
+ --- Amazons Elastic Compute Cloud and adopted Microsoft Azure services
+ --- right after their official release in 2010. In parallel with our work
+ --- with these public clouds, we have built and used complex private cloud
+ --- environments, as well as hybrid models. Today, almost all of our
+ --- solutions rely on at least several cloud-based services.  We gained
+ --- significant experience with all cloud service models, including
+ --- Infrastructure as a Service (IaaS), type of online services that hide
+ --- the low-level details of underlying network infrastructure and
+ --- physical resources via virtualization. This allows businesses to
+ --- purchase resources on demand and as needed, instead of having to buy
+ --- hardware outright, but still requires significant skills to maintain
+ --- the infrastructure. Platform as a Service (PaaS) provides developers
+ --- with a framework they can use to build custom applications upon,
+ --- without having to deal with data serving, storage, management, and
+ --- similar tasks.   Software as a Service (Saas) refers to cloud-based
+ --- software solutions that are hosted online and are available for
+ --- purchase on a subscription basis. Backend as a Service (BaaS) provides
+ --- application developers with a mechanism to connect their applications
+ --- to cloud storage and other computing services with APIs and SDKs
+ --- exposed to their applications. We even built a complete BaaS solution
+ --- from scratch and are using it as a backbone of many of our own
+ --- solutions!
+________________________________________________________________________________
+question - Do you build purchase software?
+
+answer - Users can build custom forms using our dynamic form builder, or use all sorts of paper forms scanned directly into the system.
+ 2.110 electronic-forms-processing.txt
+ --- build         1.590  4
+ --- program       0.520  9
+--------------------------------------------------------------------------------
+ --- Mono is building a cloud-based multitenant solution for electronic
+ --- forms processing and electronic data capture. Dynamic forms building,
+ --- processing, and management Our solution for automated forms processing
+ --- allows users to build and process forms of any structure and
+ --- complexity and store them in digital format. Users can build custom
+ --- forms using our dynamic form builder, or use all sorts of paper forms
+ --- scanned directly into the system. Forms are automatically processed,
+ --- validated and stored within the container hierarchy created by users.
+ --- To ensure the best document processing features, we have integrated
+ --- with Abbyy, one of world leading OCR software vendors. Transform forms
+ --- and documents into valuable business data. With cloud deployment,
+ --- there are no upfront investments or ongoing maintenance issues - we
+ --- take care of everything for you. With E.DC, you can significantly
+ --- improve the quality of the data retrieved from electronic or manual
+ --- forms. There are options to add constraints on a form that prevent
+ --- inaccurate values from being entered. Additionally, customers can
+ --- define their own workflows (i.e., Quality Assurance) and assign tasks
+ --- to users to check processed data. We have developed a specialized
+ --- module for direct scanning into the E.DC system. Data can be exported
+ --- into all standard file formats. There are various extension points and
+ --- API methods for integration with other systems and Business
+ --- Intelligence tools for further processing.
+________________________________________________________________________________
+question - What kind of software do you build for the tourism sector?
+
+answer - We are building AI-backed recommendation engines that allow site owners to show recommendations on every page, such as relevant trips, services, packages, and content, based on crowd usage data and explicit user interests, with additional filters.
+ 8.950 tourism.txt
+ --- tourism       3.826  1
+ --- sector        3.301  1
+ --- build         1.301  2
+ --- program       0.274  1
+ --- for           0.235  3
+ --- of            0.013  3
+--------------------------------------------------------------------------------
+ --- Hospitality and tourism sector is experiencing a rising demand for
+ --- more authentic and engaging travel experiences. We are building
+ --- solutions powered by Artificial Intelligence (AI) for relevant search
+ --- and personalization. When preparing for their trips using "old-school"
+ --- sites and apps, visitors typically see a home page with a mix of
+ --- content, none of which is directly relevant to their real interests.
+ --- It takes a lot of effort, skill, and patience to find that ideal hotel
+ --- or location. We are building AI-backed recommendation engines that
+ --- allow site owners to show recommendations on every page, such as
+ --- relevant trips, services, packages, and content, based on crowd usage
+ --- data and explicit user interests, with additional filters. No
+ --- questionnaires or forms are involved, and users get clean, transparent
+ --- and simple experience. Our search engine implementations improve
+ --- relevance by incorporating cutting-edge machine learning algorithms
+ --- (including Learning to Rank), secondary data sources, text analytics
+ --- and natural language understanding (semantic tagging). Recommendations
+ --- quality is enhanced by the data dynamically aggregated and
+ --- extrapolated from the Facebook check-ins. The cold-start problem has
+ --- been addressed by using users' friends' check-in data. To further
+ --- improve how users interact with our systems, we embraced
+ --- conversational interfaces and bots. We are using Microsoft Bot
+ --- Framework to interact with users on a website, app, Skype, Slack,
+ --- Facebook Messenger, and more.
+________________________________________________________________________________
+question - Do you make software for the power distribution and energy industry?
+
+answer - Mono delivered multiple advanced software systems for organizations in the power distribution and energy trading industry.
+15.970 power-distribution.txt
+ --- energi        6.741  5
+ --- distribut     3.220  3
+ --- industri      2.571  1
+ --- power         1.991  1
+ --- creat         0.615  4
+ --- program       0.529 10
+ --- for           0.286  8
+ --- and           0.016 11
+--------------------------------------------------------------------------------
+ --- Mono delivered multiple advanced software systems for organizations in
+ --- the power distribution and energy trading industry. Enterprise portals
+ --- for energy operators. Energy markets are becoming more competitive
+ --- every day, and our applications are streamlining operations and
+ --- enabling easy access to vital operations for improved decision making.
+ --- Croatian transmission system operator is a provider of public
+ --- regulated services of electricity transmission for the needs of
+ --- participants in the Croatian market. We have developed a unique,
+ --- modular, multi-portal solution that is used to track the performance
+ --- of their grid, discover and analyze key operational events, problems
+ --- and issues, manage technical documentation and perform other day-to-
+ --- day operations. This customized solution features a robust and
+ --- flexible security model, as well as all standard content management
+ --- features. More importantly, it allows for rapid development of
+ --- customized application modules and subsystems. We have built a number
+ --- of applications for companies in the energy trading sector that
+ --- offering real-time intelligence and decision-making capabilities that
+ --- improve their overall performance on the market. Management of the
+ --- electric grid is becoming increasingly complex with growing amounts of
+ --- distributed energy resources at all levels. Mono provides custom
+ --- solutions for the management, tracking, and orchestration of
+ --- distribution grids that include modular architecture and support for
+ --- predictive analytics.
+________________________________________________________________________________
+question - Where can I see your work?
+
+answer - Our team is based in Europe, allowing for at least several hours of time overlap with most of the developed world.
+ 4.307 Team_extension_services_1.txt
+ --- your          2.044  3
+ --- where         0.939  1
+ --- can           0.888  2
+ --- work          0.436  1
+--------------------------------------------------------------------------------
+ ---   Our team is based in Europe, allowing for at least several hours of
+ --- time overlap with most of the developed world. If a project needs even
+ --- closer collaboration, our team members can operate onshore. With more
+ --- than 100 full time employees in technical roles, we can cover a lot of
+ --- ground and successfully handle projects of all sizes.  An alternative
+ --- approach, known as dedicated development team, frees up your time
+ --- completely to focus on companys core competencies and business side.
+ --- Hired team is fully responsible for gathering the right human
+ --- resources, managing the project, quality control and delivery. You
+ --- enhance your business productivity, while software development is
+ --- delegated to professionals from our team, with their own management
+ --- and frameworks.  Let us know if you would like to use team extension
+ --- or dedicated development team model for building your next product of
+ --- service. Our experience spans almost two decades and several hundreds
+ --- completed projects.
+________________________________________________________________________________
+question - Where can I see your showcase?
+
+answer - Our team is based in Europe, allowing for at least several hours of time overlap with most of the developed world.
+ 3.871 Team_extension_services_1.txt
+ --- your          2.044  3
+ --- where         0.939  1
+ --- can           0.888  2
+--------------------------------------------------------------------------------
+ ---   Our team is based in Europe, allowing for at least several hours of
+ --- time overlap with most of the developed world. If a project needs even
+ --- closer collaboration, our team members can operate onshore. With more
+ --- than 100 full time employees in technical roles, we can cover a lot of
+ --- ground and successfully handle projects of all sizes.  An alternative
+ --- approach, known as dedicated development team, frees up your time
+ --- completely to focus on companys core competencies and business side.
+ --- Hired team is fully responsible for gathering the right human
+ --- resources, managing the project, quality control and delivery. You
+ --- enhance your business productivity, while software development is
+ --- delegated to professionals from our team, with their own management
+ --- and frameworks.  Let us know if you would like to use team extension
+ --- or dedicated development team model for building your next product of
+ --- service. Our experience spans almost two decades and several hundreds
+ --- completed projects.
+________________________________________________________________________________
+question - Do you have a design portfolio?
+
+answer - Consulting, requirements gathering and analysis, functional specification, architectural design, UX design, development, testing, deployment, maintenance, support - we’ve got it all covered.
+ 1.650 about_0.txt
+ --- have          0.909  2
+ --- creat         0.741 16
+--------------------------------------------------------------------------------
+ --- Mono is a software company based in Croatia. We've been in business
+ --- since 2003, growing steadily, and achieving great business results
+ --- that have been recognized internationally. Why choose Mono?  There are
+ --- a number of reasons to choose mono: we offer One-stop service, we are
+ --- No-nonsense, we are committed to Honest communication, we provide
+ --- Transparency, we are proud of our High quality, and we are Cost-
+ --- effective.  On top of all that, we have Great partnerships.
+ --- Consulting, requirements gathering and analysis, functional
+ --- specification, architectural design, UX design, development, testing,
+ --- deployment, maintenance, support - we’ve got it all covered. We don't
+ --- overcomplicate. Even if the technology and processes behind the scene
+ --- are very complex, our solutions are simple to use and understand. We
+ --- communicate clearly and openly, even when the news are not good. Our
+ --- experts provide sound advice on technology and application design
+ --- options.
+________________________________________________________________________________
+question - How do you estimate time and price for an app?
+
+answer - Summing it all up gives us the estimated completion date.
+11.687 Web_and_mobile_development_1.txt
+ --- estim         6.210  4
+ --- price         2.780  1
+ --- app           1.260 10
+ --- time          1.147  3
+ --- for           0.274  7
+ --- and           0.016 10
+--------------------------------------------------------------------------------
+ ---   Our Development process. Business requirements are constantly
+ --- evolving, so we use an agile, iterative and incremental approach to
+ --- support and encourage these natural course changes.  We will work with
+ --- you to blueprint a system that can be built efficiently to meet your
+ --- needs. The idea is to help you define a minimal viable product, the
+ --- first usable form of your application. Your requirements are broken
+ --- down into small and manageable parts. Each of them describes a small
+ --- piece of work needed to achieve results. This is where we start to get
+ --- a sense of the amount of work involved. The time and price estimate
+ --- for your new application is based on estimates for each individual
+ --- task defined in the previous step. Summing it all up gives us the
+ --- estimated completion date. Requirements can be added or changed at any
+ --- time. Before development starts, all tasks are added to the product
+ --- backlog - a list of requirements for a product. It contains everything
+ --- needed to successfully deliver a viable product. A sprint (or
+ --- iteration) is the basic unit of development. It usually lasts for a
+ --- week or two and aims to implement a fixed number of backlog items. The
+ --- goal of each sprint is to have a system that is integrated and ready
+ --- for delivery. At the end of a sprint, the team reviews the sprint to
+ --- articulate lessons learned and check progress. A new set of backlog
+ --- items is chosen for the next sprint, and the work continues until the
+ --- product is ready for the market. This process increases the quality of
+ --- the final product, copes with changes, provides better estimates
+ --- without spending too much time on them, and allows you to be more in
+ --- control of the project schedule and state.
+________________________________________________________________________________
+question - What are the steps for making an app?
+
+answer - A platform for rapid web and mobile app development using pre-existing front-end modules and scalable back-end infrastructure.
+ 2.735 baasic.txt
+ --- app           1.369 30
+ --- make          1.131  3
+ --- for           0.235  3
+--------------------------------------------------------------------------------
+ --- A platform for rapid web and mobile app development using pre-existing
+ --- front-end modules and scalable back-end infrastructure. Baasic is a
+ --- full-stack platform-as-a-service, covering both front and back-end
+ --- aspects of web and mobile application development. It can be used with
+ --- client-side javascript frameworks and all major server-side languages
+ --- and technologies. You can even bring new life to your static HTML
+ --- sites. However, we are well aware that one size never really fits all;
+ --- that's why Baasic allows you to mix and match the right tools for each
+ --- individual scenario. You don't have to start from scratch. Choose from
+ --- a wide range of web or mobile application startup kits, ranging from
+ --- simple sites to complex applications, all free and open-sourced. Use
+ --- and customize built-in modules. If that isn't enough, you can create
+ --- your own front-end components based on customized data models and make
+ --- them first-class citizens in your applications. Use the tools you know
+ --- and love. Baasic comes with an SDK for the language or framework you
+ --- already use, so you never need to leave your comfort zone. Create as
+ --- many applications as you want, scale them as needed. Set yourself free
+ --- from server-side infrastructure setup and maintenance headaches. Small
+ --- or large, we have you covered.
+________________________________________________________________________________
+question - Do you build cloud-based solutions?
+
+answer - NET MVC layered architectures, to full blown, cloud-based solutions based on microservices, our team has always adopted the best engineering practices and built reliable and scalable software.
+ 4.399 net-framework.txt
+ --- cloud         1.779  2
+ --- where         1.255  3
+ --- build         0.898  1
+ --- solut         0.467  5
+--------------------------------------------------------------------------------
+ --- Mono provides full-cycle .NET custom development services resulting in
+ --- robust and scalable .NET web, desktop and mobile solutions that can
+ --- run on virtually any environment. Weve been working with .NET from the
+ --- early beta release of version 1.0 in late 2001. From early Win Forms
+ --- and Web Forms applications, through more complex ASP.NET MVC layered
+ --- architectures, to full blown, cloud-based solutions based on
+ --- microservices, our team has always adopted the best engineering
+ --- practices and built reliable and scalable software. We have started
+ --- our .NET journey by building custom solutions and Web controls -
+ --- scheduler, data grid, formatted textboxes, calendars, file managers,
+ --- These products were successfully shipped through the early 2000s to
+ --- thousands of end users. At the same time, weve built several versions
+ --- of MonoX, a free and massively popular content management and social
+ --- networking platform based on Web Forms and Web parts frameworks. It
+ --- still powers hundreds of web sites and applications all over the
+ --- world. More recently, we created Baasic, a completely modular,
+ --- pluggable, scalable, secure and technology-agnostic framework and
+ --- service for rapid development of web and mobile apps. Our team of
+ --- experienced Microsoft-certified professionals can transform your ideas
+ --- and requirements into flexible and highly scalable .NET web and mobile
+ --- solutions that can run on virtually any environment. From mobile
+ --- applications running on iOS, Android and Windows, to enterprise server
+ --- applications running on Windows Server and Linux, or high-scale
+ --- microservices running in the cloud, we are there for you.
+________________________________________________________________________________
+question - Do you work with Cloud?
+
+answer - Mono team has been working with different cloud-based environments for more than 10 years.
+ 7.959 cloud_0.txt
+ --- cloud         2.583 10
+ --- "take advantag of"  1.769  1
+ --- choos         1.304  2
+ --- util          1.248  2
+ --- "work with"   0.681  2
+ --- us            0.376  4
+--------------------------------------------------------------------------------
+ --- Mono develops high-quality cloud-based solutions for all cloud service
+ --- models and environments. Mono team has been working with different
+ --- cloud-based environments for more than 10 years. We have started with
+ --- Amazons Elastic Compute Cloud and adopted Microsoft Azure services
+ --- right after their official release in 2010. In parallel with our work
+ --- with these public clouds, we have built and used complex private cloud
+ --- environments, as well as hybrid models. Today, almost all of our
+ --- solutions rely on at least several cloud-based services.  We gained
+ --- significant experience with all cloud service models, including
+ --- Infrastructure as a Service (IaaS), type of online services that hide
+ --- the low-level details of underlying network infrastructure and
+ --- physical resources via virtualization. This allows businesses to
+ --- purchase resources on demand and as needed, instead of having to buy
+ --- hardware outright, but still requires significant skills to maintain
+ --- the infrastructure. Platform as a Service (PaaS) provides developers
+ --- with a framework they can use to build custom applications upon,
+ --- without having to deal with data serving, storage, management, and
+ --- similar tasks.   Software as a Service (Saas) refers to cloud-based
+ --- software solutions that are hosted online and are available for
+ --- purchase on a subscription basis. Backend as a Service (BaaS) provides
+ --- application developers with a mechanism to connect their applications
+ --- to cloud storage and other computing services with APIs and SDKs
+ --- exposed to their applications. We even built a complete BaaS solution
+ --- from scratch and are using it as a backbone of many of our own
+ --- solutions!
+________________________________________________________________________________
+question - What kind of software do you make?
+
+answer - Our goal was to develop an intuitive and user-friendly software solution for listing and presentation of different property types.
+ 4.276 real-estate.txt
+ --- kind          3.002  8
+ --- creat         0.727 13
+ --- program       0.531  9
+ --- of            0.016  8
+--------------------------------------------------------------------------------
+ --- We developed cloud-based real estate systems to satisfy specific
+ --- business scenarios in the real estate industry, catering to the needs
+ --- of real estate agents and their customers. Our goal was to develop an
+ --- intuitive and user-friendly software solution for listing and
+ --- presentation of different property types. Besides the responsive
+ --- design and fully customizable back-end engine, we were focused on the
+ --- integration of the real estate listings with various mapping and
+ --- geolocation services. We have also developed a service for retrieving
+ --- and automatic processing of listings and the accompanying resources
+ --- (photos, documents) using third-party APIs used by different Multiple
+ --- Listing Services (MLS). Our solution enables users to keep a complete
+ --- overview of all client activities and build a detailed understanding
+ --- of their preferences. A wealth of information sharing features
+ --- promotes collaboration for the entire sales team. A customized
+ --- reporting engine with intuitive dashboards allows users to visualize
+ --- all relevant business data and use it for better decision making.
+ --- Custom workflows cover all processes and tasks inside real-estate
+ --- companies, from client interactions to back-office procedures.
+________________________________________________________________________________
+_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+What is Mono?
+
+How long is your tradition?
+
+What is the year you are established in?
+
+What does Mono do?
+
+What is Mono's expertise?
+
+Do you offer software outsourcing and consulting services?
+
+I want to outsource your team.
+
+How many people work in Mono?
+
+How many developers Mono has?
+
+How many developers do you have?
+
+What are the job titles at Mono?
+
+What is the average education level of Mono team members?
+
+What is the average education level of your team?
+
+How experienced are Mono developers?
+
+How many junior, mid-level and senior developers work in Mono?
+
+How many clients you have?
+
+How expensive is your custom made software?
+
+What are the hourly rates in Mono?
+
+What is your hourly rate?
+
+How much does the development of an application cost?
+
+I want to create a new website for my business, how much does it cost?
+
+What are the technologies Mono works with?
+
+Is Mono experienced in using AI?
+
+Are you experienced with AI?
+
+How much Baasic costs?
+
+What's the price of Baasic?
+
+What does the Baasic free plan include?
+
+What is Mono eCTD Office?
+
+How much eCTD Office costs?
+
+What's the price of eCTD Office?
+
+How many users Mono eCTD Office has?
+
+What tools are included in eCTD Office suite?
+
+What is pCTD Compiler?
+
+What is eCTD Submission Comparer?
+
+What is PDF Editor Pharma Toolbox?
+
+Does PDF Editor Pharma Toolbox require Adobe Acrobat software?
+
+What is PDF Hyperlink Explorer?
+
+What is Mono eCTD Viewer?
+
+How much eCTD Viewer costs?
+
+What's the price of eCTD Viewer?
+
+How much Clokke costs?
+
+What's the price of Clokke?
+
+Do you build banking software?
+
+What kind of software do you build for the pharma industry?
+
+Do you build social network software?
+
+Can you build an e-learning app?
+
+What kind of software do you build in medicine?
+
+What kind of software did you build in medicine?
+
+Can you make me real estate software?
+
+Can you make me a real estate app?
+
+Do you build recruitment software?
+
+Do you build a recruitment app?
+
+Do you build construction management software?
+
+Do you build construction management apps?
+
+Do you make software for pets, animals, and veterinary practices?
+
+Are you experienced in making software for the transport company?
+
+Are you experienced in making environmental protection software and wildlife?
+
+Can you make me software for electronic form processing?
+
+Can you make me software for occupational safety and health?
+
+Do you make me software for occupational safety and health?
+
+What kind of software do you build for law enforcement and other government services?
+
+Do you make payment processing software?
+
+Where can I see your design?
+
+Where can I see your design showcase?
+
+How fast can you build an app?
+
+How fast can you make software?
+
+How fast can you make a website?
+
+How long takes to make an app?
+
+How much time it takes you to make an app?
+
+How much time it takes you to build software?
+
+What is an average time to build an app?
+
+What is an average time to build software?
+
+What is the average time to build a website?
+
+How the process of making an app looks?
+
+Where can I get a quote for my project?
+
+How can I get a quote for my app?
+
+Where can I get a quote for my business?
+
+How can I get a quote for my website?
+
+How can I contact you?
+
+How can I reach you?
+
+Can I call you?
+
+What is your phone number?
+
+Do you work with JavaScript?
+
+Do you work with Python?
+
+Do you work with .NET?
+
+What kind of mobile apps do you build?
+
+What kind of mobile apps do you make?
+
+I need a publishing software.
+

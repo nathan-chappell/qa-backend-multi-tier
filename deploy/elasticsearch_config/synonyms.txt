@@ -11,4 +11,9 @@ make, design, develop, produce, create
 
 # more specific
 ai, machine learning, artificial intelligence
+team extension, outsource
 
+# experimental/ intensional transforms
+products, services, expertise, offered services, specialty, solutions
+industry, field, sector
+experience in, worked for
