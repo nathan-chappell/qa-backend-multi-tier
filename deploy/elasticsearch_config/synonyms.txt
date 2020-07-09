@@ -1,5 +1,6 @@
 # generics
-kind, type, kinds, types
+#kind, type, kinds, types
+type, types
 located, based, where are
 team, mono, company, guys
 use, work with, utilize, take advantage of, choose
@@ -17,3 +18,5 @@ team extension, outsource
 products, services, expertise, offered services, specialty, solutions
 industry, field, sector
 experience in, worked for
+you, we, mono
+fast, quick, efficient, on time, on-time, speed, hurry

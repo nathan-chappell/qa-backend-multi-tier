@@ -8,14 +8,30 @@ what
 how
 why
 who
+# where seems to be okay for now...
+# where
 
 # common verbs
 do
 does
 is
 are
+can
 
 # pronouns
 you
 we
 your
+
+# conjunctions
+and
+but
+too
+however
+
+# prepositions
+for
+of
+
+# TRANSFORMATIVE
+kind

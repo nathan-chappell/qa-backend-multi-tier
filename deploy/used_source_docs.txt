@@ -1,0 +1,67 @@
+# List of which files were used in answering the question
+
+All Files                                                      |   Used files
+_______________________________________________________________|___________________________________
+
+about_0.txt                                                        about_0.txt
+about_1.txt                                                        about_1.txt
+about_2.txt                                                        about_2.txt
+baasic.txt                                                         baasic.txt
+Background_screening_system_0.txt                               <
+Background_screening_system_1.txt                               <
+Background_screening_system_2.txt                                  Background_screening_system_2.txt
+Background_screening_system_3.txt                               <
+Background_screening_system_4.txt                               <
+Background_screening_system_5.txt                               <
+banking_0.txt                                                      banking_0.txt
+banking_1.txt                                                   <
+clokke.txt                                                         clokke.txt
+cloud_0.txt                                                        cloud_0.txt
+cloud_1.txt                                                     <
+construction-management.txt                                        construction-management.txt
+Deep_learning_for_medical_imaging_0.txt                         <
+Deep_learning_for_medical_imaging_1.txt                         <
+developers.txt                                                  <
+DevOps.txt                                                      <
+ectdoffice.txt                                                     ectdoffice.txt
+e-learning.txt                                                     e-learning.txt
+electronic-forms-processing.txt                                 <
+environmental-protection.txt                                    <
+javascript.txt                                                  <
+law-enforcement.txt                                                law-enforcement.txt
+medical-billing.txt                                             <
+medical-research.txt                                               medical-research.txt
+medical-scheduling.txt                                          <
+mobile.txt                                                         mobile.txt
+net-framework.txt                                                  net-framework.txt
+occupational-safety.txt                                         <
+payment-proccessing.txt                                         <
+pet-care.txt                                                       pet-care.txt
+power-distribution.txt                                             power-distribution.txt
+Product_design_0.txt                                               Product_design_0.txt
+Product_design_1.txt                                               Product_design_1.txt
+purchase-order.txt                                                 purchase-order.txt
+python.txt                                                         python.txt
+Quality_assurance.txt                                              Quality_assurance.txt
+real-estate.txt                                                    real-estate.txt
+recruitment.txt                                                    recruitment.txt
+social-networks_0.txt                                           <
+social-networks_1.txt                                              social-networks_1.txt
+software_development_0.txt                                         software_development_0.txt
+software_development_1.txt                                         software_development_1.txt
+Team_extension_services_0.txt                                      Team_extension_services_0.txt
+Team_extension_services_1.txt                                      Team_extension_services_1.txt
+tourism.txt                                                        tourism.txt
+transportation.txt                                              <
+UI_developer.txt                                                   UI_developer.txt
+Web_and_mobile_development_1.txt                                   Web_and_mobile_development_1.txt
+Web_and_mobile_development_2.txt                                <
+Web_crawling_platform_0.txt                                     <
+Web_crawling_platform_1.txt                                     <
+Web_crawling_platform_2.txt                                     <
+Web_crawling_platform_3.txt                                        Web_crawling_platform_3.txt
+Web_crawling_platform_4.txt                                     <
+Web_crawling_platform_5.txt                                     <
+Web_crawling_platform_6.txt                                     <
+Web_crawling_platform_7.txt                                     <
+Web_crawling_platform_8.txt                                     <

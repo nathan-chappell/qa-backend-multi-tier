@@ -50,6 +50,8 @@ def h3(s):
 
 def query_all(question,context):
     r = 50
+    if isinstance(context,dict):
+        context = context['text']
     ansiprint(h1('question:') + '  ' + h2(question))
     ansiprint(h1('context:'))
     ctx_ = textwrap.fill(context, 60)
@@ -67,8 +69,9 @@ def query_all(question,context):
         t1,t2,t3 = context_[0:b_],context_[b_:e_],context_[e_:]
         ansiprint(t1 + h2(t2) + t3)
 
+q = ''
 ctxs = []
-size = 3
+size = 5
 def get_ctx_by_query(question):
     global ctxs
     ctxs = []
@@ -76,7 +79,20 @@ def get_ctx_by_query(question):
     for hit in hits:
         ctxs.append({'_id':hit['_id'], 'text':hit['_source']['text']})
 
-ectd_ctx = es.search(index=idx,body={'query':{'match':{'text':'ectd'}}})['hits']['hits'][0]['_source']['text']
+def query_and_test():
+    n = len(q) + 4
+    ansiprint(h1('*'*n))
+    ansiprint(h1('* ') + h2(q) + h1(' *'))
+    ansiprint(h1('*'*n))
+    pprint(requests.post(ep,json={'question':q}).json())
+    get_ctx_by_query(q)
+    for ctx in ctxs:
+        ansiprint(h1('docId:    ') + h2(ctx['_id']))
+        query_all(q, ctx)
 
-query_all('what is mono ectd office?', ectd_ctx)
+with open('question_results.txt') as f:
+    qs = list(filter(None,map(str.strip,f.readlines()[1293:])))
+
+#ectd_ctx = es.search(index=idx,body={'query':{'match':{'text':'ectd'}}})['hits']['hits'][0]['_source']['text']
+#query_all('what is mono ectd office?', ectd_ctx)
 
