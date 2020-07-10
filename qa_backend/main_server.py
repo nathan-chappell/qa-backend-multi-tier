@@ -88,13 +88,16 @@ class MainServer:
         es_database = ElasticsearchDatabase.from_config(es_config)
         self.database = es_database
         # micro
-        if 'enabled' in config['transformers micro service']:
-            log.info(f'Initializing transformers micro service')
-            tm_cfg = dict(config['transformers micro service'])
-            tm_cfg.pop('enabled')
-            self.transformers_micro = TransformersMicro.from_config(tm_cfg)
-        else:
-            log.info(f'Running without transformers micro service')
+#        if True or 'enabled' in config['transformers micro service']:
+#            log.info(f'Initializing transformers micro service')
+#            tm_cfg = dict(config['transformers micro service'])
+#            tm_cfg.pop('enabled')
+#            self.transformers_micro = TransformersMicro.from_config(tm_cfg)
+#        else:
+#            log.info(f'Running without transformers micro service')
+        log.info(f'Initializing transformers micro service')
+        tm_cfg = config['transformers micro service']
+        self.transformers_micro = TransformersMicro.from_config(tm_cfg)
         # qa
         log.info(f'Loading QA Services')
         self.qas = load_qas_from_config(config)
@@ -103,10 +106,7 @@ class MainServer:
         self.qa_server = QAServer(self.database, self.qas, qa_server_config)
         self.qa_server.app.on_shutdown.append(self.shutdown)
         # miscellaneous
-        if 'PRINT_TB' in config['miscellaneous']:
-            log.info(f'PRINT_TB is ON')
-            os.environ['PRINT_TB'] = 'True'
-        set_all_loglevels(config['miscellaneous'].get('log levels','info'))
+        set_all_loglevels(config['miscellaneous'].get('log_level','info'))
         log.info(f'Initialization complete.')
 
     async def shutdown(self, app: web.Application):
@@ -131,7 +131,9 @@ class MainServer:
         if self.transformers_micro is None:
             return
         log.info(f'Starting transformers micro service.')
-        p = multiprocessing.Process(target=self.transformers_micro.run)
+        kwargs = {'create_pipeline_now':True}
+        target = self.transformers_micro.run
+        p = multiprocessing.Process(target=target,kwargs=kwargs)
         self.transformers_micro_process = p
         p.start()
         log.info(f'Started on process: {p.pid}')

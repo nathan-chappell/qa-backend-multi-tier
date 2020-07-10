@@ -31,3 +31,5 @@ class QAAnswer(JsonRepresentation):
     answer: str
     score: float
     docId: str = ''
+    paragraph: Optional[Paragraph] = None
+    original_span: Optional[str] = ''

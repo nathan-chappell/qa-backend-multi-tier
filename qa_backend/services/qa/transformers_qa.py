@@ -6,6 +6,7 @@ from typing import Optional
 from typing import Union
 from typing import cast
 import logging
+import os
 
 from attr.validators import instance_of
 from transformers import AutoModelForQuestionAnswering # type: ignore
@@ -43,7 +44,18 @@ def create_pipeline(config: TransformersQAConfig) -> QuestionAnsweringPipeline:
             )
 
 class LazyPipeline:
-    """Doesn't create pipeline until called"""
+    """Doesn't create pipeline immediately
+
+    Either calling `create_now` or using the `__call__` method will trigger
+    creation of the pipeline.
+
+    THIS IS NECESSARY WHEN THE PIPELINE WILL BE RUNNING ON A DIFFERENT PROCESS
+
+    If you create the pipeline on one process, then fork to another and try to
+    use it, the thing just hangs and uses 100% of one cpu.  Probably some
+    pytorch stuff going on, but it's easy to avoid by not creating the thing
+    until after you fork.
+    """
     _pipeline: Optional[QuestionAnsweringPipeline] = None
     config: TransformersQAConfig
 
@@ -52,8 +64,12 @@ class LazyPipeline:
 
     def __call__(self, *args, **kwargs):
         if self._pipeline is None:
-            self._pipeline = create_pipeline(self.config)
+            self.create_now()
         return self._pipeline(*args, **kwargs)
+
+    def create_now(self):
+        if self._pipeline is None:
+            self._pipeline = create_pipeline(self.config)
 
 class TransformersQA(QA):
     pipeline: Union[QuestionAnsweringPipeline, LazyPipeline]
@@ -99,8 +115,11 @@ class TransformersQA(QA):
         # check for "no answer"
         if answer['start'] == answer['end']:
             answer_ = ''
+            original_span = ''
         else:
             start,end = answer['start'], answer['end']
+            original_span = answer['answer']
             answer_ = complete_sentence(cast(str,context),start, end)
         log.debug(f'answer_: {answer_}')
-        return [QAAnswer(question, answer_, answer['score'])]
+        return [QAAnswer(question, answer_, answer['score'],
+                         original_span=original_span)]

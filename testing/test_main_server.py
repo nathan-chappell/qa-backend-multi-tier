@@ -41,6 +41,7 @@ def run():
     main_server.run()
 
 def wait_for_connection(endpoint:str):
+    log.info(f'waiting for: {endpoint}')
     session = ClientSession()
     try:
         async def _wait(count: int):
@@ -90,20 +91,32 @@ def start_server_process():
     wait_for_connection(f'http://{qa_host}:{qa_port}')
     wait_for_connection(f'http://{tm_host}:{tm_port}')
 
+def log_result(f):
+    def wrapped(*args,**kwargs):
+        result = f(*args,**kwargs)
+        log.info(f'result of {f.__name__}: {result}')
+        return result
+    return wrapped
+
+@log_result
 def get_host():
     host = config['qa server']['host']
     port = config['qa server'].getint('port')
     return f'http://{host}:{port}'
 
+@log_result
 def question_uri():
     return f'{get_host()}/question'
 
+@log_result
 def index_uri():
     return f'{get_host()}/index'
 
+@log_result
 def delete_uri(docId):
     return f'{index_uri()}?docId={docId}'
 
+@log_result
 def read_uri(docId):
     return f'{index_uri()}?docId={docId}'
 
@@ -165,6 +178,8 @@ def delete_context() -> int:
 def create_test_doc() -> int:
     async def _create():
         async with session.post(index_uri(),json=test_doc) as response:
+            log.info(response)
+            log.info(response.status)
             return response.status
     return loop.run_until_complete(_create())
 
@@ -200,12 +215,14 @@ def check_body(body, doc) -> bool:
 
 class MainServer_CRUD(unittest.TestCase):
     def test_CD(self):
+        delete_test_doc()
         c_status = create_test_doc()
         self.assertEqual(c_status, 200)
         d_status = delete_test_doc()
         self.assertEqual(d_status, 200)
 
     def test_CRD(self):
+        delete_test_doc()
         c_status = create_test_doc()
         self.assertEqual(c_status, 200)
         r_status, r_body = read_test_doc()
@@ -215,6 +232,7 @@ class MainServer_CRUD(unittest.TestCase):
         self.assertEqual(d_status, 200)
 
     def test_CRUD(self):
+        delete_test_doc()
         c_status = create_test_doc()
         self.assertEqual(c_status, 200)
         r_status, r_body = read_test_doc()

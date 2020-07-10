@@ -17,6 +17,7 @@ from typing import Union
 import asyncio
 import json
 import logging
+import os
 import re
 import yaml
 
@@ -41,18 +42,17 @@ from . import QueryDatabase
 es = Elasticsearch()
 
 class Explanation(JsonRepresentation):
-    __slots__ = ['body','scores','docId','index','total_score']
+    __slots__ = ['body','scores','docId','index','total_score','qid']
     query: Dict[str,Any]
     total_score: float
-    scores: List[Tuple[str,float]]
+    scores: List[Tuple[str,float,float]]
     docId: str
     index: str
-    text_re = re.compile(r'.*\(text:(\w+) .*')
+    qid: str
+    text_re = re.compile(r'.*\(text:?(\w+|"[^"]*")? .*')
 
-    def __repr__(self) -> str:
-        return json.dumps({k:getattr(self,k) for k in self.__slots__})
-
-    def __init__(self, body: Dict[str,Any], docId: str, index: str):
+    def __init__(self, body: Dict[str,Any], docId: str, index: str, qid: str):
+        log.info(f'getting explanation for: {body}')
         try:
             self.body = body['query']
         except KeyError as e:
@@ -63,6 +63,7 @@ class Explanation(JsonRepresentation):
         self.docId = docId
         self.scores = []
         self.index = index
+        self.qid = qid
         try:
             explanation = es.explain(index, id=docId, body={'query':self.body})
         except ElasticsearchException as e:
@@ -70,14 +71,36 @@ class Explanation(JsonRepresentation):
             raise RuntimeError(str(e))
         try:
             self.total_score = float(explanation['explanation']['value'])
-            for detail in explanation['explanation']['details']:
-                text = self.text_re.sub(r'\1',detail['description'])
-                score = float(detail['value'])
-                self.scores.append((text,score))
+            if explanation['explanation']['description'] == 'sum of:':
+                for detail in explanation['explanation']['details']:
+                    self.scores.append(self.get_score_tuple(detail))
+            else:
+                self.scores = [self.get_score_tuple(explanation['explanation'])]
         # KeyError, something in re, etc
         except Exception as e:
             log.exception(e)
             raise RuntimeError(str(e))
+
+    def __repr__(self) -> str:
+        return json.dumps({k:getattr(self,k) for k in self.__slots__})
+
+    @classmethod
+    def get_score_tuple(cls, detail: Dict[str,Any]) -> Tuple[str,float,float]:
+        text = cls.text_re.sub(r'\1',detail['description'])
+        score = float(detail['value'])
+        def get_freq_from_detail(detail_: Dict[str,Any]) -> float:
+            try: 
+                return float(detail_['details'][0]\
+                                    ['details'][2]['details'][0]['value'])
+            except (KeyError, IndexError) as e:
+                log.debug(f'failed to get freq: {e}')
+                return -1
+        try:
+            freq = get_freq_from_detail(detail)
+        except Exception as e:
+            log.exception(e)
+            freq = -1
+        return (text,score,freq)
 
 class ElasticsearchDatabaseError(RuntimeError):
     message: str
@@ -121,11 +144,20 @@ class ElasticsearchDatabase(QueryDatabase):
     async def shutdown(self) -> None:
         log.info('shutting down')
         if isinstance(self.config.backup_dir, str):
-            timestamp = datetime.now().strftime('%Y%m%d_%h%m%s')
-            directory_path = Path(self.config.backup_dir) / timestamp
-            directory_path.mkdir(parents=True)
-            log.info(f'back up at: {str(directory_path.resolve())}')
-            await self.dump_to_directory(directory_path)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            backup_dir = Path(self.config.backup_dir) / timestamp
+            backup_dir.mkdir(parents=True)
+            log.info(f'back up at: {str(backup_dir.resolve())}')
+            await self.dump_to_directory(backup_dir)
+            link = backup_dir / '../last_backup'
+            if link.is_symlink():
+                log.debug(f'unlinking existing symlink: {link}')
+                link.unlink()
+            elif link.exists():
+                log.error(f'tried to overwrite file with symlink to backup')
+                return
+            log.info(f'updating symlink: {backup_dir} <- {link}')
+            os.symlink(backup_dir.name, link)
             log.info(f'back up complete')
 
     @staticmethod
@@ -225,7 +257,8 @@ class ElasticsearchDatabase(QueryDatabase):
     async def query(
             self,
             query_string: str,
-            size: int = 10
+            size: int = 10,
+            qid: str = '',
         ) -> Iterable[Paragraph]:
         log.info(f'query[:{size}] {query_string}')
         body = {'query': {'match': {'text': query_string}}, 'size':size}
@@ -241,7 +274,7 @@ class ElasticsearchDatabase(QueryDatabase):
             paragraphs.append(Paragraph(_id, hit_text))
             try:
                 if self.explain_log is not None:
-                        print(Explanation(body,_id,self.index),
+                        print(Explanation(body,_id,self.index,qid),
                               file=self.explain_log,
                               flush=True)
             except RuntimeError as e:

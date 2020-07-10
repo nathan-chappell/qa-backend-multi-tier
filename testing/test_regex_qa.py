@@ -15,7 +15,7 @@ loop = asyncio.get_event_loop()
 
 class RegexQA_TestQuery(unittest.TestCase):
     def setUp(self):
-        regex_path = Path('regex_test_data/regex_qa.yml')
+        regex_path = Path('regex_qa.yml')
         self.happy, self.not_mad = RegexQA.from_file(regex_path)
 
     def test_happy_good(self):

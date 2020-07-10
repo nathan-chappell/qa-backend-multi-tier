@@ -20,11 +20,10 @@ from qa_backend.util import Paragraph
 es = Elasticsearch()
 loop = asyncio.get_event_loop()
 config = ElasticsearchDatabaseConfig(
-    init_file='es_init.yml',
+    init_file='es_database.init.yml',
     erase_if_exists=True,
     explain_filename=None,
     backup_dir=None,
-    #index_on_startup_dir='es_test_data',
     index_on_startup_dir=None,
 )
 
