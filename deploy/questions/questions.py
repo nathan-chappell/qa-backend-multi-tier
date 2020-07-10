@@ -16,16 +16,16 @@ import attr
 import elasticsearch # type: ignore
 import requests
 
-sys.path.append('..')
+sys.path.append('../..')
 
 #from pretty_explain import print_explain
 from qa_backend.services.database.es_database import Explanation
 
 es = elasticsearch.Elasticsearch()
 log = logging.getLogger('test')
-endpoint = 'http://localhost:8280/question'
-index = 'deployment-dev-index'
-output_file = open('question_results.txt','w')
+endpoint = 'http://localhost:8080/question'
+index = 'deployment-index'
+output_file = open('test_test.txt','w')
 atexit.register(lambda : output_file.close())
 
 def get_questions() -> List[List[str]]:

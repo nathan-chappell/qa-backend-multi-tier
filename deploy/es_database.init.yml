@@ -1,5 +1,5 @@
 # used for creating test index for elasticsearch
-index: deployment-dev-index
+index: deployment-index
 creation:
     settings:
         refresh_interval: 50ms

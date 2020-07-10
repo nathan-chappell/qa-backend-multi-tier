@@ -30,11 +30,15 @@ _lognames = ['database','qa','server','testing','main','util']
 
 def init_logs():
     print(f'initializing logs: {", ".join(_lognames)}')
-    logs = [logging.getLogger(log) for log in _lognames]
-    handler = logging.StreamHandler()
-    handler.setFormatter(LoggingFormatter())
-    for log in logs:
-        log.addHandler(handler)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(LoggingFormatter())
+    file_handlers = {logname: logging.FileHandler(f'logs/{logname}')
+                     for logname in _lognames}
+    for logname in _lognames:
+        log = logging.getLogger(logname)
+        log.addHandler(stream_handler)
+        file_handlers[logname].setFormatter(LoggingFormatter())
+        log.addHandler(file_handlers[logname])
 
 def set_all_loglevels(levelname: str):
     level_map = defaultdict(
