@@ -106,9 +106,6 @@ class MainServer:
         self.qa_server = QAServer(self.database, self.qas, qa_server_config)
         self.qa_server.app.on_shutdown.append(self.shutdown)
         # miscellaneous
-        if 'PRINT_TB' in config['miscellaneous']:
-            log.info(f'PRINT_TB is ON')
-            os.environ['PRINT_TB'] = 'True'
         set_all_loglevels(config['miscellaneous'].get('log_level','info'))
         log.info(f'Initialization complete.')
 

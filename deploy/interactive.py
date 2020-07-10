@@ -14,10 +14,28 @@ from transformers import QuestionAnsweringPipeline
 import elasticsearch
 import requests
 
+# Globals
+
 es = elasticsearch.Elasticsearch()
 idx = 'deployment-dev-index'
 ep = 'http://localhost:8280/question'
 epqa = 'http://localhost:8281/question'
+q = ''
+ctxs = []
+size = 5
+
+# Coloring functions
+
+def h1(s):
+    return f'<bg white><fg red>{s}</fg red></bg white>'
+
+def h2(s):
+    return f'<fg red>{s}</fg red>'
+
+def h3(s):
+    return f'<bg green><fg black>{s}</fg black></bg green>'
+
+# models and pipelines to test with query_all()
 
 model_names = {
     'dbert-s2': 'twmkn9/distilbert-base-uncased-squad2',
@@ -39,28 +57,19 @@ pipelines = {
     for k,v in models.items()
 }
 
-def h1(s):
-    return f'<bg white><fg red>{s}</fg red></bg white>'
-
-def h2(s):
-    return f'<fg red>{s}</fg red>'
-
-def h3(s):
-    return f'<bg green><fg black>{s}</fg black></bg green>'
-
 def query_all(question,context):
-    r = 50
+    """Get answer to question given context for all pipelines"""
     if isinstance(context,dict):
         context = context['text']
     ansiprint(h1('question:') + '  ' + h2(question))
     ansiprint(h1('context:'))
     ctx_ = textwrap.fill(context, 60)
     ctx_ = textwrap.indent(ctx_, ' -- ')
-    #print(context)
     print(ctx_)
     for name,pipeline in pipelines.items():
         ansiprint(h3(name))
-        answer = pipeline({'question':question, 'context':context},handle_impossible_answer=True)
+        answer = pipeline({'question':question, 'context':context},
+                          handle_impossible_answer=True)
         pprint(answer)
         b,e = answer['start'],answer['end']
         context_ = context[max(b-30,0):e+30]
@@ -69,17 +78,17 @@ def query_all(question,context):
         t1,t2,t3 = context_[0:b_],context_[b_:e_],context_[e_:]
         ansiprint(t1 + h2(t2) + t3)
 
-q = ''
-ctxs = []
-size = 5
 def get_ctx_by_query(question):
+    """Store paragraphs retrieved by elasticsearch in ctxs"""
     global ctxs
     ctxs = []
-    hits = es.search(index=idx, body={'query':{'match':{'text':question}},'size':size})['hits']['hits']
+    body = {'query':{'match':{'text':question}},'size':size} 
+    hits = es.search(index=idx, body=body)['hits']['hits']
     for hit in hits:
         ctxs.append({'_id':hit['_id'], 'text':hit['_source']['text']})
 
 def query_and_test():
+    """Use `q` to query server, get contexts, and query_all pipelines"""
     n = len(q) + 4
     ansiprint(h1('*'*n))
     ansiprint(h1('* ') + h2(q) + h1(' *'))
@@ -89,9 +98,6 @@ def query_and_test():
     for ctx in ctxs:
         ansiprint(h1('docId:    ') + h2(ctx['_id']))
         query_all(q, ctx)
-
-with open('question_results.txt') as f:
-    qs = list(filter(None,map(str.strip,f.readlines()[1293:])))
 
 #ectd_ctx = es.search(index=idx,body={'query':{'match':{'text':'ectd'}}})['hits']['hits'][0]['_source']['text']
 #query_all('what is mono ectd office?', ectd_ctx)
